@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from sanmei_core import (
         GoGyoBalance,
         Meishiki,
+        TaiunChart,
     )
 
 _STEM_KANJI = "甲乙丙丁戊己庚辛壬癸"
@@ -76,6 +77,20 @@ def format_meishiki(meishiki: Meishiki, dt: datetime) -> str:
     # 五行バランス
     _append_gogyo_balance(lines, meishiki.gogyo_balance)
 
+    return "\n".join(lines)
+
+
+def format_taiun(chart: TaiunChart) -> str:
+    """大運をテキスト形式でフォーマット."""
+    lines: list[str] = []
+    lines.append("=== 大運 ===")
+    lines.append(f"方向: {chart.direction}  開始年齢: {chart.start_age}歳")
+    lines.append("")
+    lines.append(f" {'期間':<8s}{'干支':<8s}{'年齢'}")
+    for i, period in enumerate(chart.periods, 1):
+        lines.append(
+            f" {i:<8d}{period.kanshi.kanji:<8s}{period.start_age}-{period.end_age}歳"
+        )
     return "\n".join(lines)
 
 

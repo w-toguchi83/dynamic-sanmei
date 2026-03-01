@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from sanmei_cli.formatters.text import format_meishiki
+from sanmei_cli.formatters.text import format_meishiki, format_taiun
 
 JST = timezone(timedelta(hours=9))
 BIRTH_DT = datetime(2000, 1, 15, 14, 30, tzinfo=JST)
@@ -51,3 +51,27 @@ class TestFormatMeishiki:
         assert "金:" in result
         assert "水:" in result
         assert "日主五行:" in result
+
+
+class TestFormatTaiun:
+    def test_contains_header(self, taiun_chart):
+        result = format_taiun(taiun_chart)
+        assert "=== 大運 ===" in result
+
+    def test_contains_direction(self, taiun_chart):
+        result = format_taiun(taiun_chart)
+        assert taiun_chart.direction in result
+
+    def test_contains_start_age(self, taiun_chart):
+        result = format_taiun(taiun_chart)
+        assert f"{taiun_chart.start_age}歳" in result
+
+    def test_contains_period_kanshi(self, taiun_chart):
+        result = format_taiun(taiun_chart)
+        for period in taiun_chart.periods:
+            assert period.kanshi.kanji in result
+
+    def test_contains_age_range(self, taiun_chart):
+        result = format_taiun(taiun_chart)
+        first = taiun_chart.periods[0]
+        assert f"{first.start_age}-{first.end_age}歳" in result
