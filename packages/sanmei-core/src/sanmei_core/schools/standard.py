@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from sanmei_core.calculators.solar_longitude import MeeusSetsuiriProvider
 from sanmei_core.domain.hidden_stems import HiddenStems
 from sanmei_core.domain.kanshi import TenStem, TwelveBranch
@@ -69,3 +71,7 @@ class StandardSchool:
     def get_setsuiri_provider(self) -> SetsuiriProvider:
         """節入り日プロバイダを取得."""
         return MeeusSetsuiriProvider()
+
+    def get_taiun_start_age_rounding(self) -> Literal["floor", "round"]:
+        """大運起算年齢の端数処理: 切り捨て."""
+        return "floor"

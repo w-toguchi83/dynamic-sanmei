@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Protocol
+from typing import Literal, Protocol
 
 from sanmei_core.domain.hidden_stems import HiddenStems
 from sanmei_core.domain.kanshi import TenStem, TwelveBranch
@@ -36,4 +36,8 @@ class SchoolProtocol(Protocol):
 
     def get_setsuiri_provider(self) -> SetsuiriProvider:
         """節入り日プロバイダを取得."""
+        ...
+
+    def get_taiun_start_age_rounding(self) -> Literal["floor", "round"]:
+        """大運起算年齢の端数処理方法."""
         ...
