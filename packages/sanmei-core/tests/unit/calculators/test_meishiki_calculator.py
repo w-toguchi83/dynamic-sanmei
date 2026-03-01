@@ -61,4 +61,4 @@ class TestMeishikiCalculator:
         meishiki = calc.calculate(dt)
         # frozen model → attribute assignment raises
         with pytest.raises(ValidationError):
-            meishiki.pillars = None  # type: ignore[misc]
+            meishiki.pillars = None  # type: ignore[misc,assignment]
