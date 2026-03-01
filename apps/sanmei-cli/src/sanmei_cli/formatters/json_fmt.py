@@ -10,6 +10,7 @@ from pydantic import BaseModel
 
 def to_json(data: Any) -> str:  # noqa: ANN401
     """Pydantic モデルまたはリストをJSON文字列に変換."""
+    raw: Any
     if isinstance(data, BaseModel):
         raw = data.model_dump(mode="json")
     elif isinstance(data, list):

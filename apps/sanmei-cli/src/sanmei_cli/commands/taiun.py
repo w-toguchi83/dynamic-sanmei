@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 
 import click
-from sanmei_core import MeishikiCalculator, SanmeiError, calculate_taiun
+from sanmei_core import Gender, MeishikiCalculator, SanmeiError, calculate_taiun
 
 from sanmei_cli.formatters.json_fmt import to_json
 from sanmei_cli.formatters.text import format_taiun
@@ -25,7 +25,7 @@ def taiun(
     ctx: click.Context,
     birthdate: datetime,
     birth_time: str,
-    gender: click.Parameter,
+    gender: Gender,
     periods: int,
 ) -> None:
     """大運を算出して表示する."""

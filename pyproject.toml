@@ -27,6 +27,7 @@ ignore = ["S101"]
 python_version = "3.14"
 strict = true
 plugins = ["pydantic.mypy"]
+mypy_path = "packages/sanmei-core/src:packages/dynamic-ontology/src:apps/sanmei-cli/src"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
