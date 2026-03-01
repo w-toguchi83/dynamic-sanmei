@@ -1,0 +1,45 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "00e4ab0e65e4",
+  "session_id": "16d49a17-5fd4-4bc4-aafe-0c58aee5f824",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-01T08:45:34.108659Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "docs/domain/01_Chapter1_Introduction_to_Senmei_Gaku.md",
+    "docs/domain/02_Chapter2_Basics_of_Kanshi.md",
+    "docs/domain/03_Chapter3_Structure_of_Meishiki.md",
+    "docs/domain/04_Chapter4_Ten_Major_Stars.md",
+    "docs/domain/05_Chapter5_Twelve_Subsidiary_Stars.md",
+    "docs/domain/06_Chapter6_Chuusetsu.md",
+    "docs/domain/07_Chapter7_Insen_and_Yousen.md",
+    "docs/domain/08_Chapter8_Gou_Chuu_Kei_Gai.md",
+    "docs/domain/09_Chapter9_Appraisal_Techniques.md",
+    "docs/domain/10_Chapter10_Web_System_Design_Specifications.md",
+    "docs/domain/11_Chapter11_Advanced_Techniques.md",
+    "docs/domain/12_Chapter12_Terminology_and_Index.md",
+    "docs/domain/Appendix_A_Meishiki_Samples.md",
+    "docs/domain/Appendix_B_Implementation_Checklist.md"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "99f4e9d38d58",
+  "checkpoint_transcript_start": 56,
+  "transcript_lines_at_start": 56,
+  "token_usage": {
+    "input_tokens": 1,
+    "cache_creation_tokens": 270,
+    "cache_read_tokens": 35570,
+    "output_tokens": 119,
+    "api_call_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-01T08:45:34.079361Z",
+    "agent_lines": 866,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 866,
+    "agent_percentage": 100
+  }
+}
