@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "8b18d9a6dc5f",
+  "session_id": "c351a6ef-b7a3-4fd5-aaf7-152f11d5741e",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-01T23:47:43.255762Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/sanmei-cli/src/sanmei_cli/main.py"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "190ffa3b2c53",
+  "token_usage": {
+    "input_tokens": 588,
+    "cache_creation_tokens": 84620,
+    "cache_read_tokens": 3318705,
+    "output_tokens": 21677,
+    "api_call_count": 40
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-01T23:47:43.087314Z",
+    "agent_lines": 44,
+    "human_added": 706,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 750,
+    "agent_percentage": 5.866666666666666
+  }
+}
