@@ -41,6 +41,12 @@ node_modules/
 .env.local
 .env.*.local
 
+# Linter cache
+.ruff_cache/
+
+# Claude Code
+.claude/settings.local.json
+
 # uv
 *.lock
 !uv.lock
