@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "e238722c09fa",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".claude/pdca/cycle-20260301-220000.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/e2/38722c09fa/0/metadata.json",
+      "transcript": "/e2/38722c09fa/0/full.jsonl",
+      "context": "/e2/38722c09fa/0/context.md",
+      "content_hash": "/e2/38722c09fa/0/content_hash.txt",
+      "prompt": "/e2/38722c09fa/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 63,
+    "cache_creation_tokens": 137526,
+    "cache_read_tokens": 7036816,
+    "output_tokens": 38546,
+    "api_call_count": 55
+  }
+}
