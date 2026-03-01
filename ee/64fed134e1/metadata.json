@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "ee64fed134e1",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "packages/sanmei-core/src/sanmei_core/calculators/shukumei_chuusatsu.py",
+    "packages/sanmei-core/tests/unit/calculators/test_shukumei_chuusatsu.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/ee/64fed134e1/0/metadata.json",
+      "transcript": "/ee/64fed134e1/0/full.jsonl",
+      "context": "/ee/64fed134e1/0/context.md",
+      "content_hash": "/ee/64fed134e1/0/content_hash.txt",
+      "prompt": "/ee/64fed134e1/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 31,
+    "cache_creation_tokens": 105536,
+    "cache_read_tokens": 1926874,
+    "output_tokens": 16681,
+    "api_call_count": 19
+  }
+}
