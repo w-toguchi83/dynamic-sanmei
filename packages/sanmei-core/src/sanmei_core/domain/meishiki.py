@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
+from sanmei_core.domain.gogyo_balance import GoGyoBalance
 from sanmei_core.domain.hidden_stems import HiddenStems
 from sanmei_core.domain.pillar import ThreePillars
 from sanmei_core.domain.shukumei_chuusatsu import ShukumeiChuusatsu
@@ -38,3 +39,4 @@ class Meishiki(BaseModel, frozen=True):
     subsidiary_stars: SubsidiaryStarChart
     tenchuusatsu: Tenchuusatsu
     shukumei_chuusatsu: tuple[ShukumeiChuusatsu, ...]
+    gogyo_balance: GoGyoBalance

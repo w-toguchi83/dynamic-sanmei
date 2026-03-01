@@ -54,6 +54,16 @@ class TestMeishikiCalculator:
         meishiki = calc.calculate(dt)
         assert isinstance(meishiki.shukumei_chuusatsu, tuple)
 
+    def test_meishiki_has_gogyo_balance(self) -> None:
+        """命式に五行バランスフィールドが含まれる."""
+        school = StandardSchool()
+        calc = MeishikiCalculator(school)
+        dt = datetime(2024, 6, 15, 12, 0, tzinfo=JST)
+        meishiki = calc.calculate(dt)
+        assert meishiki.gogyo_balance is not None
+        assert meishiki.gogyo_balance.total_count.total > 0
+        assert meishiki.gogyo_balance.day_stem_gogyo is not None
+
     def test_meishiki_is_frozen(self) -> None:
         school = StandardSchool()
         calc = MeishikiCalculator(school)
