@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "d5156eda765f",
+  "strategy": "manual-commit",
+  "branch": "feat/sanmei-calendar",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "packages/sanmei-core/src/sanmei_core/calculators/day_pillar.py",
+    "packages/sanmei-core/tests/unit/calculators/__init__.py",
+    "packages/sanmei-core/tests/unit/calculators/test_day_pillar.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/d5/156eda765f/0/metadata.json",
+      "transcript": "/d5/156eda765f/0/full.jsonl",
+      "context": "/d5/156eda765f/0/context.md",
+      "content_hash": "/d5/156eda765f/0/content_hash.txt",
+      "prompt": "/d5/156eda765f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 9,
+    "cache_creation_tokens": 19942,
+    "cache_read_tokens": 505295,
+    "output_tokens": 1995,
+    "api_call_count": 7
+  }
+}
