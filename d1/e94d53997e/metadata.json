@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "d1e94d53997e",
+  "strategy": "manual-commit",
+  "branch": "feat/sanmei-calendar",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "packages/sanmei-core/src/sanmei_core/domain/kanshi.py",
+    "packages/sanmei-core/tests/unit/domain/__init__.py",
+    "packages/sanmei-core/tests/unit/domain/test_kanshi.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/d1/e94d53997e/0/metadata.json",
+      "transcript": "/d1/e94d53997e/0/full.jsonl",
+      "context": "/d1/e94d53997e/0/context.md",
+      "content_hash": "/d1/e94d53997e/0/content_hash.txt",
+      "prompt": "/d1/e94d53997e/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 2,
+    "cache_creation_tokens": 2720,
+    "cache_read_tokens": 107842,
+    "output_tokens": 2257,
+    "api_call_count": 2
+  }
+}
