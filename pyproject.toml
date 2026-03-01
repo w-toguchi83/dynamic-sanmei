@@ -8,6 +8,7 @@ requires-python = ">=3.14"
 members = [
     "packages/*",
     "services/*",
+    "apps/*",
 ]
 
 [tool.ruff]
