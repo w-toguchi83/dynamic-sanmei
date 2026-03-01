@@ -46,6 +46,14 @@ class TestMeishikiCalculator:
         # 天中殺の type が有効であること
         assert isinstance(meishiki.tenchuusatsu.type, TenchuusatsuType)
 
+    def test_meishiki_has_shukumei_chuusatsu(self) -> None:
+        """命式に宿命中殺フィールドが含まれる."""
+        school = StandardSchool()
+        calc = MeishikiCalculator(school)
+        dt = datetime(2024, 6, 15, 12, 0, tzinfo=JST)
+        meishiki = calc.calculate(dt)
+        assert isinstance(meishiki.shukumei_chuusatsu, tuple)
+
     def test_meishiki_is_frozen(self) -> None:
         school = StandardSchool()
         calc = MeishikiCalculator(school)

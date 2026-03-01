@@ -14,6 +14,7 @@ from sanmei_core.domain.hidden_stems import HiddenStems
 from sanmei_core.domain.kanshi import Kanshi, TenStem, TwelveBranch
 from sanmei_core.domain.meishiki import MajorStarChart, Meishiki, SubsidiaryStarChart
 from sanmei_core.domain.pillar import ThreePillars
+from sanmei_core.domain.shukumei_chuusatsu import ShukumeiChuusatsu, ShukumeiChuusatsuPosition
 from sanmei_core.domain.star import MajorStar, SubsidiaryStar
 from sanmei_core.domain.tenchuusatsu import Tenchuusatsu, TenchuusatsuType
 from sanmei_core.protocols.school import SchoolProtocol
@@ -35,6 +36,8 @@ __all__ = [
     "SanmeiCalendar",
     "SanmeiError",
     "SchoolProtocol",
+    "ShukumeiChuusatsu",
+    "ShukumeiChuusatsuPosition",
     "SchoolRegistry",
     "SetsuiriDate",
     "SetsuiriNotFoundError",
