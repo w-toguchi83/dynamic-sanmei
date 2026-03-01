@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "e990f0521244",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "packages/sanmei-core/src/sanmei_core/calculators/gogyo_balance.py",
+    "packages/sanmei-core/tests/unit/calculators/test_gogyo_balance.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/e9/90f0521244/0/metadata.json",
+      "transcript": "/e9/90f0521244/0/full.jsonl",
+      "context": "/e9/90f0521244/0/context.md",
+      "content_hash": "/e9/90f0521244/0/content_hash.txt",
+      "prompt": "/e9/90f0521244/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 34,
+    "cache_creation_tokens": 106407,
+    "cache_read_tokens": 2055628,
+    "output_tokens": 16706,
+    "api_call_count": 20
+  }
+}

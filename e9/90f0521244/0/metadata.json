@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "e990f0521244",
+  "session_id": "c546a616-92f5-4246-8497-fd27fd43650e",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-01T21:24:07.747463Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "packages/sanmei-core/src/sanmei_core/calculators/gogyo_balance.py",
+    "packages/sanmei-core/tests/unit/calculators/test_gogyo_balance.py"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "e277767a9d1f",
+  "token_usage": {
+    "input_tokens": 34,
+    "cache_creation_tokens": 106407,
+    "cache_read_tokens": 2055628,
+    "output_tokens": 16706,
+    "api_call_count": 20
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-01T21:24:07.659011Z",
+    "agent_lines": 179,
+    "human_added": 0,
+    "human_modified": 3,
+    "human_removed": 9,
+    "total_committed": 182,
+    "agent_percentage": 98.35164835164835
+  }
+}
