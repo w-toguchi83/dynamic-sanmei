@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "1a4ebc954284",
+  "strategy": "manual-commit",
+  "branch": "feat/sanmei-calendar",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "packages/sanmei-core/src/sanmei_core/__init__.py",
+    "packages/sanmei-core/src/sanmei_core/calculators/__init__.py",
+    "packages/sanmei-core/src/sanmei_core/domain/__init__.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/1a/4ebc954284/0/metadata.json",
+      "transcript": "/1a/4ebc954284/0/full.jsonl",
+      "context": "/1a/4ebc954284/0/context.md",
+      "content_hash": "/1a/4ebc954284/0/content_hash.txt",
+      "prompt": "/1a/4ebc954284/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  }
+}
