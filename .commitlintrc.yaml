@@ -1,0 +1,22 @@
+rules:
+  type-enum:
+    - 2
+    - always
+    - - feat
+      - fix
+      - docs
+      - refactor
+      - test
+      - ci
+      - chore
+      - perf
+  scope-enum:
+    - 1
+    - always
+    - - sanmei-core
+      - dynamic-ontology
+      - sanmei-api
+  subject-max-length:
+    - 2
+    - always
+    - 100
