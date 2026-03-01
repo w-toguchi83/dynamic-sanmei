@@ -43,3 +43,4 @@ def cli(ctx: click.Context, output_json: bool, school_name: str) -> None:
 
 import sanmei_cli.commands.meishiki as _meishiki_cmd  # noqa: E402, F401
 import sanmei_cli.commands.taiun as _taiun_cmd  # noqa: E402, F401
+import sanmei_cli.commands.nenun as _nenun_cmd  # noqa: E402, F401

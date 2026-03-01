@@ -11,6 +11,7 @@ if TYPE_CHECKING:
         Meishiki,
         TaiunChart,
     )
+    from sanmei_core.domain.fortune import Nenun
 
 _STEM_KANJI = "甲乙丙丁戊己庚辛壬癸"
 _BRANCH_KANJI = "子丑寅卯辰巳午未申酉戌亥"
@@ -91,6 +92,16 @@ def format_taiun(chart: TaiunChart) -> str:
         lines.append(
             f" {i:<8d}{period.kanshi.kanji:<8s}{period.start_age}-{period.end_age}歳"
         )
+    return "\n".join(lines)
+
+
+def format_nenun(nenuns: list[Nenun]) -> str:
+    """年運をテキスト形式でフォーマット."""
+    lines: list[str] = []
+    lines.append("=== 年運 ===")
+    lines.append(f" {'年':<8s}{'干支':<8s}{'年齢'}")
+    for nenun in nenuns:
+        lines.append(f" {nenun.year:<8d}{nenun.kanshi.kanji:<8s}{nenun.age}歳")
     return "\n".join(lines)
 
 

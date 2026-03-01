@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from sanmei_cli.formatters.text import format_meishiki, format_taiun
+from sanmei_cli.formatters.text import format_meishiki, format_nenun, format_taiun
 
 JST = timezone(timedelta(hours=9))
 BIRTH_DT = datetime(2000, 1, 15, 14, 30, tzinfo=JST)
@@ -75,3 +75,24 @@ class TestFormatTaiun:
         result = format_taiun(taiun_chart)
         first = taiun_chart.periods[0]
         assert f"{first.start_age}-{first.end_age}歳" in result
+
+
+class TestFormatNenun:
+    def test_contains_header(self, nenun_list):
+        result = format_nenun(nenun_list)
+        assert "=== 年運 ===" in result
+
+    def test_contains_years(self, nenun_list):
+        result = format_nenun(nenun_list)
+        for nenun in nenun_list:
+            assert str(nenun.year) in result
+
+    def test_contains_kanshi(self, nenun_list):
+        result = format_nenun(nenun_list)
+        for nenun in nenun_list:
+            assert nenun.kanshi.kanji in result
+
+    def test_contains_age(self, nenun_list):
+        result = format_nenun(nenun_list)
+        for nenun in nenun_list:
+            assert f"{nenun.age}歳" in result
