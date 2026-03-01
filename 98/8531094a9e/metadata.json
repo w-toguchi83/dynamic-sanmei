@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "988531094a9e",
+  "strategy": "manual-commit",
+  "branch": "feat/sanmei-calendar",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "packages/sanmei-core/src/sanmei_core/domain/pillar.py",
+    "packages/sanmei-core/src/sanmei_core/protocols/__init__.py",
+    "packages/sanmei-core/src/sanmei_core/protocols/setsuiri.py",
+    "packages/sanmei-core/tests/unit/domain/test_pillar.py",
+    "packages/sanmei-core/tests/unit/test_protocols.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/98/8531094a9e/0/metadata.json",
+      "transcript": "/98/8531094a9e/0/full.jsonl",
+      "context": "/98/8531094a9e/0/context.md",
+      "content_hash": "/98/8531094a9e/0/content_hash.txt",
+      "prompt": "/98/8531094a9e/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 4,
+    "cache_creation_tokens": 3702,
+    "cache_read_tokens": 234541,
+    "output_tokens": 2063,
+    "api_call_count": 4
+  }
+}
