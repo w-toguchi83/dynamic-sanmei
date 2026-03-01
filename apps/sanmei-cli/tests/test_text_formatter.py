@@ -1,6 +1,13 @@
 from datetime import datetime, timedelta, timezone
 
-from sanmei_cli.formatters.text import format_meishiki, format_nenun, format_taiun
+from sanmei_core import IsouhouResult
+
+from sanmei_cli.formatters.text import (
+    format_isouhou,
+    format_meishiki,
+    format_nenun,
+    format_taiun,
+)
 
 JST = timezone(timedelta(hours=9))
 BIRTH_DT = datetime(2000, 1, 15, 14, 30, tzinfo=JST)
@@ -96,3 +103,28 @@ class TestFormatNenun:
         result = format_nenun(nenun_list)
         for nenun in nenun_list:
             assert f"{nenun.age}歳" in result
+
+
+class TestFormatIsouhou:
+    def test_contains_header(self, isouhou_result):
+        result = format_isouhou(isouhou_result)
+        assert "=== 位相法" in result
+
+    def test_stem_interactions_shown(self, isouhou_result):
+        result = format_isouhou(isouhou_result)
+        if isouhou_result.stem_interactions:
+            assert "【天干の合】" in result
+            for si in isouhou_result.stem_interactions:
+                assert si.type.value in result
+
+    def test_branch_interactions_shown(self, isouhou_result):
+        result = format_isouhou(isouhou_result)
+        if isouhou_result.branch_interactions:
+            assert "【地支の関係】" in result
+            for bi in isouhou_result.branch_interactions:
+                assert bi.type.value in result
+
+    def test_no_interactions(self):
+        empty = IsouhouResult(stem_interactions=(), branch_interactions=())
+        result = format_isouhou(empty)
+        assert "相互作用なし" in result

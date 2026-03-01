@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from sanmei_core import (
         GoGyoBalance,
+        IsouhouResult,
         Meishiki,
         TaiunChart,
     )
@@ -102,6 +103,39 @@ def format_nenun(nenuns: list[Nenun]) -> str:
     lines.append(f" {'年':<8s}{'干支':<8s}{'年齢'}")
     for nenun in nenuns:
         lines.append(f" {nenun.year:<8d}{nenun.kanshi.kanji:<8s}{nenun.age}歳")
+    return "\n".join(lines)
+
+
+def format_isouhou(result: IsouhouResult) -> str:
+    """位相法分析結果をテキスト形式でフォーマット."""
+    lines: list[str] = []
+    lines.append("=== 位相法（命式内） ===")
+
+    if not result.stem_interactions and not result.branch_interactions:
+        lines.append("")
+        lines.append("相互作用なし")
+        return "\n".join(lines)
+
+    if result.stem_interactions:
+        lines.append("")
+        lines.append("【天干の合】")
+        for si in result.stem_interactions:
+            s1 = _stem(si.stems[0].value)
+            s2 = _stem(si.stems[1].value)
+            lines.append(f"{s1}-{s2} {si.type.value} → {si.result_gogyo.kanji}")
+
+    if result.branch_interactions:
+        lines.append("")
+        lines.append("【地支の関係】")
+        for bi in result.branch_interactions:
+            branches_str = "-".join(_branch(b.value) for b in bi.branches)
+            if bi.result_gogyo is not None:
+                lines.append(
+                    f"{branches_str} {bi.type.value} → {bi.result_gogyo.kanji}"
+                )
+            else:
+                lines.append(f"{branches_str} {bi.type.value}")
+
     return "\n".join(lines)
 
 
