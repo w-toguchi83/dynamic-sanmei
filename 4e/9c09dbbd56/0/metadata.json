@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "4e9c09dbbd56",
+  "session_id": "d32d8c59-b68c-45fa-b6f7-ca72c625ce11",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-01T20:38:02.969163Z",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "docs/plans/2026-03-02-kantei-expansion-design.md"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "ebefd03f98ff",
+  "token_usage": {
+    "input_tokens": 31,
+    "cache_creation_tokens": 73976,
+    "cache_read_tokens": 1572852,
+    "output_tokens": 20154,
+    "api_call_count": 27
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-01T20:38:02.892811Z",
+    "agent_lines": 349,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 349,
+    "agent_percentage": 100
+  }
+}
