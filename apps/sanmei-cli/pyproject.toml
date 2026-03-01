@@ -27,6 +27,9 @@ sanmei = "sanmei_cli.main:cli"
 [tool.uv.sources]
 sanmei-core = { workspace = true }
 
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ANN", "S"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
