@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from sanmei_core.domain.hidden_stems import HiddenStems
 from sanmei_core.domain.kanshi import TenStem, TwelveBranch
 from sanmei_core.domain.star import MajorStar
@@ -27,6 +29,9 @@ class _StubSchool:
 
     def get_setsuiri_provider(self) -> SetsuiriProvider:
         raise NotImplementedError
+
+    def get_taiun_start_age_rounding(self) -> Literal["floor", "round"]:
+        return "floor"
 
 
 def test_stub_satisfies_protocol() -> None:

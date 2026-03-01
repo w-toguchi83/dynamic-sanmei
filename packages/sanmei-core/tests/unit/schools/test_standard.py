@@ -87,6 +87,13 @@ class TestGetTeiouBranch:
         assert school.get_teiou_branch(stem) == expected
 
 
+class TestGetTaiunStartAgeRounding:
+    def test_get_taiun_start_age_rounding(self) -> None:
+        """標準流派は切り捨て."""
+        school = StandardSchool()
+        assert school.get_taiun_start_age_rounding() == "floor"
+
+
 class TestGetSetsuiriProvider:
     def test_returns_provider(self) -> None:
         school = StandardSchool()
