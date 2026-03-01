@@ -39,3 +39,6 @@ def cli(ctx: click.Context, output_json: bool, school_name: str) -> None:
 
     if ctx.invoked_subcommand is None:
         click.echo(ctx.get_help())
+
+
+import sanmei_cli.commands.meishiki as _meishiki_cmd  # noqa: E402, F401
