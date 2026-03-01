@@ -1,0 +1,31 @@
+# Dynamic Sanmei - Cursor Rules
+
+## Project Structure
+- packages/dynamic-ontology/ — Dynamic ontology engine (data foundation)
+- packages/sanmei-core/ — Sanmei core logic (pure calculation library, no I/O)
+- services/ — Shared API services (future)
+- apps/ — Applications (future)
+- docs/domain/ — Sanmei domain knowledge reference
+
+## Dependencies
+- sanmei-core has NO dependency on dynamic-ontology
+- dynamic-ontology has NO dependency on sanmei-core
+- sanmei-api (future) depends on both
+
+## Coding Rules
+- Python 3.14+
+- ruff strict + mypy strict
+- Test coverage >= 80%
+- Conventional Commits: <type>(<scope>): <description>
+- sanmei-core: NO I/O (no file reads, no DB, no HTTP)
+
+## Domain Knowledge
+- Refer to docs/domain/ for Sanmei terminology and rules
+- Multiple schools (流派) exist with different calculation methods
+- School-specific logic goes in packages/sanmei-core/src/sanmei_core/schools/
+
+## Commands
+- just test — Run all tests
+- just lint — Lint
+- just typecheck — Type check
+- just check — All quality checks
