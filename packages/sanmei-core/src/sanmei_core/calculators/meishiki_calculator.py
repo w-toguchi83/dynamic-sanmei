@@ -6,6 +6,7 @@ from datetime import datetime, tzinfo
 
 from sanmei_core.calculators.major_star import calculate_major_star_chart
 from sanmei_core.calculators.pillar_calculator import SanmeiCalendar
+from sanmei_core.calculators.shukumei_chuusatsu import calculate_shukumei_chuusatsu
 from sanmei_core.calculators.subsidiary_star import calculate_subsidiary_star_chart
 from sanmei_core.calculators.tenchuusatsu import calculate_tenchuusatsu
 from sanmei_core.constants import JST
@@ -37,10 +38,12 @@ class MeishikiCalculator:
         major_stars = calculate_major_star_chart(pillars, hidden_stems, self._school)
         subsidiary_stars = calculate_subsidiary_star_chart(pillars, pillars.day.stem, self._school)
         tenchuusatsu = calculate_tenchuusatsu(pillars.day)
+        shukumei_chuusatsu = tuple(calculate_shukumei_chuusatsu(pillars, tenchuusatsu))
         return Meishiki(
             pillars=pillars,
             hidden_stems=hidden_stems,
             major_stars=major_stars,
             subsidiary_stars=subsidiary_stars,
             tenchuusatsu=tenchuusatsu,
+            shukumei_chuusatsu=shukumei_chuusatsu,
         )

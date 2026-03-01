@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from sanmei_core.domain.hidden_stems import HiddenStems
 from sanmei_core.domain.pillar import ThreePillars
+from sanmei_core.domain.shukumei_chuusatsu import ShukumeiChuusatsu
 from sanmei_core.domain.star import MajorStar, SubsidiaryStar
 from sanmei_core.domain.tenchuusatsu import Tenchuusatsu
 
@@ -36,3 +37,4 @@ class Meishiki(BaseModel, frozen=True):
     major_stars: MajorStarChart
     subsidiary_stars: SubsidiaryStarChart
     tenchuusatsu: Tenchuusatsu
+    shukumei_chuusatsu: tuple[ShukumeiChuusatsu, ...]
