@@ -136,9 +136,7 @@ class TestQueryEngineCursor:
 
         async with db_manager.session() as session:
             engine = QueryEngine(session, test_namespace_id)
-            page2 = await engine.execute(
-                Query(entity_type=et_name, limit=2, cursor=page1.next_cursor)
-            )
+            page2 = await engine.execute(Query(entity_type=et_name, limit=2, cursor=page1.next_cursor))
 
         assert len(page2.items) == 2
         assert page2.has_more is True

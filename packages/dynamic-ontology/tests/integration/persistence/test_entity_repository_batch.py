@@ -97,9 +97,7 @@ class TestCreateMany:
                 assert fetched is not None
                 assert fetched.properties["title"] == entity.properties["title"]
 
-    async def test_create_many_empty_list(
-        self, db_manager: DatabaseSessionManager, test_namespace_id: str
-    ) -> None:
+    async def test_create_many_empty_list(self, db_manager: DatabaseSessionManager, test_namespace_id: str) -> None:
         """create_many with empty list returns success with zero counts."""
         async with db_manager.session() as session:
             repo = PostgresEntityRepository(session, test_namespace_id)
@@ -280,9 +278,7 @@ class TestUpdateMany:
             assert "CREATE" in operations
             assert "UPDATE" in operations
 
-    async def test_update_many_empty_list(
-        self, db_manager: DatabaseSessionManager, test_namespace_id: str
-    ) -> None:
+    async def test_update_many_empty_list(self, db_manager: DatabaseSessionManager, test_namespace_id: str) -> None:
         """update_many with empty list returns success with zero counts."""
         async with db_manager.session() as session:
             repo = PostgresEntityRepository(session, test_namespace_id)
@@ -337,9 +333,7 @@ class TestDeleteMany:
                 fetched = await repo.get_by_id(str(entity.id))
                 assert fetched is None
 
-    async def test_delete_many_not_found(
-        self, db_manager: DatabaseSessionManager, test_namespace_id: str
-    ) -> None:
+    async def test_delete_many_not_found(self, db_manager: DatabaseSessionManager, test_namespace_id: str) -> None:
         """delete_many fails when entity not found."""
         async with db_manager.session() as session:
             repo = PostgresEntityRepository(session, test_namespace_id)
@@ -380,9 +374,7 @@ class TestDeleteMany:
             assert result.success is False
             assert result.failed == 1  # One not found
 
-    async def test_delete_many_empty_list(
-        self, db_manager: DatabaseSessionManager, test_namespace_id: str
-    ) -> None:
+    async def test_delete_many_empty_list(self, db_manager: DatabaseSessionManager, test_namespace_id: str) -> None:
         """delete_many with empty list returns success."""
         async with db_manager.session() as session:
             repo = PostgresEntityRepository(session, test_namespace_id)

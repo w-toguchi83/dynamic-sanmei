@@ -38,9 +38,7 @@ def query_builder() -> QueryBuilder:
 class TestBuildFilterValidation:
     """Test input validation for build_filter method."""
 
-    def test_build_filter_raises_for_empty_field(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_raises_for_empty_field(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test that empty field raises ValueError."""
         condition = FilterCondition(
             field="",
@@ -55,9 +53,7 @@ class TestBuildFilterValidation:
 class TestBuildFilterEqOperator:
     """Test EQ (equals) operator."""
 
-    def test_build_filter_eq_string(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_eq_string(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test EQ operator with string value."""
         condition = FilterCondition(
             field="status",
@@ -79,9 +75,7 @@ class TestBuildFilterEqOperator:
         assert "active" in sql
         assert "=" in sql
 
-    def test_build_filter_eq_integer(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_eq_integer(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test EQ operator with integer value."""
         condition = FilterCondition(
             field="priority",
@@ -100,9 +94,7 @@ class TestBuildFilterEqOperator:
         assert "priority" in sql
         assert "5" in sql
 
-    def test_build_filter_eq_float(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_eq_float(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test EQ operator with float value."""
         condition = FilterCondition(
             field="score",
@@ -120,9 +112,7 @@ class TestBuildFilterEqOperator:
         assert "properties" in sql
         assert "score" in sql
 
-    def test_build_filter_eq_boolean(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_eq_boolean(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test EQ operator with boolean value."""
         condition = FilterCondition(
             field="is_active",
@@ -144,9 +134,7 @@ class TestBuildFilterEqOperator:
 class TestBuildFilterNeOperator:
     """Test NE (not equals) operator."""
 
-    def test_build_filter_ne_string(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_ne_string(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test NE operator with string value."""
         condition = FilterCondition(
             field="status",
@@ -167,9 +155,7 @@ class TestBuildFilterNeOperator:
         # Should use != or <> operator
         assert "!=" in sql or "<>" in sql
 
-    def test_build_filter_ne_integer(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_ne_integer(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test NE operator with integer value."""
         condition = FilterCondition(
             field="priority",
@@ -191,9 +177,7 @@ class TestBuildFilterNeOperator:
 class TestBuildFilterGtOperator:
     """Test GT (greater than) operator."""
 
-    def test_build_filter_gt_integer(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_gt_integer(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test GT operator with integer value."""
         condition = FilterCondition(
             field="priority",
@@ -214,9 +198,7 @@ class TestBuildFilterGtOperator:
         # Should NOT be >=
         assert ">=" not in sql
 
-    def test_build_filter_gt_float(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_gt_float(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test GT operator with float value."""
         condition = FilterCondition(
             field="score",
@@ -238,9 +220,7 @@ class TestBuildFilterGtOperator:
 class TestBuildFilterGteOperator:
     """Test GTE (greater than or equal) operator."""
 
-    def test_build_filter_gte_integer(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_gte_integer(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test GTE operator with integer value."""
         condition = FilterCondition(
             field="priority",
@@ -259,9 +239,7 @@ class TestBuildFilterGteOperator:
         assert "priority" in sql
         assert ">=" in sql
 
-    def test_build_filter_gte_float(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_gte_float(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test GTE operator with float value."""
         condition = FilterCondition(
             field="score",
@@ -282,9 +260,7 @@ class TestBuildFilterGteOperator:
 class TestBuildFilterLtOperator:
     """Test LT (less than) operator."""
 
-    def test_build_filter_lt_integer(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_lt_integer(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test LT operator with integer value."""
         condition = FilterCondition(
             field="priority",
@@ -305,9 +281,7 @@ class TestBuildFilterLtOperator:
         # Should NOT be <=
         assert "<=" not in sql and ">=" not in sql
 
-    def test_build_filter_lt_float(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_lt_float(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test LT operator with float value."""
         condition = FilterCondition(
             field="score",
@@ -328,9 +302,7 @@ class TestBuildFilterLtOperator:
 class TestBuildFilterLteOperator:
     """Test LTE (less than or equal) operator."""
 
-    def test_build_filter_lte_integer(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_lte_integer(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test LTE operator with integer value."""
         condition = FilterCondition(
             field="priority",
@@ -349,9 +321,7 @@ class TestBuildFilterLteOperator:
         assert "priority" in sql
         assert "<=" in sql
 
-    def test_build_filter_lte_float(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_lte_float(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test LTE operator with float value."""
         condition = FilterCondition(
             field="score",
@@ -372,9 +342,7 @@ class TestBuildFilterLteOperator:
 class TestBuildFilterJsonbAccess:
     """Test JSONB property access in generated SQL."""
 
-    def test_build_filter_uses_jsonb_arrow_operator(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_uses_jsonb_arrow_operator(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test that filter uses JSONB arrow operators for property access."""
         condition = FilterCondition(
             field="nested_field",
@@ -396,9 +364,7 @@ class TestBuildFilterJsonbAccess:
 class TestBuildFilterReturnType:
     """Test return type of build_filter method."""
 
-    def test_build_filter_returns_column_element(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_returns_column_element(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test that build_filter returns a ColumnElement[bool]."""
         from sqlalchemy.sql.elements import ColumnElement
 
@@ -416,9 +382,7 @@ class TestBuildFilterReturnType:
 class TestBuildFilterInOperator:
     """Test IN operator."""
 
-    def test_build_filter_in_string_list(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_in_string_list(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test IN operator with list of strings."""
         condition = FilterCondition(
             field="status",
@@ -440,9 +404,7 @@ class TestBuildFilterInOperator:
         assert "pending" in sql
         assert "review" in sql
 
-    def test_build_filter_in_integer_list(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_in_integer_list(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test IN operator with list of integers."""
         condition = FilterCondition(
             field="priority",
@@ -461,9 +423,7 @@ class TestBuildFilterInOperator:
         assert "priority" in sql
         assert "IN" in sql.upper()
 
-    def test_build_filter_in_empty_list(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_in_empty_list(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test IN operator with empty list returns false condition."""
         condition = FilterCondition(
             field="status",
@@ -485,9 +445,7 @@ class TestBuildFilterInOperator:
 class TestBuildFilterNotInOperator:
     """Test NOT_IN operator."""
 
-    def test_build_filter_not_in_string_list(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_not_in_string_list(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test NOT_IN operator with list of strings."""
         condition = FilterCondition(
             field="status",
@@ -508,9 +466,7 @@ class TestBuildFilterNotInOperator:
         assert "deleted" in sql
         assert "archived" in sql
 
-    def test_build_filter_not_in_integer_list(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_not_in_integer_list(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test NOT_IN operator with list of integers."""
         condition = FilterCondition(
             field="priority",
@@ -528,9 +484,7 @@ class TestBuildFilterNotInOperator:
         assert "properties" in sql
         assert "NOT IN" in sql.upper()
 
-    def test_build_filter_not_in_empty_list(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_not_in_empty_list(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test NOT_IN operator with empty list returns true condition."""
         condition = FilterCondition(
             field="status",
@@ -552,9 +506,7 @@ class TestBuildFilterNotInOperator:
 class TestBuildFilterContainsOperator:
     """Test CONTAINS operator (substring match)."""
 
-    def test_build_filter_contains_string(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_contains_string(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test CONTAINS operator for substring matching."""
         condition = FilterCondition(
             field="name",
@@ -578,9 +530,7 @@ class TestBuildFilterContainsOperator:
 class TestBuildFilterStartsWithOperator:
     """Test STARTS_WITH operator (prefix match)."""
 
-    def test_build_filter_starts_with_string(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_starts_with_string(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test STARTS_WITH operator for prefix matching."""
         condition = FilterCondition(
             field="name",
@@ -607,9 +557,7 @@ class TestBuildFilterStartsWithOperator:
 class TestBuildFilterEndsWithOperator:
     """Test ENDS_WITH operator (suffix match)."""
 
-    def test_build_filter_ends_with_string(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_ends_with_string(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test ENDS_WITH operator for suffix matching."""
         condition = FilterCondition(
             field="name",
@@ -661,9 +609,7 @@ class TestBuildFilterIsNullOperator:
 class TestBuildFilterIsNotNullOperator:
     """Test IS_NOT_NULL operator."""
 
-    def test_build_filter_is_not_null(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_is_not_null(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test IS_NOT_NULL operator checks for non-null field."""
         condition = FilterCondition(
             field="required_field",
@@ -687,9 +633,7 @@ class TestBuildFilterIsNotNullOperator:
 class TestBuildFilterAndConditions:
     """Test AND composite conditions."""
 
-    def test_build_filter_with_and_conditions(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_with_and_conditions(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test filter with AND conditions."""
         condition = FilterCondition(
             field="status",
@@ -752,9 +696,7 @@ class TestBuildFilterAndConditions:
 class TestBuildFilterOrConditions:
     """Test OR composite conditions."""
 
-    def test_build_filter_with_or_conditions(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_with_or_conditions(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test filter with OR conditions."""
         condition = FilterCondition(
             field="status",
@@ -792,9 +734,7 @@ class TestBuildFilterOrConditions:
 class TestBuildFilterNestedConditions:
     """Test nested AND/OR composite conditions."""
 
-    def test_build_filter_with_nested_and_in_or(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_with_nested_and_in_or(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test OR condition containing AND conditions."""
         # (status = 'active' AND priority > 3) OR (status = 'pending' AND priority = 1)
         condition = FilterCondition(
@@ -835,9 +775,7 @@ class TestBuildFilterNestedConditions:
         assert "AND" in sql.upper()
         assert "OR" in sql.upper()
 
-    def test_build_filter_with_nested_or_in_and(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_with_nested_or_in_and(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test AND condition containing OR conditions."""
         # status = 'active' AND (priority = 1 OR priority = 2)
         condition = FilterCondition(
@@ -871,9 +809,7 @@ class TestBuildFilterNestedConditions:
         assert "AND" in sql.upper()
         assert "OR" in sql.upper()
 
-    def test_build_filter_deeply_nested_conditions(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_deeply_nested_conditions(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test deeply nested composite conditions."""
         # a = 1 AND (b = 2 OR (c = 3 AND d = 4))
         condition = FilterCondition(
@@ -917,9 +853,7 @@ class TestBuildFilterNestedConditions:
 class TestBuildFilterMixedOperators:
     """Test combination of advanced operators with composites."""
 
-    def test_build_filter_in_with_and_conditions(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_in_with_and_conditions(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test IN operator combined with AND conditions."""
         condition = FilterCondition(
             field="status",
@@ -945,9 +879,7 @@ class TestBuildFilterMixedOperators:
         assert "LIKE" in sql.upper()
         assert "AND" in sql.upper()
 
-    def test_build_filter_null_checks_with_or(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_null_checks_with_or(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test IS_NULL/IS_NOT_NULL combined with OR conditions."""
         condition = FilterCondition(
             field="optional",
@@ -1021,9 +953,7 @@ class TestApplySortSingleField:
 class TestApplySortMultipleFields:
     """Test apply_sort with multiple sort fields."""
 
-    def test_apply_sort_multiple_fields(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_apply_sort_multiple_fields(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test apply_sort with multiple sort fields."""
         stmt = select(entities_table)
         sorts = [
@@ -1046,9 +976,7 @@ class TestApplySortMultipleFields:
         name_pos = sql.find("name")
         assert priority_pos < name_pos
 
-    def test_apply_sort_three_fields(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_apply_sort_three_fields(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test apply_sort with three sort fields."""
         stmt = select(entities_table)
         sorts = [
@@ -1075,9 +1003,7 @@ class TestApplySortMultipleFields:
 class TestApplySortEmptyList:
     """Test apply_sort with empty sort list."""
 
-    def test_apply_sort_empty_list(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_apply_sort_empty_list(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test apply_sort with empty sort list returns unchanged statement."""
         stmt = select(entities_table)
         sorts: list[SortField] = []
@@ -1096,9 +1022,7 @@ class TestApplySortEmptyList:
 class TestApplyPaginationLimit:
     """Test apply_pagination with limit only."""
 
-    def test_apply_pagination_limit_only(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_apply_pagination_limit_only(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test apply_pagination with limit only."""
         stmt = select(entities_table)
 
@@ -1114,9 +1038,7 @@ class TestApplyPaginationLimit:
         # No OFFSET should be added when offset is 0
         assert "OFFSET" not in sql.upper()
 
-    def test_apply_pagination_default_limit(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_apply_pagination_default_limit(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test apply_pagination with default limit."""
         stmt = select(entities_table)
 
@@ -1134,9 +1056,7 @@ class TestApplyPaginationLimit:
 class TestBuildFilterRegexOperator:
     """Tests for REGEX filter operator."""
 
-    def test_build_filter_regex_string(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_regex_string(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """REGEX filter should use PostgreSQL ~ operator."""
         condition = FilterCondition(
             field="email",
@@ -1146,9 +1066,7 @@ class TestBuildFilterRegexOperator:
 
         result = query_builder.build_filter(condition, entities_table)
 
-        compiled = result.compile(
-            dialect=_get_postgresql_dialect(), compile_kwargs={"literal_binds": True}
-        )
+        compiled = result.compile(dialect=_get_postgresql_dialect(), compile_kwargs={"literal_binds": True})
         sql = str(compiled)
 
         # PostgreSQL regex match operator
@@ -1163,9 +1081,7 @@ class TestBuildFilterRegexOperator:
 class TestBuildFilterFullTextOperator:
     """Tests for FULL_TEXT filter operator."""
 
-    def test_build_filter_full_text_single_word(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_full_text_single_word(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """FULL_TEXT filter should use PostgreSQL @@ operator with to_tsvector/to_tsquery."""
         condition = FilterCondition(
             field="description",
@@ -1175,9 +1091,7 @@ class TestBuildFilterFullTextOperator:
 
         result = query_builder.build_filter(condition, entities_table)
 
-        compiled = result.compile(
-            dialect=_get_postgresql_dialect(), compile_kwargs={"literal_binds": True}
-        )
+        compiled = result.compile(dialect=_get_postgresql_dialect(), compile_kwargs={"literal_binds": True})
         sql = str(compiled)
 
         # PostgreSQL full-text search
@@ -1186,9 +1100,7 @@ class TestBuildFilterFullTextOperator:
         assert "@@" in sql
         assert "simple" in sql  # Language-independent config
 
-    def test_build_filter_full_text_multiple_words(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_full_text_multiple_words(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """FULL_TEXT filter with multiple words should use & (AND) operator."""
         condition = FilterCondition(
             field="content",
@@ -1198,9 +1110,7 @@ class TestBuildFilterFullTextOperator:
 
         result = query_builder.build_filter(condition, entities_table)
 
-        compiled = result.compile(
-            dialect=_get_postgresql_dialect(), compile_kwargs={"literal_binds": True}
-        )
+        compiled = result.compile(dialect=_get_postgresql_dialect(), compile_kwargs={"literal_binds": True})
         sql = str(compiled)
 
         # Multiple words joined with &
@@ -1208,9 +1118,7 @@ class TestBuildFilterFullTextOperator:
         assert "web" in sql.lower()
         assert "framework" in sql.lower()
 
-    def test_build_filter_full_text_empty_value(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_build_filter_full_text_empty_value(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """FULL_TEXT filter with empty value should return false condition."""
         condition = FilterCondition(
             field="content",
@@ -1220,9 +1128,7 @@ class TestBuildFilterFullTextOperator:
 
         result = query_builder.build_filter(condition, entities_table)
 
-        compiled = result.compile(
-            dialect=_get_postgresql_dialect(), compile_kwargs={"literal_binds": True}
-        )
+        compiled = result.compile(dialect=_get_postgresql_dialect(), compile_kwargs={"literal_binds": True})
         sql = str(compiled)
 
         # Empty search should return false
@@ -1232,9 +1138,7 @@ class TestBuildFilterFullTextOperator:
 class TestApplyPaginationLimitAndOffset:
     """Test apply_pagination with limit and offset."""
 
-    def test_apply_pagination_with_offset(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_apply_pagination_with_offset(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test apply_pagination with limit and positive offset."""
         stmt = select(entities_table)
 
@@ -1250,9 +1154,7 @@ class TestApplyPaginationLimitAndOffset:
         assert "OFFSET" in sql.upper()
         assert "40" in sql
 
-    def test_apply_pagination_zero_offset(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_apply_pagination_zero_offset(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test apply_pagination with zero offset does not add OFFSET clause."""
         stmt = select(entities_table)
 
@@ -1268,9 +1170,7 @@ class TestApplyPaginationLimitAndOffset:
         # Zero offset should NOT add OFFSET clause
         assert "OFFSET" not in sql.upper()
 
-    def test_apply_pagination_large_offset(
-        self, query_builder: QueryBuilder, entities_table: Table
-    ) -> None:
+    def test_apply_pagination_large_offset(self, query_builder: QueryBuilder, entities_table: Table) -> None:
         """Test apply_pagination with large offset."""
         stmt = select(entities_table)
 

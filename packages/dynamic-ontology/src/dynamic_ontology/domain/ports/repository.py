@@ -104,9 +104,7 @@ class EntityRepository(Protocol):
         """
         ...
 
-    async def get_snapshot_at_time(
-        self, entity_id: str, at_time: datetime
-    ) -> EntitySnapshot | None:
+    async def get_snapshot_at_time(self, entity_id: str, at_time: datetime) -> EntitySnapshot | None:
         """指定時刻に有効なスナップショットを取得.
 
         Args:

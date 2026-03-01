@@ -32,9 +32,7 @@ async def paginated_entities(client: AsyncClient) -> str:
 
 @pytest.mark.asyncio
 class TestEntityListPagination:
-    async def test_returns_total_from_db(
-        self, client: AsyncClient, paginated_entities: str
-    ) -> None:
+    async def test_returns_total_from_db(self, client: AsyncClient, paginated_entities: str) -> None:
         resp = await client.get(f"/entities?type_id={paginated_entities}&limit=2")
         assert resp.status_code == 200
         data = resp.json()
@@ -48,9 +46,7 @@ class TestEntityListPagination:
         data1 = resp1.json()
         cursor = data1["next_cursor"]
 
-        resp2 = await client.get(
-            f"/entities?type_id={paginated_entities}&limit=2&cursor={cursor}"
-        )
+        resp2 = await client.get(f"/entities?type_id={paginated_entities}&limit=2&cursor={cursor}")
         data2 = resp2.json()
         assert len(data2["items"]) == 2
         assert data2["total"] == 5
@@ -65,18 +61,12 @@ class TestEntityListPagination:
         assert data["next_cursor"] is None
         assert data["total"] == 5
 
-    async def test_invalid_cursor_returns_400(
-        self, client: AsyncClient, paginated_entities: str
-    ) -> None:
-        resp = await client.get(
-            f"/entities?type_id={paginated_entities}&cursor=not_valid_base64!!!"
-        )
+    async def test_invalid_cursor_returns_400(self, client: AsyncClient, paginated_entities: str) -> None:
+        resp = await client.get(f"/entities?type_id={paginated_entities}&cursor=not_valid_base64!!!")
         assert resp.status_code == 400
 
     async def test_offset_still_works(self, client: AsyncClient, paginated_entities: str) -> None:
-        resp = await client.get(
-            f"/entities?type_id={paginated_entities}&limit=3&offset=3"
-        )
+        resp = await client.get(f"/entities?type_id={paginated_entities}&limit=3&offset=3")
         data = resp.json()
         assert len(data["items"]) == 2
         assert data["total"] == 5

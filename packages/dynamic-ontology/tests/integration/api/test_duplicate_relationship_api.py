@@ -134,9 +134,7 @@ class TestDuplicateRelationshipConstraint:
         et = await _create_entity_type(client, "nd_dup")
         e1 = await _create_entity(client, et["id"])
         e2 = await _create_entity(client, et["id"])
-        rt = await _create_relationship_type(
-            client, "nd_dup", allow_duplicates=False, directional=False
-        )
+        rt = await _create_relationship_type(client, "nd_dup", allow_duplicates=False, directional=False)
 
         resp1 = await client.post(
             "/relationships",
@@ -166,9 +164,7 @@ class TestDuplicateRelationshipConstraint:
         et = await _create_entity_type(client, "dir_rev")
         e1 = await _create_entity(client, et["id"])
         e2 = await _create_entity(client, et["id"])
-        rt = await _create_relationship_type(
-            client, "dir_rev", allow_duplicates=False, directional=True
-        )
+        rt = await _create_relationship_type(client, "dir_rev", allow_duplicates=False, directional=True)
 
         resp1 = await client.post(
             "/relationships",
@@ -292,9 +288,7 @@ class TestDuplicateRelationshipConstraint:
         assert data["detail"]["success"] is False
         assert "duplicate" in data["detail"]["errors"][0]["message"].lower()
 
-    async def test_relationship_type_response_includes_allow_duplicates(
-        self, client: AsyncClient
-    ) -> None:
+    async def test_relationship_type_response_includes_allow_duplicates(self, client: AsyncClient) -> None:
         """レスポンスに allow_duplicates フィールドが含まれる."""
         rt = await _create_relationship_type(client, "resp_check", allow_duplicates=False)
         assert rt["allow_duplicates"] is False

@@ -223,9 +223,7 @@ class TestRelationshipAllowedTypesValidation:
         assert rel_resp.status_code == 201
 
     @pytest.mark.asyncio
-    async def test_batch_create_relationship_with_invalid_source_type(
-        self, client: AsyncClient
-    ) -> None:
+    async def test_batch_create_relationship_with_invalid_source_type(self, client: AsyncClient) -> None:
         """バッチ作成でも allowed_source_types 制約が適用される."""
         # 1. EntityType 2つ作成
         allowed_resp = await client.post(

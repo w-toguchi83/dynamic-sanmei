@@ -59,9 +59,7 @@ async def entity_type(db_manager: DatabaseSessionManager, test_namespace_id: str
 
 
 @pytest.fixture
-async def entities(
-    db_manager: DatabaseSessionManager, entity_type: EntityType, test_namespace_id: str
-) -> list[Entity]:
+async def entities(db_manager: DatabaseSessionManager, entity_type: EntityType, test_namespace_id: str) -> list[Entity]:
     """Create 3 entities to use as relationship endpoints."""
     now = datetime.now(UTC)
     entity_list = [
@@ -84,9 +82,7 @@ async def entities(
 
 
 @pytest.fixture
-async def relationship_type(
-    db_manager: DatabaseSessionManager, test_namespace_id: str
-) -> RelationshipType:
+async def relationship_type(db_manager: DatabaseSessionManager, test_namespace_id: str) -> RelationshipType:
     """Create a relationship type for batch tests."""
     rt = RelationshipType(
         id=uuid4(),
@@ -163,9 +159,7 @@ class TestRelationshipCreateMany:
                 assert fetched is not None
                 assert fetched.type_id == relationship_type.id
 
-    async def test_create_many_empty_list(
-        self, db_manager: DatabaseSessionManager, test_namespace_id: str
-    ) -> None:
+    async def test_create_many_empty_list(self, db_manager: DatabaseSessionManager, test_namespace_id: str) -> None:
         """create_many with empty list returns success with zero counts."""
         async with db_manager.session() as session:
             repo = PostgresRelationshipRepository(session, test_namespace_id)
@@ -279,9 +273,7 @@ class TestRelationshipUpdateMany:
 
         async with db_manager.session() as session:
             repo = PostgresRelationshipRepository(session, test_namespace_id)
-            result = await repo.update_many(
-                [(updated_relationships[0], 1), (updated_relationships[1], 1)]
-            )
+            result = await repo.update_many([(updated_relationships[0], 1), (updated_relationships[1], 1)])
             await session.commit()
 
             assert result.success is True
@@ -351,9 +343,7 @@ class TestRelationshipUpdateMany:
             assert len(result.errors) == 1
             assert "Version conflict" in result.errors[0].message
 
-    async def test_update_many_empty_list(
-        self, db_manager: DatabaseSessionManager, test_namespace_id: str
-    ) -> None:
+    async def test_update_many_empty_list(self, db_manager: DatabaseSessionManager, test_namespace_id: str) -> None:
         """update_many with empty list returns success with zero counts."""
         async with db_manager.session() as session:
             repo = PostgresRelationshipRepository(session, test_namespace_id)

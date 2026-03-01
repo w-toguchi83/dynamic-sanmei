@@ -66,9 +66,7 @@ async def create_relationship_type(
         The created relationship type.
     """
     now = datetime.now(UTC)
-    properties = {
-        name: to_domain_property_definition(prop) for name, prop in data.properties.items()
-    }
+    properties = {name: to_domain_property_definition(prop) for name, prop in data.properties.items()}
 
     relationship_type = RelationshipType(
         id=uuid4(),
@@ -233,31 +231,20 @@ async def update_relationship_type(
     name = data.name if data.name is not None else existing.name
     description = data.description if data.description is not None else existing.description
     directional = data.directional if data.directional is not None else existing.directional
-    custom_validators = (
-        data.custom_validators if data.custom_validators is not None else existing.custom_validators
-    )
+    custom_validators = data.custom_validators if data.custom_validators is not None else existing.custom_validators
 
     if data.properties is not None:
-        properties = {
-            prop_name: to_domain_property_definition(prop)
-            for prop_name, prop in data.properties.items()
-        }
+        properties = {prop_name: to_domain_property_definition(prop) for prop_name, prop in data.properties.items()}
     else:
         properties = existing.properties
 
     allowed_source_types = (
-        data.allowed_source_types
-        if data.allowed_source_types is not None
-        else existing.allowed_source_types
+        data.allowed_source_types if data.allowed_source_types is not None else existing.allowed_source_types
     )
     allowed_target_types = (
-        data.allowed_target_types
-        if data.allowed_target_types is not None
-        else existing.allowed_target_types
+        data.allowed_target_types if data.allowed_target_types is not None else existing.allowed_target_types
     )
-    allow_duplicates = (
-        data.allow_duplicates if data.allow_duplicates is not None else existing.allow_duplicates
-    )
+    allow_duplicates = data.allow_duplicates if data.allow_duplicates is not None else existing.allow_duplicates
     updated_relationship_type = RelationshipType(
         id=existing.id,
         name=name,

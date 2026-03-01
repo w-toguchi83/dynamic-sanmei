@@ -78,9 +78,7 @@ class TestRelationshipListPagination:
         resp1 = await client.get(f"/entities/{source_id}/relationships?limit=2")
         cursor = resp1.json()["next_cursor"]
 
-        resp2 = await client.get(
-            f"/entities/{source_id}/relationships?limit=2&cursor={cursor}"
-        )
+        resp2 = await client.get(f"/entities/{source_id}/relationships?limit=2&cursor={cursor}")
         data2 = resp2.json()
         assert len(data2["items"]) == 2
         ids1 = {item["id"] for item in resp1.json()["items"]}

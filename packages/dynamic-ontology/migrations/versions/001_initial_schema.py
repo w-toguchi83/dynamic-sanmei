@@ -19,16 +19,16 @@ core/ の 001〜013, 030 マイグレーションを統合した初期スキー�
   - do_schema_proposals
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects import postgresql
 
 revision: str = "001"
-down_revision: Union[str, None] = None
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = None
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -150,9 +150,7 @@ def upgrade() -> None:
         ),
         sa.Column("namespace_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("type_id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column(
-            "version", sa.Integer, nullable=False, server_default="1"
-        ),
+        sa.Column("version", sa.Integer, nullable=False, server_default="1"),
         sa.Column(
             "properties",
             postgresql.JSONB,
@@ -303,15 +301,9 @@ def upgrade() -> None:
         ),
         sa.Column("namespace_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("type_id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column(
-            "from_entity_id", postgresql.UUID(as_uuid=True), nullable=False
-        ),
-        sa.Column(
-            "to_entity_id", postgresql.UUID(as_uuid=True), nullable=False
-        ),
-        sa.Column(
-            "version", sa.Integer, nullable=False, server_default="1"
-        ),
+        sa.Column("from_entity_id", postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column("to_entity_id", postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column("version", sa.Integer, nullable=False, server_default="1"),
         sa.Column(
             "properties",
             postgresql.JSONB,
@@ -380,9 +372,7 @@ def upgrade() -> None:
         sa.Column("type_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("version", sa.Integer, nullable=False),
         sa.Column("properties", postgresql.JSONB, nullable=False),
-        sa.Column(
-            "valid_from", sa.TIMESTAMP(timezone=True), nullable=False
-        ),
+        sa.Column("valid_from", sa.TIMESTAMP(timezone=True), nullable=False),
         sa.Column("valid_to", sa.TIMESTAMP(timezone=True)),
         sa.Column("operation", sa.String(20), nullable=False),
         sa.Column("changed_by", sa.String(255)),
@@ -432,21 +422,13 @@ def upgrade() -> None:
             server_default=sa.text("gen_random_uuid()"),
         ),
         sa.Column("namespace_id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column(
-            "relationship_id", postgresql.UUID(as_uuid=True), nullable=False
-        ),
+        sa.Column("relationship_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("type_id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column(
-            "from_entity_id", postgresql.UUID(as_uuid=True), nullable=False
-        ),
-        sa.Column(
-            "to_entity_id", postgresql.UUID(as_uuid=True), nullable=False
-        ),
+        sa.Column("from_entity_id", postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column("to_entity_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("version", sa.Integer, nullable=False),
         sa.Column("properties", postgresql.JSONB, nullable=False),
-        sa.Column(
-            "valid_from", sa.TIMESTAMP(timezone=True), nullable=False
-        ),
+        sa.Column("valid_from", sa.TIMESTAMP(timezone=True), nullable=False),
         sa.Column("valid_to", sa.TIMESTAMP(timezone=True)),
         sa.Column("operation", sa.String(20), nullable=False),
         sa.Column("changed_by", sa.String(255)),
@@ -499,9 +481,7 @@ def upgrade() -> None:
         sa.Column("type_kind", sa.String(20), nullable=False),
         sa.Column("type_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("version", sa.Integer, nullable=False),
-        sa.Column(
-            "schema_definition", postgresql.JSONB, nullable=False
-        ),
+        sa.Column("schema_definition", postgresql.JSONB, nullable=False),
         sa.Column(
             "previous_version_id",
             postgresql.UUID(as_uuid=True),
@@ -602,9 +582,7 @@ def upgrade() -> None:
         "idx_do_schema_proposals_scheduled",
         "do_schema_proposals",
         ["scheduled_at"],
-        postgresql_where=sa.text(
-            "status = 'scheduled' AND scheduled_at IS NOT NULL"
-        ),
+        postgresql_where=sa.text("status = 'scheduled' AND scheduled_at IS NOT NULL"),
     )
 
 

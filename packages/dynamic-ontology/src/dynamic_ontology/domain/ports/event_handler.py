@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
     from uuid import UUID
+
     from dynamic_ontology.domain.models.entity import Entity
     from dynamic_ontology.domain.models.history import EntityDiff
 

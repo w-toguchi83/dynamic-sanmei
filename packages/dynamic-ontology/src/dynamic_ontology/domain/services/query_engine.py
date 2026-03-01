@@ -95,10 +95,7 @@ class QueryEngine:
             raise ValueError(f"Entity type '{query.entity_type}' not found")
 
         if query.cursor is not None and query.sort:
-            raise ValueError(
-                "Cannot use cursor with custom sort. "
-                "Use offset-based pagination for custom sort queries."
-            )
+            raise ValueError("Cannot use cursor with custom sort. Use offset-based pagination for custom sort queries.")
 
         # タイムトラベル
         if query.at_time is not None:
@@ -161,16 +158,12 @@ class QueryEngine:
 
         total = await self._count(stmt)
 
-        stmt = self._apply_sort_and_pagination(
-            stmt, table, query.sort, query.cursor, query.limit, query.offset
-        )
+        stmt = self._apply_sort_and_pagination(stmt, table, query.sort, query.cursor, query.limit, query.offset)
 
         result = await self._session.execute(stmt)
         items = [self._row_to_entity(row) for row in result.fetchall()]
 
-        next_cursor, has_more = self._compute_cursor_metadata(
-            items, query.cursor, query.offset, query.limit, total
-        )
+        next_cursor, has_more = self._compute_cursor_metadata(items, query.cursor, query.offset, query.limit, total)
 
         return items, total, next_cursor, has_more
 
@@ -195,15 +188,11 @@ class QueryEngine:
         """
         aggregate_config = query.aggregate
         if aggregate_config is None:
-            return QueryResult(
-                items=[], total=0, limit=query.limit, offset=query.offset, aggregations=None
-            )
+            return QueryResult(items=[], total=0, limit=query.limit, offset=query.offset, aggregations=None)
 
         table = self._get_entities_table()
 
-        where_clause = (table.c.type_id == type_id) & (
-            table.c.namespace_id == self._namespace_id
-        )
+        where_clause = (table.c.type_id == type_id) & (table.c.namespace_id == self._namespace_id)
         if query.filter is not None:
             where_clause = where_clause & self._builder.build_filter(query.filter, table)
 
@@ -288,9 +277,7 @@ class QueryEngine:
                 cursor_at, cursor_id = decode_cursor(cursor)
             except CursorValidationError as e:
                 raise ValueError(str(e)) from e
-            stmt = self._builder.apply_cursor_pagination(
-                stmt, table, cursor_at, cursor_id, limit=limit
-            )
+            stmt = self._builder.apply_cursor_pagination(stmt, table, cursor_at, cursor_id, limit=limit)
         else:
             stmt = self._builder.apply_pagination(stmt, limit, offset)
 
@@ -440,8 +427,6 @@ class QueryEngine:
             SELECT id FROM do_entity_types
             WHERE name = :name AND namespace_id = :namespace_id
         """)
-        result = await self._session.execute(
-            query, {"name": name, "namespace_id": self._namespace_id}
-        )
+        result = await self._session.execute(query, {"name": name, "namespace_id": self._namespace_id})
         row = result.fetchone()
         return str(row[0]) if row is not None else None

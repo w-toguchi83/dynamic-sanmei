@@ -27,7 +27,6 @@ from dynamic_ontology.domain.ports.schema_version_repository import SchemaVersio
 from dynamic_ontology.domain.ports.unit_of_work import UnitOfWork
 from dynamic_ontology.domain.services.query_engine import QueryEngine
 from dynamic_ontology.domain.services.validation import ValidationEngine
-from dynamic_ontology.domain.services.validator_registry import ValidatorRegistry
 
 
 def get_session_manager(request: Request) -> DatabaseSessionManager:
@@ -82,7 +81,9 @@ async def get_relationship_repository(session: _DbSession, namespace_id: _Namesp
     return PostgresRelationshipRepository(session, namespace_id)
 
 
-async def get_relationship_type_repository(session: _DbSession, namespace_id: _NamespaceId) -> RelationshipTypeRepository:
+async def get_relationship_type_repository(
+    session: _DbSession, namespace_id: _NamespaceId
+) -> RelationshipTypeRepository:
     """RelationshipTypeRepository を取得する."""
     return PostgresRelationshipTypeRepository(session, namespace_id)
 

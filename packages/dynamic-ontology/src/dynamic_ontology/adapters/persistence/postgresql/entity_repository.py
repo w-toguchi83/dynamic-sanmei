@@ -387,9 +387,7 @@ class PostgresEntityRepository:
                 check_query = text("""
                     SELECT id FROM do_entities WHERE id = :id AND namespace_id = :namespace_id
                 """)
-                check_result = await self._session.execute(
-                    check_query, {"id": entity_id, "namespace_id": namespace_id}
-                )
+                check_result = await self._session.execute(check_query, {"id": entity_id, "namespace_id": namespace_id})
                 if check_result.fetchone() is None:
                     errors.append(
                         BatchItemError(
@@ -404,17 +402,13 @@ class PostgresEntityRepository:
                 delete_history_query = text("""
                     DELETE FROM do_entity_history WHERE entity_id = :id AND namespace_id = :namespace_id
                 """)
-                await self._session.execute(
-                    delete_history_query, {"id": entity_id, "namespace_id": namespace_id}
-                )
+                await self._session.execute(delete_history_query, {"id": entity_id, "namespace_id": namespace_id})
 
                 # Delete entity
                 delete_query = text("""
                     DELETE FROM do_entities WHERE id = :id AND namespace_id = :namespace_id RETURNING id
                 """)
-                result = await self._session.execute(
-                    delete_query, {"id": entity_id, "namespace_id": namespace_id}
-                )
+                result = await self._session.execute(delete_query, {"id": entity_id, "namespace_id": namespace_id})
                 row = result.fetchone()
 
                 if row is not None:
@@ -566,12 +560,8 @@ class PostgresEntityRepository:
             (エンティティリスト, 総件数) のタプル.
         """
         # 総件数を取得
-        count_query = text(
-            f"SELECT COUNT(*) FROM do_entities WHERE type_id = :type_id {self._namespace_and}"
-        )
-        count_result = await self._session.execute(
-            count_query, self._with_namespace({"type_id": type_id})
-        )
+        count_query = text(f"SELECT COUNT(*) FROM do_entities WHERE type_id = :type_id {self._namespace_and}")
+        count_result = await self._session.execute(count_query, self._with_namespace({"type_id": type_id}))
         total = count_result.scalar() or 0
 
         if cursor is not None:
@@ -638,9 +628,7 @@ class PostgresEntityRepository:
         check_query = text("""
             SELECT version FROM do_entities WHERE id = :id AND namespace_id = :namespace_id
         """)
-        check_result = await self._session.execute(
-            check_query, {"id": str(entity.id), "namespace_id": namespace_id}
-        )
+        check_result = await self._session.execute(check_query, {"id": str(entity.id), "namespace_id": namespace_id})
         check_row = check_result.fetchone()
 
         if check_row is None:
@@ -715,9 +703,7 @@ class PostgresEntityRepository:
         delete_history_query = text("""
             DELETE FROM do_entity_history WHERE entity_id = :id AND namespace_id = :namespace_id
         """)
-        await self._session.execute(
-            delete_history_query, {"id": entity_id, "namespace_id": namespace_id}
-        )
+        await self._session.execute(delete_history_query, {"id": entity_id, "namespace_id": namespace_id})
 
         # Then delete the entity
         query = text("""
@@ -942,9 +928,7 @@ class PostgresEntityRepository:
             LIMIT 1
         """)
 
-        result = await self._session.execute(
-            query, self._with_namespace({"entity_id": entity_id, "version": version})
-        )
+        result = await self._session.execute(query, self._with_namespace({"entity_id": entity_id, "version": version}))
         row = result.fetchone()
 
         if row is None:
@@ -952,9 +936,7 @@ class PostgresEntityRepository:
 
         return self._row_to_snapshot(row)
 
-    async def get_snapshot_at_time(
-        self, entity_id: str, at_time: datetime
-    ) -> EntitySnapshot | None:
+    async def get_snapshot_at_time(self, entity_id: str, at_time: datetime) -> EntitySnapshot | None:
         """指定時刻に有効なスナップショットを取得.
 
         Args:
@@ -976,9 +958,7 @@ class PostgresEntityRepository:
             LIMIT 1
         """)
 
-        result = await self._session.execute(
-            query, self._with_namespace({"entity_id": entity_id, "at_time": at_time})
-        )
+        result = await self._session.execute(query, self._with_namespace({"entity_id": entity_id, "at_time": at_time}))
         row = result.fetchone()
 
         if row is None:

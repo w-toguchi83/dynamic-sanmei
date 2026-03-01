@@ -62,9 +62,6 @@ class ConditionalRequiredValidator:
         for field in self._required_fields:
             value = properties.get(field)
             if value is None:
-                errors.append(
-                    f"'{field}' is required when '{self._condition_field}' "
-                    f"is '{self._condition_value}'"
-                )
+                errors.append(f"'{field}' is required when '{self._condition_field}' is '{self._condition_value}'")
 
         return errors

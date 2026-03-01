@@ -21,13 +21,15 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(EntityNotFoundError)
     async def entity_not_found_handler(
-        _request: Request, exc: EntityNotFoundError,
+        _request: Request,
+        exc: EntityNotFoundError,
     ) -> JSONResponse:
         return JSONResponse(status_code=404, content={"detail": str(exc)})
 
     @app.exception_handler(ValidationError)
     async def validation_error_handler(
-        _request: Request, exc: ValidationError,
+        _request: Request,
+        exc: ValidationError,
     ) -> JSONResponse:
         return JSONResponse(
             status_code=400,
@@ -36,19 +38,22 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(VersionConflictError)
     async def version_conflict_handler(
-        _request: Request, exc: VersionConflictError,
+        _request: Request,
+        exc: VersionConflictError,
     ) -> JSONResponse:
         return JSONResponse(status_code=409, content={"detail": str(exc)})
 
     @app.exception_handler(DuplicateRelationshipError)
     async def duplicate_relationship_handler(
-        _request: Request, exc: DuplicateRelationshipError,
+        _request: Request,
+        exc: DuplicateRelationshipError,
     ) -> JSONResponse:
         return JSONResponse(status_code=409, content={"detail": str(exc)})
 
     @app.exception_handler(DomainException)
     async def domain_exception_handler(
-        _request: Request, exc: DomainException,
+        _request: Request,
+        exc: DomainException,
     ) -> JSONResponse:
         return JSONResponse(status_code=400, content={"detail": str(exc)})
 

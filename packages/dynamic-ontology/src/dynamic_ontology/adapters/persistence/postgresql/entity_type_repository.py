@@ -234,9 +234,7 @@ class PostgresEntityTypeRepository:
             RETURNING id
         """)
 
-        result = await self._session.execute(
-            query, {"id": entity_type_id, "namespace_id": namespace_id}
-        )
+        result = await self._session.execute(query, {"id": entity_type_id, "namespace_id": namespace_id})
         row = result.fetchone()
 
         return row is not None

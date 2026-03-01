@@ -27,9 +27,7 @@ async def setup_data(client: AsyncClient) -> dict[str, str]:
         },
         "custom_validators": [],
     }
-    et_response = await client.post(
-        "/schema/entity-types", json=entity_type_payload
-    )
+    et_response = await client.post("/schema/entity-types", json=entity_type_payload)
     assert et_response.status_code == 201
     entity_type_id = et_response.json()["id"]
 
@@ -65,9 +63,7 @@ async def setup_data(client: AsyncClient) -> dict[str, str]:
         },
         "custom_validators": [],
     }
-    rt_response = await client.post(
-        "/schema/relationship-types", json=relationship_type_payload
-    )
+    rt_response = await client.post("/schema/relationship-types", json=relationship_type_payload)
     assert rt_response.status_code == 201
     relationship_type_id = rt_response.json()["id"]
 
@@ -144,9 +140,7 @@ class TestRelationshipTypeCRUDAPI:
             "properties": {},
             "custom_validators": [],
         }
-        create_response = await client.post(
-            "/schema/relationship-types", json=payload
-        )
+        create_response = await client.post("/schema/relationship-types", json=payload)
         assert create_response.status_code == 201
         created_id = create_response.json()["id"]
 
@@ -161,9 +155,7 @@ class TestRelationshipTypeCRUDAPI:
         """GET non-existent ID returns 404."""
         non_existent_id = str(uuid4())
 
-        response = await client.get(
-            f"/schema/relationship-types/{non_existent_id}"
-        )
+        response = await client.get(f"/schema/relationship-types/{non_existent_id}")
 
         assert response.status_code == 404
         data = response.json()
@@ -179,9 +171,7 @@ class TestRelationshipTypeCRUDAPI:
             "properties": {},
             "custom_validators": [],
         }
-        create_response = await client.post(
-            "/schema/relationship-types", json=payload
-        )
+        create_response = await client.post("/schema/relationship-types", json=payload)
         assert create_response.status_code == 201
         created_id = create_response.json()["id"]
 
@@ -208,9 +198,7 @@ class TestRelationshipTypeCRUDAPI:
             },
             "custom_validators": [],
         }
-        create_response = await client.post(
-            "/schema/relationship-types", json=create_payload
-        )
+        create_response = await client.post("/schema/relationship-types", json=create_payload)
         assert create_response.status_code == 201
         created = create_response.json()
         created_id = created["id"]
@@ -220,9 +208,7 @@ class TestRelationshipTypeCRUDAPI:
             "directional": False,
         }
 
-        response = await client.put(
-            f"/schema/relationship-types/{created_id}", json=update_payload
-        )
+        response = await client.put(f"/schema/relationship-types/{created_id}", json=update_payload)
 
         assert response.status_code == 200
         data = response.json()
@@ -241,9 +227,7 @@ class TestRelationshipTypeCRUDAPI:
             "description": "Does not matter",
         }
 
-        response = await client.put(
-            f"/schema/relationship-types/{non_existent_id}", json=update_payload
-        )
+        response = await client.put(f"/schema/relationship-types/{non_existent_id}", json=update_payload)
 
         assert response.status_code == 404
         data = response.json()
@@ -270,9 +254,7 @@ class TestRelationshipTypeCRUDAPI:
             "properties": {},
             "custom_validators": [],
         }
-        create_b_response = await client.post(
-            "/schema/relationship-types", json=payload_b
-        )
+        create_b_response = await client.post("/schema/relationship-types", json=payload_b)
         assert create_b_response.status_code == 201
         id_b = create_b_response.json()["id"]
 
@@ -281,9 +263,7 @@ class TestRelationshipTypeCRUDAPI:
             "name": name_a,
         }
 
-        response = await client.put(
-            f"/schema/relationship-types/{id_b}", json=update_payload
-        )
+        response = await client.put(f"/schema/relationship-types/{id_b}", json=update_payload)
 
         assert response.status_code == 400
 
@@ -302,9 +282,7 @@ class TestRelationshipTypeCRUDAPI:
             },
             "custom_validators": [],
         }
-        create_response = await client.post(
-            "/schema/relationship-types", json=create_payload
-        )
+        create_response = await client.post("/schema/relationship-types", json=create_payload)
         assert create_response.status_code == 201
         created_id = create_response.json()["id"]
 
@@ -332,9 +310,7 @@ class TestRelationshipTypeCRUDAPI:
 class TestRelationshipCRUDAPI:
     """Tests for Relationship CRUD endpoints."""
 
-    async def test_create_relationship(
-        self, client: AsyncClient, setup_data: dict[str, str]
-    ) -> None:
+    async def test_create_relationship(self, client: AsyncClient, setup_data: dict[str, str]) -> None:
         """POST /relationships returns 201 with created relationship."""
         payload = {
             "type_id": setup_data["relationship_type_id"],
@@ -356,9 +332,7 @@ class TestRelationshipCRUDAPI:
         assert "created_at" in data
         assert "updated_at" in data
 
-    async def test_get_relationship_by_id(
-        self, client: AsyncClient, setup_data: dict[str, str]
-    ) -> None:
+    async def test_get_relationship_by_id(self, client: AsyncClient, setup_data: dict[str, str]) -> None:
         """POST then GET by ID returns 200 with relationship."""
         create_payload = {
             "type_id": setup_data["relationship_type_id"],
@@ -388,9 +362,7 @@ class TestRelationshipCRUDAPI:
         data = response.json()
         assert "detail" in data
 
-    async def test_get_entity_relationships_outgoing(
-        self, client: AsyncClient, setup_data: dict[str, str]
-    ) -> None:
+    async def test_get_entity_relationships_outgoing(self, client: AsyncClient, setup_data: dict[str, str]) -> None:
         """Create relationship, GET /entities/{id}/relationships?direction=outgoing returns relationship."""
         # Create relationship from entity1 to entity2
         create_payload = {
@@ -402,9 +374,7 @@ class TestRelationshipCRUDAPI:
         await client.post("/relationships", json=create_payload)
 
         # Get outgoing relationships for entity1
-        response = await client.get(
-            f"/entities/{setup_data['entity1_id']}/relationships?direction=outgoing"
-        )
+        response = await client.get(f"/entities/{setup_data['entity1_id']}/relationships?direction=outgoing")
 
         assert response.status_code == 200
         data = response.json()
@@ -414,9 +384,7 @@ class TestRelationshipCRUDAPI:
         from_entity_ids = [r["from_entity_id"] for r in data["items"]]
         assert setup_data["entity1_id"] in from_entity_ids
 
-    async def test_get_entity_relationships_incoming(
-        self, client: AsyncClient, setup_data: dict[str, str]
-    ) -> None:
+    async def test_get_entity_relationships_incoming(self, client: AsyncClient, setup_data: dict[str, str]) -> None:
         """Create relationship, GET /entities/{id}/relationships?direction=incoming returns relationship."""
         # Create relationship from entity1 to entity2
         create_payload = {
@@ -428,9 +396,7 @@ class TestRelationshipCRUDAPI:
         await client.post("/relationships", json=create_payload)
 
         # Get incoming relationships for entity2
-        response = await client.get(
-            f"/entities/{setup_data['entity2_id']}/relationships?direction=incoming"
-        )
+        response = await client.get(f"/entities/{setup_data['entity2_id']}/relationships?direction=incoming")
 
         assert response.status_code == 200
         data = response.json()
@@ -454,8 +420,7 @@ class TestRelationshipCRUDAPI:
 
         # Get relationships filtered by type
         response = await client.get(
-            f"/entities/{setup_data['entity1_id']}/relationships"
-            f"?type_id={setup_data['relationship_type_id']}"
+            f"/entities/{setup_data['entity1_id']}/relationships?type_id={setup_data['relationship_type_id']}"
         )
 
         assert response.status_code == 200
@@ -466,9 +431,7 @@ class TestRelationshipCRUDAPI:
         for rel in data["items"]:
             assert rel["type_id"] == setup_data["relationship_type_id"]
 
-    async def test_update_relationship(
-        self, client: AsyncClient, setup_data: dict[str, str]
-    ) -> None:
+    async def test_update_relationship(self, client: AsyncClient, setup_data: dict[str, str]) -> None:
         """Create, update properties, verify change and version increment."""
         create_payload = {
             "type_id": setup_data["relationship_type_id"],
@@ -487,9 +450,7 @@ class TestRelationshipCRUDAPI:
             "version": 1,
         }
 
-        response = await client.put(
-            f"/relationships/{created_id}", json=update_payload
-        )
+        response = await client.put(f"/relationships/{created_id}", json=update_payload)
 
         assert response.status_code == 200
         data = response.json()
@@ -497,9 +458,7 @@ class TestRelationshipCRUDAPI:
         assert data["properties"]["since"] == 2020
         assert data["version"] == 2
 
-    async def test_update_relationship_version_conflict(
-        self, client: AsyncClient, setup_data: dict[str, str]
-    ) -> None:
+    async def test_update_relationship_version_conflict(self, client: AsyncClient, setup_data: dict[str, str]) -> None:
         """PUT with wrong version returns 409 Conflict."""
         create_payload = {
             "type_id": setup_data["relationship_type_id"],
@@ -518,17 +477,13 @@ class TestRelationshipCRUDAPI:
             "version": 2,  # Wrong version, current is 1
         }
 
-        response = await client.put(
-            f"/relationships/{created_id}", json=update_payload
-        )
+        response = await client.put(f"/relationships/{created_id}", json=update_payload)
 
         assert response.status_code == 409
         data = response.json()
         assert "detail" in data
 
-    async def test_delete_relationship(
-        self, client: AsyncClient, setup_data: dict[str, str]
-    ) -> None:
+    async def test_delete_relationship(self, client: AsyncClient, setup_data: dict[str, str]) -> None:
         """Create then DELETE returns 204."""
         create_payload = {
             "type_id": setup_data["relationship_type_id"],

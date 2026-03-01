@@ -45,13 +45,9 @@ class TraversalExecutor:
         Raises:
             ValueError: リレーションシップタイプが見つからない場合.
         """
-        relationship_type_id = await self._resolve_relationship_type(
-            traverse_config.relationship_type
-        )
+        relationship_type_id = await self._resolve_relationship_type(traverse_config.relationship_type)
         if relationship_type_id is None:
-            raise ValueError(
-                f"Relationship type '{traverse_config.relationship_type}' not found"
-            )
+            raise ValueError(f"Relationship type '{traverse_config.relationship_type}' not found")
 
         related_entities: dict[str, list[Entity]] = {}
         for entity in items:
@@ -227,8 +223,6 @@ class TraversalExecutor:
             SELECT id FROM do_relationship_types
             WHERE name = :name AND namespace_id = :namespace_id
         """)
-        result = await self._session.execute(
-            query, {"name": name, "namespace_id": self._namespace_id}
-        )
+        result = await self._session.execute(query, {"name": name, "namespace_id": self._namespace_id})
         row = result.fetchone()
         return str(row[0]) if row is not None else None

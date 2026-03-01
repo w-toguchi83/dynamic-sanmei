@@ -92,8 +92,5 @@ class DuplicateRelationshipError(DomainException):
         self.type_id = type_id
         self.from_entity_id = from_entity_id
         self.to_entity_id = to_entity_id
-        msg = (
-            f"Duplicate relationship: type={type_id}, "
-            f"from={from_entity_id}, to={to_entity_id} already exists"
-        )
+        msg = f"Duplicate relationship: type={type_id}, from={from_entity_id}, to={to_entity_id} already exists"
         super().__init__(msg)

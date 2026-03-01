@@ -768,9 +768,7 @@ class TestEntityRepositoryTimeTravel:
         # 現在時刻のスナップショットを取得
         async with db_manager.session() as session:
             repo = PostgresEntityRepository(session, test_namespace_id)
-            current_snapshot = await repo.get_snapshot_at_time(
-                str(entity.id), at_time=datetime.now(UTC)
-            )
+            current_snapshot = await repo.get_snapshot_at_time(str(entity.id), at_time=datetime.now(UTC))
 
             assert current_snapshot is not None
             assert current_snapshot.version == 2

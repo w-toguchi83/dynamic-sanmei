@@ -65,9 +65,7 @@ DbSession = Annotated[AsyncSession, Depends(get_db_session)]
 EntityRepoDep = Annotated[EntityRepository, Depends(get_entity_repository)]
 EntityTypeRepoDep = Annotated[EntityTypeRepository, Depends(get_entity_type_repository)]
 RelationshipRepoDep = Annotated[RelationshipRepository, Depends(get_relationship_repository)]
-RelationshipTypeRepoDep = Annotated[
-    RelationshipTypeRepository, Depends(get_relationship_type_repository)
-]
+RelationshipTypeRepoDep = Annotated[RelationshipTypeRepository, Depends(get_relationship_type_repository)]
 NamespaceIdDep = Annotated[str, Depends(get_namespace_id)]
 
 # Query parameter type aliases
@@ -175,10 +173,7 @@ def _batch_result_to_response(result: BatchResult) -> BatchResultResponse:
         succeeded=result.succeeded,
         failed=result.failed,
         entity_ids=result.entity_ids,
-        errors=[
-            BatchItemErrorResponse(index=e.index, entity_id=e.entity_id, message=e.message)
-            for e in result.errors
-        ],
+        errors=[BatchItemErrorResponse(index=e.index, entity_id=e.entity_id, message=e.message) for e in result.errors],
     )
 
 

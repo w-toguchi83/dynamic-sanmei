@@ -79,9 +79,7 @@ def to_entity_type_response(entity_type: EntityType) -> EntityTypeResponse:
     Returns:
         API EntityTypeResponse インスタンス.
     """
-    properties = {
-        name: to_response_property_definition(prop) for name, prop in entity_type.properties.items()
-    }
+    properties = {name: to_response_property_definition(prop) for name, prop in entity_type.properties.items()}
     return EntityTypeResponse(
         id=entity_type.id,
         name=entity_type.name,
@@ -158,7 +156,6 @@ def check_schema_compatibility(
     Raises:
         HTTPException: 破壊的変更で force=False の場合（409 Conflict）.
     """
-    from dynamic_ontology.domain.models.schema_version import SchemaDiff
 
     diff = compute_diff(old_schema_def, new_schema_def)
 
@@ -247,10 +244,7 @@ def to_relationship_type_response(
     Returns:
         API RelationshipTypeResponse インスタンス.
     """
-    properties = {
-        name: to_response_property_definition(prop)
-        for name, prop in relationship_type.properties.items()
-    }
+    properties = {name: to_response_property_definition(prop) for name, prop in relationship_type.properties.items()}
     return RelationshipTypeResponse(
         id=relationship_type.id,
         name=relationship_type.name,

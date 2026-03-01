@@ -106,33 +106,25 @@ class BatchCreateRelationshipsUseCase:
                 )
                 continue
 
-            if (
-                rel_type.allowed_source_types
-                and from_entity.type_id not in rel_type.allowed_source_types
-            ):
+            if rel_type.allowed_source_types and from_entity.type_id not in rel_type.allowed_source_types:
                 errors.append(
                     BatchItemError(
                         index=index,
                         entity_id=None,
                         message=(
-                            f"Entity type of source entity is not allowed "
-                            f"for relationship type '{rel_type.name}'"
+                            f"Entity type of source entity is not allowed for relationship type '{rel_type.name}'"
                         ),
                     )
                 )
                 continue
 
-            if (
-                rel_type.allowed_target_types
-                and to_entity.type_id not in rel_type.allowed_target_types
-            ):
+            if rel_type.allowed_target_types and to_entity.type_id not in rel_type.allowed_target_types:
                 errors.append(
                     BatchItemError(
                         index=index,
                         entity_id=None,
                         message=(
-                            f"Entity type of target entity is not allowed "
-                            f"for relationship type '{rel_type.name}'"
+                            f"Entity type of target entity is not allowed for relationship type '{rel_type.name}'"
                         ),
                     )
                 )

@@ -61,40 +61,30 @@ class AggregationExecutor:
         columns: list[Any] = []
 
         should_count = aggregate_config.count
-        if include_count_by_default and not any([
-            aggregate_config.sum_field,
-            aggregate_config.avg_field,
-            aggregate_config.min_field,
-            aggregate_config.max_field,
-        ]):
+        if include_count_by_default and not any(
+            [
+                aggregate_config.sum_field,
+                aggregate_config.avg_field,
+                aggregate_config.min_field,
+                aggregate_config.max_field,
+            ]
+        ):
             should_count = True
 
         if should_count:
             columns.append(func.count().label("count"))
 
         if aggregate_config.sum_field:
-            columns.append(
-                func.sum(
-                    cast(properties_col[aggregate_config.sum_field].astext, Numeric)
-                ).label("sum")
-            )
+            columns.append(func.sum(cast(properties_col[aggregate_config.sum_field].astext, Numeric)).label("sum"))
 
         if aggregate_config.avg_field:
-            columns.append(
-                func.avg(
-                    cast(properties_col[aggregate_config.avg_field].astext, Numeric)
-                ).label("avg")
-            )
+            columns.append(func.avg(cast(properties_col[aggregate_config.avg_field].astext, Numeric)).label("avg"))
 
         if aggregate_config.min_field:
-            columns.append(
-                func.min(properties_col[aggregate_config.min_field].astext).label("min")
-            )
+            columns.append(func.min(properties_col[aggregate_config.min_field].astext).label("min"))
 
         if aggregate_config.max_field:
-            columns.append(
-                func.max(properties_col[aggregate_config.max_field].astext).label("max")
-            )
+            columns.append(func.max(properties_col[aggregate_config.max_field].astext).label("max"))
 
         return columns
 
@@ -183,17 +173,10 @@ class AggregationExecutor:
             group_by_columns.append(field_expr)
 
         # 集約カラムの追加（group_by 時はデフォルトで count を含める）
-        agg_columns = self._build_aggregation_columns(
-            properties_col, aggregate_config, include_count_by_default=True
-        )
+        agg_columns = self._build_aggregation_columns(properties_col, aggregate_config, include_count_by_default=True)
         select_columns.extend(agg_columns)
 
-        agg_stmt = (
-            select(*select_columns)
-            .select_from(subq)
-            .group_by(*group_by_columns)
-            .order_by(*group_by_columns)
-        )
+        agg_stmt = select(*select_columns).select_from(subq).group_by(*group_by_columns).order_by(*group_by_columns)
 
         result = await self._session.execute(agg_stmt)
         rows = result.fetchall()

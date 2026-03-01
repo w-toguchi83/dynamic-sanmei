@@ -160,18 +160,14 @@ async def list_entities(
     from dynamic_ontology.domain.services.cursor import CursorValidationError, encode_cursor
 
     try:
-        entities, total = await entity_repo.list_by_type(
-            str(type_id), limit=limit, offset=offset, cursor=cursor
-        )
+        entities, total = await entity_repo.list_by_type(str(type_id), limit=limit, offset=offset, cursor=cursor)
     except CursorValidationError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
 
     next_cursor: str | None = None
     has_more = False
     if entities:
-        has_more = (
-            len(entities) == limit if cursor is not None else (offset + len(entities)) < total
-        )
+        has_more = len(entities) == limit if cursor is not None else (offset + len(entities)) < total
         if has_more:
             last = entities[-1]
             next_cursor = encode_cursor(last.created_at, last.id)
@@ -266,9 +262,7 @@ async def batch_create_entities(
 
     try:
         result = await uc.execute(
-            items=[
-                BatchCreateItem(type_id=e.type_id, properties=e.properties) for e in data.entities
-            ],
+            items=[BatchCreateItem(type_id=e.type_id, properties=e.properties) for e in data.entities],
             principal_id=None,
         )
     except BatchOperationError as e:
@@ -314,10 +308,7 @@ async def batch_update_entities(
 
     try:
         result = await uc.execute(
-            items=[
-                BatchUpdateItem(id=u.id, properties=u.properties, version=u.version)
-                for u in data.updates
-            ],
+            items=[BatchUpdateItem(id=u.id, properties=u.properties, version=u.version) for u in data.updates],
             principal_id=None,
         )
     except BatchOperationError as e:
@@ -644,13 +635,9 @@ async def rollback_entity(
     # 2. ターゲットスナップショットを取得
     target_snapshot = None
     if data.target_version is not None:
-        target_snapshot = await entity_repo.get_snapshot_by_version(
-            str(entity_id), data.target_version
-        )
+        target_snapshot = await entity_repo.get_snapshot_by_version(str(entity_id), data.target_version)
         if target_snapshot is None:
-            raise EntityNotFoundError(
-                str(entity_id), f"Entity snapshot (version {data.target_version})"
-            )
+            raise EntityNotFoundError(str(entity_id), f"Entity snapshot (version {data.target_version})")
     elif data.target_time is not None:
         # ISO8601 タイムスタンプをパース
         try:

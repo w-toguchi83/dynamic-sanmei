@@ -29,11 +29,7 @@ class TestBatchCreate:
 
     async def test_batch_create_success(self, client: AsyncClient, entity_type_id: str) -> None:
         """POST /entities/batch creates multiple entities."""
-        payload = {
-            "entities": [
-                {"type_id": entity_type_id, "properties": {"title": f"Task {i}"}} for i in range(3)
-            ]
-        }
+        payload = {"entities": [{"type_id": entity_type_id, "properties": {"title": f"Task {i}"}} for i in range(3)]}
 
         response = await client.post("/entities/batch", json=payload)
 
@@ -46,9 +42,7 @@ class TestBatchCreate:
         assert len(data["entity_ids"]) == 3
         assert data["errors"] == []
 
-    async def test_batch_create_validation_error(
-        self, client: AsyncClient, entity_type_id: str
-    ) -> None:
+    async def test_batch_create_validation_error(self, client: AsyncClient, entity_type_id: str) -> None:
         """POST /entities/batch fails on validation error (all-or-nothing)."""
         payload = {
             "entities": [
@@ -93,10 +87,7 @@ class TestBatchUpdate:
         """PATCH /entities/batch updates multiple entities."""
         # Create entities first
         create_payload = {
-            "entities": [
-                {"type_id": entity_type_id, "properties": {"title": f"Original {i}"}}
-                for i in range(3)
-            ]
+            "entities": [{"type_id": entity_type_id, "properties": {"title": f"Original {i}"}} for i in range(3)]
         }
         create_response = await client.post("/entities/batch", json=create_payload)
         assert create_response.status_code == 201
@@ -122,21 +113,15 @@ class TestBatchUpdate:
         assert data["total"] == 3
         assert data["succeeded"] == 3
 
-    async def test_batch_update_version_conflict(
-        self, client: AsyncClient, entity_type_id: str
-    ) -> None:
+    async def test_batch_update_version_conflict(self, client: AsyncClient, entity_type_id: str) -> None:
         """PATCH /entities/batch fails on version conflict."""
         # Create entity
-        create_payload = {
-            "entities": [{"type_id": entity_type_id, "properties": {"title": "Test"}}]
-        }
+        create_payload = {"entities": [{"type_id": entity_type_id, "properties": {"title": "Test"}}]}
         create_response = await client.post("/entities/batch", json=create_payload)
         entity_id = create_response.json()["entity_ids"][0]
 
         # Try to update with wrong version
-        update_payload = {
-            "updates": [{"id": entity_id, "version": 999, "properties": {"title": "Updated"}}]
-        }
+        update_payload = {"updates": [{"id": entity_id, "version": 999, "properties": {"title": "Updated"}}]}
 
         response = await client.patch("/entities/batch", json=update_payload)
 
@@ -148,9 +133,7 @@ class TestBatchUpdate:
     async def test_batch_update_not_found(self, client: AsyncClient) -> None:
         """PATCH /entities/batch fails when entity not found."""
         fake_id = str(uuid4())
-        update_payload = {
-            "updates": [{"id": fake_id, "version": 1, "properties": {"title": "Test"}}]
-        }
+        update_payload = {"updates": [{"id": fake_id, "version": 1, "properties": {"title": "Test"}}]}
 
         response = await client.patch("/entities/batch", json=update_payload)
 
@@ -167,10 +150,7 @@ class TestBatchDelete:
         """DELETE /entities/batch deletes multiple entities."""
         # Create entities first
         create_payload = {
-            "entities": [
-                {"type_id": entity_type_id, "properties": {"title": f"ToDelete {i}"}}
-                for i in range(3)
-            ]
+            "entities": [{"type_id": entity_type_id, "properties": {"title": f"ToDelete {i}"}} for i in range(3)]
         }
         create_response = await client.post("/entities/batch", json=create_payload)
         entity_ids = create_response.json()["entity_ids"]
@@ -178,9 +158,7 @@ class TestBatchDelete:
         # Delete all
         delete_payload = {"entity_ids": entity_ids}
 
-        response = await client.request(
-            "DELETE", "/entities/batch", json=delete_payload
-        )
+        response = await client.request("DELETE", "/entities/batch", json=delete_payload)
 
         assert response.status_code == 200
         data = response.json()
@@ -198,32 +176,24 @@ class TestBatchDelete:
         fake_id = str(uuid4())
         delete_payload = {"entity_ids": [fake_id]}
 
-        response = await client.request(
-            "DELETE", "/entities/batch", json=delete_payload
-        )
+        response = await client.request("DELETE", "/entities/batch", json=delete_payload)
 
         assert response.status_code == 400
         data = response.json()
         assert data["detail"]["success"] is False
         assert "not found" in data["detail"]["errors"][0]["message"].lower()
 
-    async def test_batch_delete_partial_not_found(
-        self, client: AsyncClient, entity_type_id: str
-    ) -> None:
+    async def test_batch_delete_partial_not_found(self, client: AsyncClient, entity_type_id: str) -> None:
         """DELETE /entities/batch fails if any entity not found (all-or-nothing)."""
         # Create one entity
-        create_payload = {
-            "entities": [{"type_id": entity_type_id, "properties": {"title": "Exists"}}]
-        }
+        create_payload = {"entities": [{"type_id": entity_type_id, "properties": {"title": "Exists"}}]}
         create_response = await client.post("/entities/batch", json=create_payload)
         entity_id = create_response.json()["entity_ids"][0]
 
         # Try to delete existing + non-existing
         delete_payload = {"entity_ids": [entity_id, str(uuid4())]}
 
-        response = await client.request(
-            "DELETE", "/entities/batch", json=delete_payload
-        )
+        response = await client.request("DELETE", "/entities/batch", json=delete_payload)
 
         assert response.status_code == 400
         data = response.json()

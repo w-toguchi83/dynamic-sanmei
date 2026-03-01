@@ -76,9 +76,7 @@ class EntityTypeCreate(BaseModel):
 
     name: Annotated[str, Field(min_length=1, max_length=255)]
     description: str = Field(default="", max_length=1000)
-    properties: dict[str, PropertyDefinitionCreate] = Field(
-        default_factory=dict, description="Property definitions"
-    )
+    properties: dict[str, PropertyDefinitionCreate] = Field(default_factory=dict, description="Property definitions")
     custom_validators: list[str] = Field(default_factory=list, description="Custom validator names")
     display_property: str | None = Field(
         default=None, description="Property name to use as display label for entities of this type"
@@ -129,9 +127,7 @@ class EntityUpdate(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    properties: dict[str, str | int | float | bool | None] = Field(
-        ..., description="Updated properties"
-    )
+    properties: dict[str, str | int | float | bool | None] = Field(..., description="Updated properties")
     version: int = Field(..., ge=1, description="Current version for optimistic locking")
 
 
@@ -170,16 +166,10 @@ class RelationshipTypeCreate(BaseModel):
     name: Annotated[str, Field(min_length=1, max_length=255)]
     description: str = Field(default="", max_length=1000)
     directional: bool = Field(default=True, description="Whether the relationship is directional")
-    properties: dict[str, PropertyDefinitionCreate] = Field(
-        default_factory=dict, description="Property definitions"
-    )
+    properties: dict[str, PropertyDefinitionCreate] = Field(default_factory=dict, description="Property definitions")
     custom_validators: list[str] = Field(default_factory=list, description="Custom validator names")
-    allowed_source_types: list[UUID] = Field(
-        default_factory=list, description="Allowed source entity type IDs"
-    )
-    allowed_target_types: list[UUID] = Field(
-        default_factory=list, description="Allowed target entity type IDs"
-    )
+    allowed_source_types: list[UUID] = Field(default_factory=list, description="Allowed source entity type IDs")
+    allowed_target_types: list[UUID] = Field(default_factory=list, description="Allowed target entity type IDs")
     allow_duplicates: bool = Field(
         default=True,
         description="Whether to allow duplicate relationships for the same entity pair",
@@ -238,9 +228,7 @@ class RelationshipUpdate(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    properties: dict[str, str | int | float | bool | None] = Field(
-        ..., description="Updated properties"
-    )
+    properties: dict[str, str | int | float | bool | None] = Field(..., description="Updated properties")
     version: int = Field(..., ge=1, description="Current version for optimistic locking")
 
 
@@ -360,12 +348,8 @@ class QueryRequest(BaseModel):
         ge=0,
         description="Number of results to skip",
     )
-    traverse: TraverseConfigRequest | None = Field(
-        default=None, description="Relationship traversal configuration"
-    )
-    aggregate: AggregateConfigRequest | None = Field(
-        default=None, description="Aggregation configuration"
-    )
+    traverse: TraverseConfigRequest | None = Field(default=None, description="Relationship traversal configuration")
+    aggregate: AggregateConfigRequest | None = Field(default=None, description="Aggregation configuration")
     at_time: str | None = Field(default=None, description="ISO timestamp for time-travel query")
     cursor: str | None = Field(default=None, description="Cursor for cursor-based pagination")
 
@@ -374,9 +358,7 @@ class RelatedEntitiesResponse(BaseModel):
     """トラバーサルによる関連エンティティのレスポンスモデル."""
 
     entity_id: str = Field(..., description="Starting entity ID")
-    related: list[EntityResponse] = Field(
-        default_factory=list, description="Related entities found through traversal"
-    )
+    related: list[EntityResponse] = Field(default_factory=list, description="Related entities found through traversal")
 
 
 class QueryResultResponse(BaseModel):
@@ -386,9 +368,9 @@ class QueryResultResponse(BaseModel):
     total: int = Field(..., ge=0, description="Total count before pagination")
     limit: int = Field(..., ge=1, description="Page size used")
     offset: int = Field(..., ge=0, description="Offset used")
-    aggregations: (
-        dict[str, int | float | str | list[dict[str, int | float | str | None]] | None] | None
-    ) = Field(default=None, description="Aggregation results if requested")
+    aggregations: dict[str, int | float | str | list[dict[str, int | float | str | None]] | None] | None = Field(
+        default=None, description="Aggregation results if requested"
+    )
     related_entities: list[RelatedEntitiesResponse] | None = Field(
         default=None, description="Related entities from traversal if requested"
     )
@@ -414,9 +396,7 @@ class EntityDiffResponse(BaseModel):
     to_version: int = Field(..., ge=1, description="比較先バージョン")
     from_time: datetime = Field(..., description="比較元の時刻")
     to_time: datetime = Field(..., description="比較先の時刻")
-    changes: list[PropertyChangeResponse] = Field(
-        default_factory=list, description="プロパティ変更リスト"
-    )
+    changes: list[PropertyChangeResponse] = Field(default_factory=list, description="プロパティ変更リスト")
     has_changes: bool = Field(..., description="変更があるかどうか")
 
 
@@ -428,9 +408,7 @@ class EntitySnapshotResponse(BaseModel):
     version: int = Field(..., ge=1, description="バージョン番号")
     properties: dict[str, Any] = Field(..., description="プロパティ")
     valid_from: datetime = Field(..., description="有効期間開始時刻")
-    valid_to: datetime | None = Field(
-        default=None, description="有効期間終了時刻（None は現在有効）"
-    )
+    valid_to: datetime | None = Field(default=None, description="有効期間終了時刻（None は現在有効）")
     operation: str = Field(..., description="操作タイプ: CREATE, UPDATE, DELETE")
     is_current: bool = Field(..., description="現在有効なスナップショットかどうか")
 
@@ -440,12 +418,8 @@ class EntityRollbackRequest(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    target_version: int | None = Field(
-        default=None, ge=1, description="ロールバック先のバージョン番号"
-    )
-    target_time: str | None = Field(
-        default=None, description="ロールバック先の ISO8601 タイムスタンプ"
-    )
+    target_version: int | None = Field(default=None, ge=1, description="ロールバック先のバージョン番号")
+    target_time: str | None = Field(default=None, description="ロールバック先の ISO8601 タイムスタンプ")
 
     @model_validator(mode="after")
     def validate_target(self) -> EntityRollbackRequest:
@@ -461,9 +435,7 @@ class BatchEntityCreate(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    entities: list[EntityCreate] = Field(
-        ..., description="List of entities to create", min_length=1, max_length=1000
-    )
+    entities: list[EntityCreate] = Field(..., description="List of entities to create", min_length=1, max_length=1000)
 
 
 class BatchEntityUpdate(BaseModel):
@@ -473,9 +445,7 @@ class BatchEntityUpdate(BaseModel):
 
     id: UUID = Field(..., description="Entity ID to update")
     version: int = Field(..., description="Current version for optimistic locking", ge=1)
-    properties: dict[str, str | int | float | bool | None] = Field(
-        ..., description="Updated properties"
-    )
+    properties: dict[str, str | int | float | bool | None] = Field(..., description="Updated properties")
 
 
 class BatchEntityUpdateRequest(BaseModel):
@@ -483,9 +453,7 @@ class BatchEntityUpdateRequest(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    updates: list[BatchEntityUpdate] = Field(
-        ..., description="List of entity updates", min_length=1, max_length=1000
-    )
+    updates: list[BatchEntityUpdate] = Field(..., description="List of entity updates", min_length=1, max_length=1000)
 
 
 class BatchEntityDelete(BaseModel):
@@ -493,9 +461,7 @@ class BatchEntityDelete(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    entity_ids: list[UUID] = Field(
-        ..., description="List of entity IDs to delete", min_length=1, max_length=1000
-    )
+    entity_ids: list[UUID] = Field(..., description="List of entity IDs to delete", min_length=1, max_length=1000)
 
 
 class BatchItemErrorResponse(BaseModel):
@@ -513,12 +479,8 @@ class BatchResultResponse(BaseModel):
     total: int = Field(..., description="Total items in request")
     succeeded: int = Field(..., description="Number of successful operations")
     failed: int = Field(..., description="Number of failed operations")
-    entity_ids: list[UUID] = Field(
-        default_factory=list, description="IDs of affected entities (on success only)"
-    )
-    errors: list[BatchItemErrorResponse] = Field(
-        default_factory=list, description="Error details for failed items"
-    )
+    entity_ids: list[UUID] = Field(default_factory=list, description="IDs of affected entities (on success only)")
+    errors: list[BatchItemErrorResponse] = Field(default_factory=list, description="Error details for failed items")
 
 
 # Relationship Batch Operation Models
@@ -539,9 +501,7 @@ class BatchRelationshipUpdate(BaseModel):
 
     id: UUID = Field(..., description="Relationship ID to update")
     version: int = Field(..., description="Current version for optimistic locking", ge=1)
-    properties: dict[str, str | int | float | bool | None] = Field(
-        ..., description="Updated properties"
-    )
+    properties: dict[str, str | int | float | bool | None] = Field(..., description="Updated properties")
 
 
 class BatchRelationshipUpdateRequest(BaseModel):

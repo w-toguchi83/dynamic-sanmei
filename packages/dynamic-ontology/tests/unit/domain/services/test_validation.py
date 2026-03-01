@@ -79,9 +79,7 @@ def task_entity_type() -> EntityType:
 class TestValidateValidProperties:
     """Test validation of valid properties."""
 
-    def test_validate_valid_properties(
-        self, validation_engine: ValidationEngine, task_entity_type: EntityType
-    ) -> None:
+    def test_validate_valid_properties(self, validation_engine: ValidationEngine, task_entity_type: EntityType) -> None:
         """Test that valid properties pass validation without raising errors."""
         properties = {
             "title": "My Task",
@@ -183,9 +181,7 @@ class TestStringConstraintValidation:
         error_fields = [e["field"] for e in exc_info.value.errors]
         assert "title" in error_fields
 
-    def test_validate_string_pattern(
-        self, validation_engine: ValidationEngine, task_entity_type: EntityType
-    ) -> None:
+    def test_validate_string_pattern(self, validation_engine: ValidationEngine, task_entity_type: EntityType) -> None:
         """Test that string not matching pattern raises ValidationError."""
         properties = {
             "title": "My Task",
@@ -236,9 +232,7 @@ class TestNumericConstraintValidation:
         error_fields = [e["field"] for e in exc_info.value.errors]
         assert "priority" in error_fields
 
-    def test_validate_float_min_value(
-        self, validation_engine: ValidationEngine, task_entity_type: EntityType
-    ) -> None:
+    def test_validate_float_min_value(self, validation_engine: ValidationEngine, task_entity_type: EntityType) -> None:
         """Test that float below min_value raises ValidationError."""
         properties = {
             "title": "My Task",
@@ -253,9 +247,7 @@ class TestNumericConstraintValidation:
         error_fields = [e["field"] for e in exc_info.value.errors]
         assert "progress" in error_fields
 
-    def test_validate_float_max_value(
-        self, validation_engine: ValidationEngine, task_entity_type: EntityType
-    ) -> None:
+    def test_validate_float_max_value(self, validation_engine: ValidationEngine, task_entity_type: EntityType) -> None:
         """Test that float exceeding max_value raises ValidationError."""
         properties = {
             "title": "My Task",
@@ -290,9 +282,7 @@ class TestEnumValidation:
         error_fields = [e["field"] for e in exc_info.value.errors]
         assert "status" in error_fields
 
-    def test_validate_enum_valid_value(
-        self, validation_engine: ValidationEngine, task_entity_type: EntityType
-    ) -> None:
+    def test_validate_enum_valid_value(self, validation_engine: ValidationEngine, task_entity_type: EntityType) -> None:
         """Test that valid enum value passes validation."""
         for valid_status in ["pending", "in_progress", "completed"]:
             properties = {

@@ -31,9 +31,7 @@ async def query_pagination_type(client: AsyncClient) -> str:
 
 @pytest.mark.asyncio
 class TestQueryPagination:
-    async def test_returns_cursor_fields(
-        self, client: AsyncClient, query_pagination_type: str
-    ) -> None:
+    async def test_returns_cursor_fields(self, client: AsyncClient, query_pagination_type: str) -> None:
         resp = await client.post(
             "/query",
             json={"entity_type": query_pagination_type, "limit": 2},
@@ -66,9 +64,7 @@ class TestQueryPagination:
         ids2 = {item["id"] for item in data2["items"]}
         assert ids1.isdisjoint(ids2)
 
-    async def test_cursor_with_sort_returns_400(
-        self, client: AsyncClient, query_pagination_type: str
-    ) -> None:
+    async def test_cursor_with_sort_returns_400(self, client: AsyncClient, query_pagination_type: str) -> None:
         resp = await client.post(
             "/query",
             json={
@@ -80,9 +76,7 @@ class TestQueryPagination:
         )
         assert resp.status_code == 400
 
-    async def test_invalid_cursor_returns_400(
-        self, client: AsyncClient, query_pagination_type: str
-    ) -> None:
+    async def test_invalid_cursor_returns_400(self, client: AsyncClient, query_pagination_type: str) -> None:
         resp = await client.post(
             "/query",
             json={
@@ -93,9 +87,7 @@ class TestQueryPagination:
         )
         assert resp.status_code == 400
 
-    async def test_offset_still_works(
-        self, client: AsyncClient, query_pagination_type: str
-    ) -> None:
+    async def test_offset_still_works(self, client: AsyncClient, query_pagination_type: str) -> None:
         resp = await client.post(
             "/query",
             json={

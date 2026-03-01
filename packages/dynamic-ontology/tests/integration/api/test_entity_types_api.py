@@ -47,9 +47,7 @@ class TestEntityTypeCRUDAPI:
             "custom_validators": [],
         }
 
-        create_response = await client.post(
-            "/schema/entity-types", json=create_payload
-        )
+        create_response = await client.post("/schema/entity-types", json=create_payload)
         assert create_response.status_code == 201
         created_id = create_response.json()["id"]
 
@@ -101,9 +99,7 @@ class TestEntityTypeCRUDAPI:
             "custom_validators": [],
         }
 
-        create_response = await client.post(
-            "/schema/entity-types", json=create_payload
-        )
+        create_response = await client.post("/schema/entity-types", json=create_payload)
         assert create_response.status_code == 201
         created_id = create_response.json()["id"]
 
@@ -111,9 +107,7 @@ class TestEntityTypeCRUDAPI:
             "description": "Updated description",
         }
 
-        response = await client.put(
-            f"/schema/entity-types/{created_id}", json=update_payload
-        )
+        response = await client.put(f"/schema/entity-types/{created_id}", json=update_payload)
 
         assert response.status_code == 200
         data = response.json()
@@ -128,9 +122,7 @@ class TestEntityTypeCRUDAPI:
             "description": "Updated description",
         }
 
-        response = await client.put(
-            f"/schema/entity-types/{non_existent_id}", json=update_payload
-        )
+        response = await client.put(f"/schema/entity-types/{non_existent_id}", json=update_payload)
 
         assert response.status_code == 404
 
@@ -144,9 +136,7 @@ class TestEntityTypeCRUDAPI:
             "custom_validators": [],
         }
 
-        create_response = await client.post(
-            "/schema/entity-types", json=create_payload
-        )
+        create_response = await client.post("/schema/entity-types", json=create_payload)
         assert create_response.status_code == 201
         created_id = create_response.json()["id"]
 

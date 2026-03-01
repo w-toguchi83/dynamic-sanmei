@@ -42,9 +42,7 @@ async def entity_type_with_data(client: AsyncClient) -> dict[str, str | list[str
         },
         "custom_validators": [],
     }
-    et_response = await client.post(
-        "/schema/entity-types", json=entity_type_payload
-    )
+    et_response = await client.post("/schema/entity-types", json=entity_type_payload)
     assert et_response.status_code == 201
     entity_type_id = et_response.json()["id"]
 
@@ -103,9 +101,7 @@ async def setup_with_relationships(client: AsyncClient) -> dict[str, str | list[
         },
         "custom_validators": [],
     }
-    at_response = await client.post(
-        "/schema/entity-types", json=author_type_payload
-    )
+    at_response = await client.post("/schema/entity-types", json=author_type_payload)
     assert at_response.status_code == 201
     author_type_id = at_response.json()["id"]
 
@@ -140,9 +136,7 @@ async def setup_with_relationships(client: AsyncClient) -> dict[str, str | list[
         "properties": {},
         "custom_validators": [],
     }
-    rt_response = await client.post(
-        "/schema/relationship-types", json=rel_type_payload
-    )
+    rt_response = await client.post("/schema/relationship-types", json=rel_type_payload)
     assert rt_response.status_code == 201
     rel_type_id = rt_response.json()["id"]
 
@@ -216,9 +210,7 @@ async def setup_with_relationships(client: AsyncClient) -> dict[str, str | list[
 class TestQueryAPI:
     """Tests for Query API endpoint."""
 
-    async def test_query_simple(
-        self, client: AsyncClient, entity_type_with_data: dict[str, str | list[str]]
-    ) -> None:
+    async def test_query_simple(self, client: AsyncClient, entity_type_with_data: dict[str, str | list[str]]) -> None:
         """POST /query with just entity_type returns all entities of that type."""
         type_name = entity_type_with_data["entity_type_name"]
         assert isinstance(type_name, str)

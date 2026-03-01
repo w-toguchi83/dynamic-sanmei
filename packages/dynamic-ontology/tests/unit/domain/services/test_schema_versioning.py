@@ -353,33 +353,25 @@ class TestDetermineCompatibility:
 
     def test_only_modifications(self) -> None:
         """変更のみ → NONE。"""
-        modified: dict[str, dict[str, object]] = {
-            "title": {"old": {"type": "string"}, "new": {"type": "integer"}}
-        }
+        modified: dict[str, dict[str, object]] = {"title": {"old": {"type": "string"}, "new": {"type": "integer"}}}
         result = determine_compatibility([], [], modified)
         assert result == CompatibilityLevel.NONE
 
     def test_modifications_with_additions(self) -> None:
         """変更+追加 → NONE。"""
-        modified: dict[str, dict[str, object]] = {
-            "title": {"old": {"type": "string"}, "new": {"type": "integer"}}
-        }
+        modified: dict[str, dict[str, object]] = {"title": {"old": {"type": "string"}, "new": {"type": "integer"}}}
         result = determine_compatibility(["new_field"], [], modified)
         assert result == CompatibilityLevel.NONE
 
     def test_modifications_with_removals(self) -> None:
         """変更+削除 → NONE。"""
-        modified: dict[str, dict[str, object]] = {
-            "title": {"old": {"type": "string"}, "new": {"type": "integer"}}
-        }
+        modified: dict[str, dict[str, object]] = {"title": {"old": {"type": "string"}, "new": {"type": "integer"}}}
         result = determine_compatibility([], ["old_field"], modified)
         assert result == CompatibilityLevel.NONE
 
     def test_all_three_changes(self) -> None:
         """追加+削除+変更 → NONE。"""
-        modified: dict[str, dict[str, object]] = {
-            "title": {"old": {"type": "string"}, "new": {"type": "integer"}}
-        }
+        modified: dict[str, dict[str, object]] = {"title": {"old": {"type": "string"}, "new": {"type": "integer"}}}
         result = determine_compatibility(["new"], ["old"], modified)
         assert result == CompatibilityLevel.NONE
 

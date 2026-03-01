@@ -153,9 +153,7 @@ class QueryBuilder:
     # 比較フィルタ構築
     # ------------------------------------------------------------------
 
-    def _build_comparison_filter(
-        self, condition: FilterCondition, table: Table
-    ) -> ColumnElement[bool]:
+    def _build_comparison_filter(self, condition: FilterCondition, table: Table) -> ColumnElement[bool]:
         """単一条件の比較フィルタを構築する."""
         jsonb_field = table.c.properties[condition.field]
         return self._apply_operator(jsonb_field, condition.operator, condition.value)
@@ -249,16 +247,12 @@ def _build_contains(jsonb_field: ColumnElement[JSONB], value: FilterValue) -> Co
     return jsonb_field.astext.like(f"%{str(value) if value is not None else ''}%")
 
 
-def _build_starts_with(
-    jsonb_field: ColumnElement[JSONB], value: FilterValue
-) -> ColumnElement[bool]:
+def _build_starts_with(jsonb_field: ColumnElement[JSONB], value: FilterValue) -> ColumnElement[bool]:
     """STARTS_WITH（前方一致）フィルタ."""
     return jsonb_field.astext.like(f"{str(value) if value is not None else ''}%")
 
 
-def _build_ends_with(
-    jsonb_field: ColumnElement[JSONB], value: FilterValue
-) -> ColumnElement[bool]:
+def _build_ends_with(jsonb_field: ColumnElement[JSONB], value: FilterValue) -> ColumnElement[bool]:
     """ENDS_WITH（後方一致）フィルタ."""
     return jsonb_field.astext.like(f"%{str(value) if value is not None else ''}")
 
@@ -268,9 +262,7 @@ def _build_is_null(jsonb_field: ColumnElement[JSONB], _value: FilterValue) -> Co
     return jsonb_field.is_(None)
 
 
-def _build_is_not_null(
-    jsonb_field: ColumnElement[JSONB], _value: FilterValue
-) -> ColumnElement[bool]:
+def _build_is_not_null(jsonb_field: ColumnElement[JSONB], _value: FilterValue) -> ColumnElement[bool]:
     """IS_NOT_NULL フィルタ."""
     return jsonb_field.isnot(None)
 
@@ -280,9 +272,7 @@ def _build_regex(jsonb_field: ColumnElement[JSONB], value: FilterValue) -> Colum
     return jsonb_field.astext.op("~")(str(value) if value is not None else "")
 
 
-def _build_full_text(
-    jsonb_field: ColumnElement[JSONB], value: FilterValue
-) -> ColumnElement[bool]:
+def _build_full_text(jsonb_field: ColumnElement[JSONB], value: FilterValue) -> ColumnElement[bool]:
     """FULL_TEXT（全文検索）フィルタ."""
     search_text = str(value) if value is not None else ""
     words = search_text.split()

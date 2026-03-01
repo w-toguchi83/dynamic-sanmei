@@ -123,9 +123,7 @@ class TestListByTypeCursor:
             assert total == 5
 
             cursor = encode_cursor(page1[-1].created_at, page1[-1].id)
-            page2, total2 = await repo.list_by_type(
-                str(persisted_entity_type.id), limit=2, cursor=cursor
-            )
+            page2, total2 = await repo.list_by_type(str(persisted_entity_type.id), limit=2, cursor=cursor)
             assert len(page2) == 2
             assert total2 == 5
             page1_ids = {e.id for e in page1}
@@ -146,7 +144,5 @@ class TestListByTypeCursor:
             items_with_offset, _ = await repo.list_by_type(
                 str(persisted_entity_type.id), limit=2, cursor=cursor, offset=100
             )
-            items_without_offset, _ = await repo.list_by_type(
-                str(persisted_entity_type.id), limit=2, cursor=cursor
-            )
+            items_without_offset, _ = await repo.list_by_type(str(persisted_entity_type.id), limit=2, cursor=cursor)
             assert [e.id for e in items_with_offset] == [e.id for e in items_without_offset]

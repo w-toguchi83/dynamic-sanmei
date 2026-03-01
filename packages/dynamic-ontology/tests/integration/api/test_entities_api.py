@@ -57,9 +57,7 @@ class TestEntityCRUDAPI:
         assert "created_at" in data
         assert "updated_at" in data
 
-    async def test_create_entity_validation_error(
-        self, client: AsyncClient, entity_type_id: str
-    ) -> None:
+    async def test_create_entity_validation_error(self, client: AsyncClient, entity_type_id: str) -> None:
         """POST with missing required field returns 400 with validation error."""
         payload = {
             "type_id": entity_type_id,
@@ -160,9 +158,7 @@ class TestEntityCRUDAPI:
         assert data["properties"]["title"] == "Updated Title"
         assert data["version"] == 2
 
-    async def test_update_entity_version_conflict(
-        self, client: AsyncClient, entity_type_id: str
-    ) -> None:
+    async def test_update_entity_version_conflict(self, client: AsyncClient, entity_type_id: str) -> None:
         """PUT with wrong version returns 409 Conflict."""
         create_payload = {
             "type_id": entity_type_id,
@@ -229,9 +225,7 @@ class TestEntityCRUDAPI:
             },
             "version": 1,
         }
-        update_response = await client.put(
-            f"/entities/{created_id}", json=update_payload
-        )
+        update_response = await client.put(f"/entities/{created_id}", json=update_payload)
         assert update_response.status_code == 200
 
         # Get history
@@ -283,9 +277,7 @@ class TestEntityTimeTravelAPI:
             },
             "version": 1,
         }
-        update_response = await client.put(
-            f"/entities/{entity_id}", json=update_payload
-        )
+        update_response = await client.put(f"/entities/{entity_id}", json=update_payload)
         assert update_response.status_code == 200
 
         # 過去時点のスナップショット取得
@@ -322,9 +314,7 @@ class TestEntityTimeTravelAPI:
             },
             "version": 1,
         }
-        update_response = await client.put(
-            f"/entities/{entity_id}", json=update_payload
-        )
+        update_response = await client.put(f"/entities/{entity_id}", json=update_payload)
         assert update_response.status_code == 200
 
         # Get diff between v1 and v2
@@ -388,9 +378,7 @@ class TestEntityRollbackAPI:
             "properties": {"title": "Version 2 Title", "priority": 2},
             "version": 1,
         }
-        update1_response = await client.put(
-            f"/entities/{entity_id}", json=update1_payload
-        )
+        update1_response = await client.put(f"/entities/{entity_id}", json=update1_payload)
         assert update1_response.status_code == 200
         assert update1_response.json()["version"] == 2
 
@@ -399,17 +387,13 @@ class TestEntityRollbackAPI:
             "properties": {"title": "Version 3 Title", "priority": 3},
             "version": 2,
         }
-        update2_response = await client.put(
-            f"/entities/{entity_id}", json=update2_payload
-        )
+        update2_response = await client.put(f"/entities/{entity_id}", json=update2_payload)
         assert update2_response.status_code == 200
         assert update2_response.json()["version"] == 3
 
         # Rollback to version 1 (should create version 4)
         rollback_payload = {"target_version": 1}
-        rollback_response = await client.post(
-            f"/entities/{entity_id}/rollback", json=rollback_payload
-        )
+        rollback_response = await client.post(f"/entities/{entity_id}/rollback", json=rollback_payload)
 
         assert rollback_response.status_code == 200
         data = rollback_response.json()
@@ -445,18 +429,14 @@ class TestEntityRollbackAPI:
             "properties": {"title": "Updated Title", "priority": 2},
             "version": 1,
         }
-        update_response = await client.put(
-            f"/entities/{entity_id}", json=update_payload
-        )
+        update_response = await client.put(f"/entities/{entity_id}", json=update_payload)
         assert update_response.status_code == 200
         assert update_response.json()["version"] == 2
 
         # Rollback to timestamp
         timestamp_str = snapshot_time.isoformat()
         rollback_payload = {"target_time": timestamp_str}
-        rollback_response = await client.post(
-            f"/entities/{entity_id}/rollback", json=rollback_payload
-        )
+        rollback_response = await client.post(f"/entities/{entity_id}/rollback", json=rollback_payload)
 
         assert rollback_response.status_code == 200
         data = rollback_response.json()
@@ -465,9 +445,7 @@ class TestEntityRollbackAPI:
         assert data["properties"]["title"] == "Original Title"
         assert data["properties"]["priority"] == 1
 
-    async def test_rollback_version_not_found(
-        self, client: AsyncClient, entity_type_id: str
-    ) -> None:
+    async def test_rollback_version_not_found(self, client: AsyncClient, entity_type_id: str) -> None:
         """存在しないバージョンへのロールバックで 404."""
         # Create entity
         create_payload = {
@@ -482,17 +460,13 @@ class TestEntityRollbackAPI:
 
         # Try to rollback to non-existent version
         rollback_payload = {"target_version": 999}
-        rollback_response = await client.post(
-            f"/entities/{entity_id}/rollback", json=rollback_payload
-        )
+        rollback_response = await client.post(f"/entities/{entity_id}/rollback", json=rollback_payload)
 
         assert rollback_response.status_code == 404
         data = rollback_response.json()
         assert "detail" in data
 
-    async def test_rollback_requires_version_or_time(
-        self, client: AsyncClient, entity_type_id: str
-    ) -> None:
+    async def test_rollback_requires_version_or_time(self, client: AsyncClient, entity_type_id: str) -> None:
         """target_version も target_time も指定しないで 422 (Pydantic validation)."""
         # Create entity
         create_payload = {
@@ -507,8 +481,6 @@ class TestEntityRollbackAPI:
 
         # Try to rollback without specifying target_version or target_time
         rollback_payload: dict[str, str | int] = {}
-        rollback_response = await client.post(
-            f"/entities/{entity_id}/rollback", json=rollback_payload
-        )
+        rollback_response = await client.post(f"/entities/{entity_id}/rollback", json=rollback_payload)
 
         assert rollback_response.status_code == 422

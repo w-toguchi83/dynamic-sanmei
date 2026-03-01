@@ -64,12 +64,8 @@ class PostgresSchemaVersionRepository:
             "previous_version_id": str(schema_version.previous_version_id)
             if schema_version.previous_version_id
             else None,
-            "compatibility": schema_version.compatibility.value
-            if schema_version.compatibility
-            else None,
-            "change_summary": json.dumps(schema_version.change_summary)
-            if schema_version.change_summary
-            else None,
+            "compatibility": schema_version.compatibility.value if schema_version.compatibility else None,
+            "change_summary": json.dumps(schema_version.change_summary) if schema_version.change_summary else None,
             "created_at": schema_version.created_at,
             "created_by": schema_version.created_by,
             "namespace_id": self._namespace_id,
@@ -198,12 +194,8 @@ class PostgresSchemaVersionRepository:
             type_id=UUID(str(row["type_id"])),
             version=int(row["version"]),
             schema_definition=dict(schema_def) if schema_def else {},
-            previous_version_id=UUID(str(row["previous_version_id"]))
-            if row["previous_version_id"]
-            else None,
-            compatibility=CompatibilityLevel(str(row["compatibility"]))
-            if row["compatibility"]
-            else None,
+            previous_version_id=UUID(str(row["previous_version_id"])) if row["previous_version_id"] else None,
+            compatibility=CompatibilityLevel(str(row["compatibility"])) if row["compatibility"] else None,
             change_summary=dict(change_summary) if change_summary else None,
             created_at=created_at_value,
             created_by=str(row["created_by"]) if row["created_by"] else None,

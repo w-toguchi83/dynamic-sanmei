@@ -66,9 +66,7 @@ async def create_entity_type(
         The created entity type.
     """
     now = datetime.now(UTC)
-    properties = {
-        name: to_domain_property_definition(prop) for name, prop in data.properties.items()
-    }
+    properties = {name: to_domain_property_definition(prop) for name, prop in data.properties.items()}
 
     entity_type = EntityType(
         id=uuid4(),
@@ -190,23 +188,16 @@ async def update_entity_type(
     # Apply partial updates
     name = data.name if data.name is not None else existing.name
     description = data.description if data.description is not None else existing.description
-    custom_validators = (
-        data.custom_validators if data.custom_validators is not None else existing.custom_validators
-    )
+    custom_validators = data.custom_validators if data.custom_validators is not None else existing.custom_validators
 
     if data.properties is not None:
-        properties = {
-            prop_name: to_domain_property_definition(prop)
-            for prop_name, prop in data.properties.items()
-        }
+        properties = {prop_name: to_domain_property_definition(prop) for prop_name, prop in data.properties.items()}
     else:
         properties = existing.properties
 
     # display_property は明示的に None を送れるので、
     # リクエストに含まれているかで判定する
-    display_property = (
-        data.display_property if data.display_property is not None else existing.display_property
-    )
+    display_property = data.display_property if data.display_property is not None else existing.display_property
     updated_entity_type = EntityType(
         id=existing.id,
         name=name,

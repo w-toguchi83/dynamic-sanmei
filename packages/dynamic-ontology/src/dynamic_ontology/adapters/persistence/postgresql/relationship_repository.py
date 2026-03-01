@@ -104,9 +104,7 @@ class PostgresRelationshipRepository:
         """Create multiple relationships in a single transaction."""
         namespace_id = self._namespace_id
         if not relationships:
-            return BatchResult(
-                success=True, total=0, succeeded=0, failed=0, entity_ids=[], errors=[]
-            )
+            return BatchResult(success=True, total=0, succeeded=0, failed=0, entity_ids=[], errors=[])
 
         now = datetime.now(UTC)
         created_ids: list[UUID] = []
@@ -162,9 +160,7 @@ class PostgresRelationshipRepository:
                 )
 
             except Exception:
-                logger.exception(
-                    "Batch create relationship failed at index %d (id=%s)", index, relationship.id
-                )
+                logger.exception("Batch create relationship failed at index %d (id=%s)", index, relationship.id)
                 errors.append(
                     BatchItemError(
                         index=index,
@@ -196,9 +192,7 @@ class PostgresRelationshipRepository:
         """Update multiple relationships in a single transaction."""
         namespace_id = self._namespace_id
         if not updates:
-            return BatchResult(
-                success=True, total=0, succeeded=0, failed=0, entity_ids=[], errors=[]
-            )
+            return BatchResult(success=True, total=0, succeeded=0, failed=0, entity_ids=[], errors=[])
 
         now = datetime.now(UTC)
         updated_ids: list[UUID] = []
@@ -286,9 +280,7 @@ class PostgresRelationshipRepository:
                 )
 
             except Exception:
-                logger.exception(
-                    "Batch update relationship failed at index %d (id=%s)", index, relationship.id
-                )
+                logger.exception("Batch update relationship failed at index %d (id=%s)", index, relationship.id)
                 errors.append(
                     BatchItemError(
                         index=index,
@@ -320,18 +312,14 @@ class PostgresRelationshipRepository:
         """Delete multiple relationships in a single transaction."""
         namespace_id = self._namespace_id
         if not relationship_ids:
-            return BatchResult(
-                success=True, total=0, succeeded=0, failed=0, entity_ids=[], errors=[]
-            )
+            return BatchResult(success=True, total=0, succeeded=0, failed=0, entity_ids=[], errors=[])
 
         deleted_ids: list[UUID] = []
         errors: list[BatchItemError] = []
 
         for index, relationship_id in enumerate(relationship_ids):
             try:
-                check_query = text(
-                    "SELECT id FROM do_relationships WHERE id = :id AND namespace_id = :namespace_id"
-                )
+                check_query = text("SELECT id FROM do_relationships WHERE id = :id AND namespace_id = :namespace_id")
                 check_result = await self._session.execute(
                     check_query, {"id": relationship_id, "namespace_id": namespace_id}
                 )
@@ -348,9 +336,7 @@ class PostgresRelationshipRepository:
                 delete_history_query = text(
                     "DELETE FROM do_relationship_history WHERE relationship_id = :id AND namespace_id = :namespace_id"
                 )
-                await self._session.execute(
-                    delete_history_query, {"id": relationship_id, "namespace_id": namespace_id}
-                )
+                await self._session.execute(delete_history_query, {"id": relationship_id, "namespace_id": namespace_id})
 
                 delete_query = text(
                     "DELETE FROM do_relationships WHERE id = :id AND namespace_id = :namespace_id RETURNING id"
@@ -391,9 +377,7 @@ class PostgresRelationshipRepository:
             errors=[],
         )
 
-    async def get_by_id(
-        self, relationship_id: str, at_time: str | None = None
-    ) -> Relationship | None:
+    async def get_by_id(self, relationship_id: str, at_time: str | None = None) -> Relationship | None:
         """Get relationship by ID, optionally at a specific point in time."""
         if at_time is not None:
             return await self._get_relationship_at_time(relationship_id, at_time)
@@ -412,9 +396,7 @@ class PostgresRelationshipRepository:
 
         return self._row_to_relationship(row)
 
-    async def _get_relationship_at_time(
-        self, relationship_id: str, at_time: str
-    ) -> Relationship | None:
+    async def _get_relationship_at_time(self, relationship_id: str, at_time: str) -> Relationship | None:
         """Get relationship state at a specific point in time from history."""
         try:
             timestamp = datetime.fromisoformat(at_time.replace("Z", "+00:00"))
@@ -620,16 +602,10 @@ class PostgresRelationshipRepository:
 
         return [self._row_to_relationship(row) for row in rows], total
 
-    async def list_by_type(
-        self, type_id: str, limit: int = 100, offset: int = 0
-    ) -> tuple[list[Relationship], int]:
+    async def list_by_type(self, type_id: str, limit: int = 100, offset: int = 0) -> tuple[list[Relationship], int]:
         """List relationships by type with total count."""
-        count_query = text(
-            f"SELECT COUNT(*) FROM do_relationships WHERE type_id = :type_id {self._namespace_and}"
-        )
-        count_result = await self._session.execute(
-            count_query, self._with_namespace({"type_id": type_id})
-        )
+        count_query = text(f"SELECT COUNT(*) FROM do_relationships WHERE type_id = :type_id {self._namespace_and}")
+        count_result = await self._session.execute(count_query, self._with_namespace({"type_id": type_id}))
         count_row = count_result.fetchone()
         total = count_row[0] if count_row else 0
 
@@ -681,9 +657,7 @@ class PostgresRelationshipRepository:
         now = datetime.now(UTC)
         new_version = current_version + 1
 
-        check_query = text(
-            "SELECT version FROM do_relationships WHERE id = :id AND namespace_id = :namespace_id"
-        )
+        check_query = text("SELECT version FROM do_relationships WHERE id = :id AND namespace_id = :namespace_id")
         check_result = await self._session.execute(
             check_query, {"id": str(relationship.id), "namespace_id": namespace_id}
         )
@@ -747,16 +721,10 @@ class PostgresRelationshipRepository:
         delete_history_query = text(
             "DELETE FROM do_relationship_history WHERE relationship_id = :id AND namespace_id = :namespace_id"
         )
-        await self._session.execute(
-            delete_history_query, {"id": relationship_id, "namespace_id": namespace_id}
-        )
+        await self._session.execute(delete_history_query, {"id": relationship_id, "namespace_id": namespace_id})
 
-        query = text(
-            "DELETE FROM do_relationships WHERE id = :id AND namespace_id = :namespace_id RETURNING id"
-        )
-        result = await self._session.execute(
-            query, {"id": relationship_id, "namespace_id": namespace_id}
-        )
+        query = text("DELETE FROM do_relationships WHERE id = :id AND namespace_id = :namespace_id RETURNING id")
+        result = await self._session.execute(query, {"id": relationship_id, "namespace_id": namespace_id})
         row = result.fetchone()
 
         return row is not None
@@ -771,9 +739,7 @@ class PostgresRelationshipRepository:
             ORDER BY version ASC
         """)
 
-        result = await self._session.execute(
-            query, self._with_namespace({"relationship_id": relationship_id})
-        )
+        result = await self._session.execute(query, self._with_namespace({"relationship_id": relationship_id}))
         rows = result.fetchall()
 
         history: list[dict[str, Any]] = []

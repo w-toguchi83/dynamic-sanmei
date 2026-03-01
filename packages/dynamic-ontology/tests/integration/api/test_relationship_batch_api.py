@@ -95,9 +95,7 @@ class TestRelationshipBatchCreate:
         assert len(data["entity_ids"]) == 2
         assert data["errors"] == []
 
-    async def test_batch_create_invalid_type(
-        self, client: AsyncClient, setup: dict[str, str]
-    ) -> None:
+    async def test_batch_create_invalid_type(self, client: AsyncClient, setup: dict[str, str]) -> None:
         """POST /relationships/batch fails on non-existent relationship type."""
         fake_type_id = str(uuid4())
         payload = {
@@ -118,9 +116,7 @@ class TestRelationshipBatchCreate:
         assert data["detail"]["success"] is False
         assert "not found" in data["detail"]["errors"][0]["message"].lower()
 
-    async def test_batch_create_invalid_entity(
-        self, client: AsyncClient, setup: dict[str, str]
-    ) -> None:
+    async def test_batch_create_invalid_entity(self, client: AsyncClient, setup: dict[str, str]) -> None:
         """POST /relationships/batch fails on non-existent from_entity."""
         fake_entity_id = str(uuid4())
         payload = {
@@ -164,9 +160,7 @@ class TestRelationshipBatchUpdate:
                 },
             ]
         }
-        create_resp = await client.post(
-            "/relationships/batch", json=create_payload
-        )
+        create_resp = await client.post("/relationships/batch", json=create_payload)
         assert create_resp.status_code == 201
         rel_ids = create_resp.json()["entity_ids"]
 
@@ -194,9 +188,7 @@ class TestRelationshipBatchUpdate:
         assert data["total"] == 2
         assert data["succeeded"] == 2
 
-    async def test_batch_update_version_conflict(
-        self, client: AsyncClient, setup: dict[str, str]
-    ) -> None:
+    async def test_batch_update_version_conflict(self, client: AsyncClient, setup: dict[str, str]) -> None:
         """PATCH /relationships/batch fails on version conflict."""
         # Create a relationship
         create_payload = {
@@ -209,9 +201,7 @@ class TestRelationshipBatchUpdate:
                 },
             ]
         }
-        create_resp = await client.post(
-            "/relationships/batch", json=create_payload
-        )
+        create_resp = await client.post("/relationships/batch", json=create_payload)
         assert create_resp.status_code == 201
         rel_id = create_resp.json()["entity_ids"][0]
 
@@ -256,18 +246,14 @@ class TestRelationshipBatchDelete:
                 },
             ]
         }
-        create_resp = await client.post(
-            "/relationships/batch", json=create_payload
-        )
+        create_resp = await client.post("/relationships/batch", json=create_payload)
         assert create_resp.status_code == 201
         rel_ids = create_resp.json()["entity_ids"]
 
         # Batch delete
         delete_payload = {"relationship_ids": rel_ids}
 
-        response = await client.request(
-            "DELETE", "/relationships/batch", json=delete_payload
-        )
+        response = await client.request("DELETE", "/relationships/batch", json=delete_payload)
 
         assert response.status_code == 200
         data = response.json()
@@ -285,9 +271,7 @@ class TestRelationshipBatchDelete:
         fake_id = str(uuid4())
         delete_payload = {"relationship_ids": [fake_id]}
 
-        response = await client.request(
-            "DELETE", "/relationships/batch", json=delete_payload
-        )
+        response = await client.request("DELETE", "/relationships/batch", json=delete_payload)
 
         assert response.status_code == 400
         data = response.json()

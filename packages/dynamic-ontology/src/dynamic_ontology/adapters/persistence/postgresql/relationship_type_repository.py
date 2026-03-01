@@ -80,12 +80,8 @@ class PostgresRelationshipTypeRepository:
                     "description": relationship_type.description,
                     "schema_definition": json.dumps(schema_definition),
                     "directional": relationship_type.directional,
-                    "allowed_source_types": json.dumps(
-                        [str(u) for u in relationship_type.allowed_source_types]
-                    ),
-                    "allowed_target_types": json.dumps(
-                        [str(u) for u in relationship_type.allowed_target_types]
-                    ),
+                    "allowed_source_types": json.dumps([str(u) for u in relationship_type.allowed_source_types]),
+                    "allowed_target_types": json.dumps([str(u) for u in relationship_type.allowed_target_types]),
                     "allow_duplicates": relationship_type.allow_duplicates,
                     "created_at": relationship_type.created_at,
                     "updated_at": relationship_type.updated_at,
@@ -129,9 +125,7 @@ class PostgresRelationshipTypeRepository:
             WHERE id = :id {self._namespace_and}
         """)
 
-        result = await self._session.execute(
-            query, self._with_namespace({"id": relationship_type_id})
-        )
+        result = await self._session.execute(query, self._with_namespace({"id": relationship_type_id}))
         row = result.fetchone()
 
         if row is None:
@@ -216,12 +210,8 @@ class PostgresRelationshipTypeRepository:
                     "description": relationship_type.description,
                     "schema_definition": json.dumps(schema_definition),
                     "directional": relationship_type.directional,
-                    "allowed_source_types": json.dumps(
-                        [str(u) for u in relationship_type.allowed_source_types]
-                    ),
-                    "allowed_target_types": json.dumps(
-                        [str(u) for u in relationship_type.allowed_target_types]
-                    ),
+                    "allowed_source_types": json.dumps([str(u) for u in relationship_type.allowed_source_types]),
+                    "allowed_target_types": json.dumps([str(u) for u in relationship_type.allowed_target_types]),
                     "allow_duplicates": relationship_type.allow_duplicates,
                     "updated_at": datetime.now(UTC),
                 },
@@ -265,9 +255,7 @@ class PostgresRelationshipTypeRepository:
             RETURNING id
         """)
 
-        result = await self._session.execute(
-            query, {"id": relationship_type_id, "namespace_id": namespace_id}
-        )
+        result = await self._session.execute(query, {"id": relationship_type_id, "namespace_id": namespace_id})
         row = result.fetchone()
 
         return row is not None

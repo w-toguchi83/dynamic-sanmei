@@ -35,14 +35,12 @@ class RollbackService:
         """
         if current_entity.id != target_snapshot.entity_id:
             raise InvalidRollbackError(
-                f"entity_id mismatch: current={current_entity.id}, "
-                f"target={target_snapshot.entity_id}"
+                f"entity_id mismatch: current={current_entity.id}, target={target_snapshot.entity_id}"
             )
 
         if current_entity.type_id != target_snapshot.type_id:
             raise InvalidRollbackError(
-                f"type_id mismatch: current={current_entity.type_id}, "
-                f"target={target_snapshot.type_id}"
+                f"type_id mismatch: current={current_entity.type_id}, target={target_snapshot.type_id}"
             )
 
     @staticmethod

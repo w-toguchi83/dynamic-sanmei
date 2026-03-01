@@ -96,10 +96,7 @@ class CreateRelationshipUseCase:
             raise EntityNotFoundError(str(to_entity_id), "Entity (target)")
 
         # allowed_source_types / allowed_target_types 制約チェック
-        if (
-            rel_type.allowed_source_types
-            and from_entity.type_id not in rel_type.allowed_source_types
-        ):
+        if rel_type.allowed_source_types and from_entity.type_id not in rel_type.allowed_source_types:
             raise ValidationError(
                 [
                     {

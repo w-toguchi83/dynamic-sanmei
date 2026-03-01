@@ -53,9 +53,7 @@ class ValidationEngine:
 
         # 状態遷移チェック（更新時のみ）
         if existing_properties is not None:
-            transition_errors = self._state_transition_validator.validate(
-                existing_properties, properties, entity_type
-            )
+            transition_errors = self._state_transition_validator.validate(existing_properties, properties, entity_type)
             for msg in transition_errors:
                 errors.append({"field": "_state_transition", "message": msg})
 
@@ -92,9 +90,7 @@ class ValidationEngine:
 
         return result
 
-    def _collect_validation_errors(
-        self, properties: dict[str, Any], entity_type: EntityType
-    ) -> list[dict[str, str]]:
+    def _collect_validation_errors(self, properties: dict[str, Any], entity_type: EntityType) -> list[dict[str, str]]:
         """Collect all validation errors for the given properties.
 
         Args:
@@ -128,9 +124,7 @@ class ValidationEngine:
 
         return errors
 
-    def _validate_property(
-        self, prop_name: str, value: Any, prop_def: PropertyDefinition
-    ) -> list[dict[str, str]]:
+    def _validate_property(self, prop_name: str, value: Any, prop_def: PropertyDefinition) -> list[dict[str, str]]:
         """Validate a single property value against its definition.
 
         Args:
@@ -168,9 +162,7 @@ class ValidationEngine:
 
         return errors
 
-    def _validate_type(
-        self, prop_name: str, value: Any, expected_type: PropertyType
-    ) -> dict[str, str] | None:
+    def _validate_type(self, prop_name: str, value: Any, expected_type: PropertyType) -> dict[str, str] | None:
         """Validate the type of a value.
 
         Args:
@@ -202,8 +194,7 @@ class ValidationEngine:
         if not type_valid:
             return {
                 "field": prop_name,
-                "message": f"Property '{prop_name}' must be of type {expected_type.value}, "
-                f"got {type(value).__name__}",
+                "message": f"Property '{prop_name}' must be of type {expected_type.value}, got {type(value).__name__}",
             }
 
         return None
@@ -263,8 +254,7 @@ class ValidationEngine:
             errors.append(
                 {
                     "field": prop_name,
-                    "message": f"Property '{prop_name}' does not match pattern "
-                    f"'{prop_def.pattern}'",
+                    "message": f"Property '{prop_name}' does not match pattern '{prop_def.pattern}'",
                 }
             )
 
@@ -273,8 +263,7 @@ class ValidationEngine:
             errors.append(
                 {
                     "field": prop_name,
-                    "message": f"Property '{prop_name}' must be one of "
-                    f"{prop_def.enum}, got '{value}'",
+                    "message": f"Property '{prop_name}' must be one of {prop_def.enum}, got '{value}'",
                 }
             )
 
@@ -300,8 +289,7 @@ class ValidationEngine:
             errors.append(
                 {
                     "field": prop_name,
-                    "message": f"Property '{prop_name}' must be at least "
-                    f"{prop_def.min_value}, got {value}",
+                    "message": f"Property '{prop_name}' must be at least {prop_def.min_value}, got {value}",
                 }
             )
 
@@ -310,16 +298,13 @@ class ValidationEngine:
             errors.append(
                 {
                     "field": prop_name,
-                    "message": f"Property '{prop_name}' must be at most "
-                    f"{prop_def.max_value}, got {value}",
+                    "message": f"Property '{prop_name}' must be at most {prop_def.max_value}, got {value}",
                 }
             )
 
         return errors
 
-    def _run_custom_validators(
-        self, properties: dict[str, Any], entity_type: EntityType
-    ) -> list[dict[str, str]]:
+    def _run_custom_validators(self, properties: dict[str, Any], entity_type: EntityType) -> list[dict[str, str]]:
         """Run custom validators defined in the entity type.
 
         Args:

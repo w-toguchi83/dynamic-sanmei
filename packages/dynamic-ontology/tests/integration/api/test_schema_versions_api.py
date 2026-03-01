@@ -177,9 +177,7 @@ class TestEntityTypeVersionsAPI:
     async def test_get_version_not_found(self, client: AsyncClient) -> None:
         """存在しないバージョンを取得すると 404 を返す。"""
         non_existent_id = str(uuid4())
-        response = await client.get(
-            f"/schema/entity-types/{non_existent_id}/versions/999"
-        )
+        response = await client.get(f"/schema/entity-types/{non_existent_id}/versions/999")
         assert response.status_code == 404
 
     async def test_diff_between_versions(
@@ -282,9 +280,7 @@ class TestRelationshipTypeVersionsAPI:
     async def test_list_versions_empty(self, client: AsyncClient) -> None:
         """バージョンが存在しない場合は空リストを返す。"""
         non_existent_id = str(uuid4())
-        response = await client.get(
-            f"/schema/relationship-types/{non_existent_id}/versions"
-        )
+        response = await client.get(f"/schema/relationship-types/{non_existent_id}/versions")
         assert response.status_code == 200
         assert response.json() == []
 
@@ -388,9 +384,7 @@ class TestRelationshipTypeVersionsAPI:
     async def test_get_version_not_found(self, client: AsyncClient) -> None:
         """存在しないリレーションシップタイプバージョンを取得すると 404 を返す。"""
         non_existent_id = str(uuid4())
-        response = await client.get(
-            f"/schema/relationship-types/{non_existent_id}/versions/999"
-        )
+        response = await client.get(f"/schema/relationship-types/{non_existent_id}/versions/999")
         assert response.status_code == 404
 
     async def test_diff_between_versions(

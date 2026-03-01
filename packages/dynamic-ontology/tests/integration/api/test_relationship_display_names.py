@@ -122,9 +122,7 @@ class TestRelationshipDisplayNames:
         assert data["to_entity_type_name"] == et_name
 
     @pytest.mark.asyncio
-    async def test_entity_relationships_list_includes_display_names(
-        self, client: AsyncClient
-    ) -> None:
+    async def test_entity_relationships_list_includes_display_names(self, client: AsyncClient) -> None:
         """GET /entities/{id}/relationships レスポンスに display_name が含まれる."""
         et_name = f"Doc_{uuid4().hex[:8]}"
         et_resp = await client.post(
