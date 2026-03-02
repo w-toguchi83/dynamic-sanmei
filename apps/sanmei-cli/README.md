@@ -2,7 +2,7 @@
 
 算命学の命式計算・鑑定を行うコマンドラインツール。開発者向けの動作確認・デバッグ用途。
 
-## インストール
+## セットアップ
 
 プロジェクトルートから:
 
@@ -10,7 +10,11 @@
 uv sync
 ```
 
-`sanmei` コマンドが利用可能になる。
+すべてのコマンドは `uv run` 経由で実行する:
+
+```bash
+uv run sanmei --help
+```
 
 ## 使い方
 
@@ -26,9 +30,9 @@ uv sync
 生年月日から命式（三柱・十大主星・十二大従星・天中殺・宿命中殺・五行バランス）を算出する。
 
 ```bash
-sanmei meishiki 2000-01-15
-sanmei meishiki 2000-01-15 --time 14:30
-sanmei meishiki 2000-01-15 --json
+uv run sanmei meishiki 2000-01-15
+uv run sanmei meishiki 2000-01-15 --time 14:30
+uv run sanmei meishiki 2000-01-15 --json
 ```
 
 | 引数/オプション | 説明 | 必須 |
@@ -40,29 +44,29 @@ sanmei meishiki 2000-01-15 --json
 
 ```
 === 命式 ===
-生年月日: 2000年01月15日 14:30 (JST)
+生年月日: 2000年1月15日 14:30 (JST)
 
 【三柱】
         年柱        月柱        日柱
-天干      庚          丁          丁
-地支      辰          丑          卯
+天干      己         丁         壬
+地支      卯         丑         申
 
 【十大主星】
-        北: 石門星
-西: 貫索星   中: 司禄星   東: 鳳閣星
-        南: 禄存星
+        北: 車騎星
+西: 車騎星  中: 玉堂星  東: 司禄星
+        南: 調舒星
 
 【十二大従星】
-年: 天庫星   月: 天印星   日: 天胡星
+年: 天極星    月: 天堂星    日: 天貴星
 
-【天中殺】 午未天中殺
+【天中殺】 戌亥天中殺
 
 【宿命中殺】 なし
 
 【五行バランス】
-木: 3  火: 3  土: 3  金: 1  水: 0
-主: 木,火,土  欠: 水
-日主五行: 火
+木: 1  火: 1  土: 3  金: 2  水: 3
+主: 土  欠: なし
+日主五行: 水
 ```
 
 ### taiun — 大運算出
@@ -70,9 +74,9 @@ sanmei meishiki 2000-01-15 --json
 生年月日と性別から大運（10年ごとの運勢周期）を算出する。
 
 ```bash
-sanmei taiun 2000-01-15 --gender 男
-sanmei taiun 2000-01-15 --gender female --time 14:30
-sanmei taiun 2000-01-15 --gender m --periods 5 --json
+uv run sanmei taiun 2000-01-15 --gender 男
+uv run sanmei taiun 2000-01-15 --gender female --time 14:30
+uv run sanmei taiun 2000-01-15 --gender m --periods 5 --json
 ```
 
 | 引数/オプション | 説明 | 必須 |
@@ -87,8 +91,8 @@ sanmei taiun 2000-01-15 --gender m --periods 5 --json
 指定した年範囲の年運（年ごとの運勢）を算出する。
 
 ```bash
-sanmei nenun 2000-01-15 --from 2024 --to 2030
-sanmei nenun 2000-01-15 --from 2020 --to 2025 --json
+uv run sanmei nenun 2000-01-15 --from 2024 --to 2030
+uv run sanmei nenun 2000-01-15 --from 2020 --to 2025 --json
 ```
 
 | 引数/オプション | 説明 | 必須 |
@@ -103,8 +107,8 @@ sanmei nenun 2000-01-15 --from 2020 --to 2025 --json
 命式内の天干の合・地支の関係（合・冲・刑・害）を分析する。
 
 ```bash
-sanmei isouhou 2000-01-15
-sanmei isouhou 2000-01-15 --time 14:30 --json
+uv run sanmei isouhou 2000-01-15
+uv run sanmei isouhou 2000-01-15 --time 14:30 --json
 ```
 
 | 引数/オプション | 説明 | 必須 |
