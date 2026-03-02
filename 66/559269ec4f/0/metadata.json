@@ -1,0 +1,41 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "66559269ec4f",
+  "session_id": "5a94848a-a723-448d-b82b-29f6e6bfb52b",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-02T11:20:36.513367Z",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/sanmei-cli/tests/test_text_formatter.py",
+    "packages/sanmei-core/src/sanmei_core/calculators/shimeisei.py",
+    "packages/sanmei-core/src/sanmei_core/tables/isouhou.py",
+    "packages/sanmei-core/tests/unit/calculators/test_fortune_analyzer.py",
+    "packages/sanmei-core/src/sanmei_core/__init__.py",
+    "packages/sanmei-core/src/sanmei_core/calculators/meishiki_calculator.py",
+    "packages/sanmei-core/src/sanmei_core/domain/meishiki.py",
+    "packages/sanmei-core/tests/unit/calculators/test_fortune.py",
+    "packages/sanmei-core/tests/unit/calculators/test_meishiki_calculator.py",
+    "packages/sanmei-core/tests/unit/calculators/test_shimeisei.py",
+    "packages/sanmei-core/tests/unit/tables/test_isouhou.py",
+    "apps/sanmei-cli/src/sanmei_cli/formatters/text.py"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "e324f5d5cbd0",
+  "token_usage": {
+    "input_tokens": 45,
+    "cache_creation_tokens": 105334,
+    "cache_read_tokens": 3861654,
+    "output_tokens": 30322,
+    "api_call_count": 43
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-02T11:20:36.346125Z",
+    "agent_lines": 0,
+    "human_added": 295,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 295,
+    "agent_percentage": 0
+  }
+}
