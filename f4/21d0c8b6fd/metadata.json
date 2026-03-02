@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "f421d0c8b6fd",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".claude/pdca/cycle-20260302-sanmei-cli-docs.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/f4/21d0c8b6fd/0/metadata.json",
+      "transcript": "/f4/21d0c8b6fd/0/full.jsonl",
+      "context": "/f4/21d0c8b6fd/0/context.md",
+      "content_hash": "/f4/21d0c8b6fd/0/content_hash.txt",
+      "prompt": "/f4/21d0c8b6fd/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 16,
+    "cache_creation_tokens": 41148,
+    "cache_read_tokens": 518296,
+    "output_tokens": 4602,
+    "api_call_count": 12
+  }
+}
