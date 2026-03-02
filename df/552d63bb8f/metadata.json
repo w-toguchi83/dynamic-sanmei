@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "df552d63bb8f",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/sanmei-cli/CLAUDE.md",
+    "apps/sanmei-cli/README.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/df/552d63bb8f/0/metadata.json",
+      "transcript": "/df/552d63bb8f/0/full.jsonl",
+      "context": "/df/552d63bb8f/0/context.md",
+      "content_hash": "/df/552d63bb8f/0/content_hash.txt",
+      "prompt": "/df/552d63bb8f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 15,
+    "cache_creation_tokens": 40821,
+    "cache_read_tokens": 466689,
+    "output_tokens": 4446,
+    "api_call_count": 11
+  }
+}
