@@ -28,6 +28,11 @@ JUUNIUN_ORDER: tuple[SubsidiaryStar, ...] = (
 )
 
 
+def _is_yin_stem(stem: TenStem) -> bool:
+    """陰干かを判定."""
+    return stem.value % 2 == 1
+
+
 def calculate_subsidiary_star(
     day_stem: TenStem,
     target_branch: TwelveBranch,
@@ -35,10 +40,14 @@ def calculate_subsidiary_star(
 ) -> SubsidiaryStar:
     """日干と対象地支から十二大従星を算出.
 
-    帝旺支から対象地支までの順方向距離で十二運を決定。
+    陽干: 帝旺支から順方向（増）に十二運を割り当て。
+    陰干: 帝旺支から逆方向（減）に十二運を割り当て。
     """
     teiou = school.get_teiou_branch(day_stem)
-    distance = (target_branch.value - teiou.value) % 12
+    if _is_yin_stem(day_stem):
+        distance = (teiou.value - target_branch.value) % 12
+    else:
+        distance = (target_branch.value - teiou.value) % 12
     return JUUNIUN_ORDER[distance]
 
 

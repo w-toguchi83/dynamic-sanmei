@@ -13,16 +13,16 @@ from sanmei_core.tables.gogyo import GoGyoRelation, get_relation, is_same_polari
 from sanmei_core.tables.hidden_stems import STANDARD_HIDDEN_STEMS
 
 _TEIOU_MAP: dict[TenStem, TwelveBranch] = {
-    TenStem.KINOE: TwelveBranch.U,
-    TenStem.KINOTO: TwelveBranch.U,
-    TenStem.HINOE: TwelveBranch.UMA,
-    TenStem.HINOTO: TwelveBranch.UMA,
-    TenStem.TSUCHINOE: TwelveBranch.INU,
-    TenStem.TSUCHINOTO: TwelveBranch.HITSUJI,
-    TenStem.KANOE: TwelveBranch.TORI,
-    TenStem.KANOTO: TwelveBranch.TORI,
-    TenStem.MIZUNOE: TwelveBranch.NE,
-    TenStem.MIZUNOTO: TwelveBranch.NE,
+    TenStem.KINOE: TwelveBranch.U,  # 甲 → 卯
+    TenStem.KINOTO: TwelveBranch.TORA,  # 乙 → 寅 (陰干: 逆行)
+    TenStem.HINOE: TwelveBranch.UMA,  # 丙 → 午
+    TenStem.HINOTO: TwelveBranch.MI,  # 丁 → 巳 (陰干: 逆行)
+    TenStem.TSUCHINOE: TwelveBranch.UMA,  # 戊 → 午 (丙に準ずる)
+    TenStem.TSUCHINOTO: TwelveBranch.MI,  # 己 → 巳 (丁に準ずる)
+    TenStem.KANOE: TwelveBranch.TORI,  # 庚 → 酉
+    TenStem.KANOTO: TwelveBranch.SARU,  # 辛 → 申 (陰干: 逆行)
+    TenStem.MIZUNOE: TwelveBranch.NE,  # 壬 → 子
+    TenStem.MIZUNOTO: TwelveBranch.I,  # 癸 → 亥 (陰干: 逆行)
 }
 
 # 五行関係 + 陰陽 → 十大主星
@@ -33,10 +33,10 @@ _STAR_MAP: dict[tuple[GoGyoRelation, bool], MajorStar] = {
     (GoGyoRelation.SHOKUSHOU, False): MajorStar.CHOUJYO,
     (GoGyoRelation.ZAISEI, True): MajorStar.ROKUZON,
     (GoGyoRelation.ZAISEI, False): MajorStar.SHIROKU,
-    (GoGyoRelation.KANSEI, False): MajorStar.SHAKI,
-    (GoGyoRelation.KANSEI, True): MajorStar.KENGYU,
-    (GoGyoRelation.INJYU, False): MajorStar.RYUKOU,
-    (GoGyoRelation.INJYU, True): MajorStar.GYOKUDO,
+    (GoGyoRelation.KANSEI, True): MajorStar.SHAKI,  # 官星・同陰陽 → 車騎星
+    (GoGyoRelation.KANSEI, False): MajorStar.KENGYU,  # 官星・異陰陽 → 牽牛星
+    (GoGyoRelation.INJYU, True): MajorStar.RYUKOU,  # 印綬・同陰陽 → 龍高星
+    (GoGyoRelation.INJYU, False): MajorStar.GYOKUDO,  # 印綬・異陰陽 → 玉堂星
 }
 
 
@@ -44,8 +44,9 @@ class StandardSchool:
     """標準流派.
 
     蔵干: docs/domain/02_Chapter2 準拠
-    陰陽判定: docs/domain/04_Chapter4 準拠
-    土性帝旺: 戊→戌, 己→未
+    陰陽判定: 書籍テーブル準拠（官星/印綬: 同陰陽→陽版, 異陰陽→陰版）
+    帝旺: 陽干は正位, 陰干は逆行位（乙→寅, 丁→巳, 己→巳, 辛→申, 癸→亥）
+    土性: 丙/丁に準ずる（戊→午, 己→巳）
     節入り: MeeusSetsuiriProvider
     """
 

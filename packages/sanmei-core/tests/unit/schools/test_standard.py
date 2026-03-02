@@ -29,7 +29,7 @@ class TestHiddenStems:
 
 
 class TestDetermineMajorStar:
-    """docs/domain/04_Chapter4 Section 4.3 のルール表を検証."""
+    """書籍の十大主星表を検証."""
 
     @pytest.mark.parametrize(
         ("day", "target", "expected"),
@@ -46,14 +46,14 @@ class TestDetermineMajorStar:
             (TenStem.KINOE, TenStem.TSUCHINOE, MajorStar.ROKUZON),
             # 財星: 日干が剋す・異陰陽 → 司禄星
             (TenStem.KINOE, TenStem.TSUCHINOTO, MajorStar.SHIROKU),
-            # 官星: 日干を剋す・異陰陽 → 車騎星
-            (TenStem.KINOE, TenStem.KANOTO, MajorStar.SHAKI),
-            # 官星: 日干を剋す・同陰陽 → 牽牛星
-            (TenStem.KINOE, TenStem.KANOE, MajorStar.KENGYU),
-            # 印綬: 日干を生む・異陰陽 → 龍高星
-            (TenStem.KINOE, TenStem.MIZUNOTO, MajorStar.RYUKOU),
-            # 印綬: 日干を生む・同陰陽 → 玉堂星
-            (TenStem.KINOE, TenStem.MIZUNOE, MajorStar.GYOKUDO),
+            # 官星: 日干を剋す・同陰陽 → 車騎星
+            (TenStem.KINOE, TenStem.KANOE, MajorStar.SHAKI),
+            # 官星: 日干を剋す・異陰陽 → 牽牛星
+            (TenStem.KINOE, TenStem.KANOTO, MajorStar.KENGYU),
+            # 印綬: 日干を生む・同陰陽 → 龍高星
+            (TenStem.KINOE, TenStem.MIZUNOE, MajorStar.RYUKOU),
+            # 印綬: 日干を生む・異陰陽 → 玉堂星
+            (TenStem.KINOE, TenStem.MIZUNOTO, MajorStar.GYOKUDO),
         ],
     )
     def test_kinoe_vs_all(self, day: TenStem, target: TenStem, expected: MajorStar) -> None:
@@ -61,25 +61,25 @@ class TestDetermineMajorStar:
         assert school.determine_major_star(day, target) == expected
 
     def test_hinoe_vs_mizunoe(self) -> None:
-        """丙(火) vs 壬(水): 官星・同陰陽 → 牽牛星."""
+        """丙(火) vs 壬(水): 官星・同陰陽 → 車騎星."""
         school = StandardSchool()
-        assert school.determine_major_star(TenStem.HINOE, TenStem.MIZUNOE) == MajorStar.KENGYU
+        assert school.determine_major_star(TenStem.HINOE, TenStem.MIZUNOE) == MajorStar.SHAKI
 
 
 class TestGetTeiouBranch:
     @pytest.mark.parametrize(
         ("stem", "expected"),
         [
-            (TenStem.KINOE, TwelveBranch.U),
-            (TenStem.KINOTO, TwelveBranch.U),
-            (TenStem.HINOE, TwelveBranch.UMA),
-            (TenStem.HINOTO, TwelveBranch.UMA),
-            (TenStem.TSUCHINOE, TwelveBranch.INU),
-            (TenStem.TSUCHINOTO, TwelveBranch.HITSUJI),
-            (TenStem.KANOE, TwelveBranch.TORI),
-            (TenStem.KANOTO, TwelveBranch.TORI),
-            (TenStem.MIZUNOE, TwelveBranch.NE),
-            (TenStem.MIZUNOTO, TwelveBranch.NE),
+            (TenStem.KINOE, TwelveBranch.U),  # 甲 → 卯
+            (TenStem.KINOTO, TwelveBranch.TORA),  # 乙 → 寅
+            (TenStem.HINOE, TwelveBranch.UMA),  # 丙 → 午
+            (TenStem.HINOTO, TwelveBranch.MI),  # 丁 → 巳
+            (TenStem.TSUCHINOE, TwelveBranch.UMA),  # 戊 → 午
+            (TenStem.TSUCHINOTO, TwelveBranch.MI),  # 己 → 巳
+            (TenStem.KANOE, TwelveBranch.TORI),  # 庚 → 酉
+            (TenStem.KANOTO, TwelveBranch.SARU),  # 辛 → 申
+            (TenStem.MIZUNOE, TwelveBranch.NE),  # 壬 → 子
+            (TenStem.MIZUNOTO, TwelveBranch.I),  # 癸 → 亥
         ],
     )
     def test_teiou_branch(self, stem: TenStem, expected: TwelveBranch) -> None:
