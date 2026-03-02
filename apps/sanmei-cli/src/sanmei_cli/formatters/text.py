@@ -14,9 +14,16 @@ if TYPE_CHECKING:
     )
     from sanmei_core.domain.fortune import Nenun
     from sanmei_core.domain.hidden_stems import HiddenStems
+    from sanmei_core.domain.kanshi import TenStem
 
 _STEM_KANJI = "甲乙丙丁戊己庚辛壬癸"
 _BRANCH_KANJI = "子丑寅卯辰巳午未申酉戌亥"
+
+
+def _cjk_ljust(text: str, width: int) -> str:
+    """全角文字の表示幅を考慮した左寄せパディング."""
+    display_width = sum(2 if ord(c) > 0x7F else 1 for c in text)
+    return text + " " * max(0, width - display_width)
 
 
 def _stem(stem_val: int) -> str:
@@ -25,6 +32,13 @@ def _stem(stem_val: int) -> str:
 
 def _branch(branch_val: int) -> str:
     return _BRANCH_KANJI[branch_val]
+
+
+def _stem_or_dash(stem: TenStem | None) -> str:
+    """蔵干の表示（漢字のみ、Noneはダッシュ）."""
+    if stem is None:
+        return "-"
+    return _STEM_KANJI[stem.value]
 
 
 def format_meishiki(meishiki: Meishiki, dt: datetime) -> str:
@@ -39,24 +53,25 @@ def format_meishiki(meishiki: Meishiki, dt: datetime) -> str:
     # 干支
     p = meishiki.pillars
     lines.append("【干支】")
-    lines.append(f"{'':8s}{'日':10s}{'月':10s}{'年':10s}")
     lines.append(
-        f"{'天干':8s}{_stem(p.day.stem.value):10s}{_stem(p.month.stem.value):10s}{_stem(p.year.stem.value):10s}"
+        f"{_cjk_ljust('', 8)}{_cjk_ljust('日', 10)}"
+        f"{_cjk_ljust('月', 10)}{_cjk_ljust('年', 10)}"
     )
     lines.append(
-        f"{'地支':8s}"
-        f"{_branch(p.day.branch.value):10s}"
-        f"{_branch(p.month.branch.value):10s}"
-        f"{_branch(p.year.branch.value):10s}"
+        f"{_cjk_ljust('天干', 8)}{_cjk_ljust(_stem(p.day.stem.value), 10)}"
+        f"{_cjk_ljust(_stem(p.month.stem.value), 10)}"
+        f"{_cjk_ljust(_stem(p.year.stem.value), 10)}"
+    )
+    lines.append(
+        f"{_cjk_ljust('地支', 8)}"
+        f"{_cjk_ljust(_branch(p.day.branch.value), 10)}"
+        f"{_cjk_ljust(_branch(p.month.branch.value), 10)}"
+        f"{_cjk_ljust(_branch(p.year.branch.value), 10)}"
     )
     lines.append("")
 
     # 蔵干
-    _append_hidden_stems(
-        lines,
-        meishiki.hidden_stems,
-        branches=(p.day.branch.value, p.month.branch.value, p.year.branch.value),
-    )
+    _append_hidden_stems(lines, meishiki.hidden_stems)
     lines.append("")
 
     # 使命星
@@ -152,53 +167,34 @@ def format_isouhou(result: IsouhouResult) -> str:
     return "\n".join(lines)
 
 
-def _stem_debug(stem: int | None) -> str:
-    """蔵干のデバッグ表示（漢字+enum値）."""
-    if stem is None:
-        return "-"
-    return f"{_STEM_KANJI[stem]}({stem})"
-
-
-def _branch_debug(branch_val: int) -> str:
-    return f"{_BRANCH_KANJI[branch_val]}({branch_val})"
-
-
 def _append_hidden_stems(
     lines: list[str],
     hs: dict[str, HiddenStems],
-    branches: tuple[int, int, int],
 ) -> None:
-    """蔵干セクション（日/月/年順、デバッグ数値付き）.
-
-    branches: (day_branch, month_branch, year_branch) の enum 値タプル。
-    """
+    """蔵干セクション（日/月/年順）."""
     lines.append("【蔵干】")
-    lines.append(f"{'':8s}{'日':10s}{'月':10s}{'年':10s}")
+    lines.append(
+        f"{_cjk_ljust('', 8)}{_cjk_ljust('日', 10)}"
+        f"{_cjk_ljust('月', 10)}{_cjk_ljust('年', 10)}"
+    )
     day, month, year = hs["day"], hs["month"], hs["year"]
-    day_b, month_b, year_b = branches
     lines.append(
-        f"{'地支':8s}"
-        f"{_branch_debug(day_b):10s}"
-        f"{_branch_debug(month_b):10s}"
-        f"{_branch_debug(year_b):10s}"
+        f"{_cjk_ljust('初元', 8)}"
+        f"{_cjk_ljust(_stem_or_dash(day.shogen), 10)}"
+        f"{_cjk_ljust(_stem_or_dash(month.shogen), 10)}"
+        f"{_cjk_ljust(_stem_or_dash(year.shogen), 10)}"
     )
     lines.append(
-        f"{'初元':8s}"
-        f"{_stem_debug(day.shogen.value if day.shogen is not None else None):10s}"
-        f"{_stem_debug(month.shogen.value if month.shogen is not None else None):10s}"
-        f"{_stem_debug(year.shogen.value if year.shogen is not None else None):10s}"
+        f"{_cjk_ljust('中元', 8)}"
+        f"{_cjk_ljust(_stem_or_dash(day.chuugen), 10)}"
+        f"{_cjk_ljust(_stem_or_dash(month.chuugen), 10)}"
+        f"{_cjk_ljust(_stem_or_dash(year.chuugen), 10)}"
     )
     lines.append(
-        f"{'中元':8s}"
-        f"{_stem_debug(day.chuugen.value if day.chuugen is not None else None):10s}"
-        f"{_stem_debug(month.chuugen.value if month.chuugen is not None else None):10s}"
-        f"{_stem_debug(year.chuugen.value if year.chuugen is not None else None):10s}"
-    )
-    lines.append(
-        f"{'本元':8s}"
-        f"{_stem_debug(day.hongen.value):10s}"
-        f"{_stem_debug(month.hongen.value):10s}"
-        f"{_stem_debug(year.hongen.value):10s}"
+        f"{_cjk_ljust('本元', 8)}"
+        f"{_cjk_ljust(_stem(day.hongen.value), 10)}"
+        f"{_cjk_ljust(_stem(month.hongen.value), 10)}"
+        f"{_cjk_ljust(_stem(year.hongen.value), 10)}"
     )
 
 

@@ -78,23 +78,35 @@ class TestFormatMeishiki:
             header_line.index("日") < header_line.index("月") < header_line.index("年")
         )
 
-    def test_hidden_stems_shows_branch_debug(self, meishiki):
-        """蔵干セクションに地支のデバッグ情報（漢字+enum値）がある."""
+    def test_hidden_stems_no_branch_row(self, meishiki):
+        """蔵干セクションに地支行がないこと."""
         result = format_meishiki(meishiki, BIRTH_DT)
         section = result[result.index("【蔵干】") :]
-        assert "地支" in section
-        # enum値が括弧付きで表示される
-        for key in ("day", "month", "year"):
-            branch_val = getattr(meishiki.pillars, key).branch.value
-            assert f"({branch_val})" in section
+        # 蔵干セクション内で次のセクションまでを切り出す
+        next_section = section.index("【使命星】")
+        zoukan_section = section[:next_section]
+        # 地支行がないことを確認
+        for line in zoukan_section.split("\n"):
+            assert not line.startswith("地支")
+
+    def test_hidden_stems_no_debug_numbers(self, meishiki):
+        """蔵干セクションにデバッグ数字(N)が表示されないこと."""
+        result = format_meishiki(meishiki, BIRTH_DT)
+        section = result[result.index("【蔵干】") :]
+        next_section = section.index("【使命星】")
+        zoukan_section = section[:next_section]
+        # 括弧付き数字がないことを確認
+        import re
+
+        assert not re.search(r"\(\d+\)", zoukan_section)
 
     def test_hidden_stems_hongen_always_present(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
-        # 本元は全柱に必ず存在し、漢字(enum値)の形式で表示される
+        # 本元は全柱に必ず存在し、漢字のみで表示される
         for key in ("year", "month", "day"):
             hs = meishiki.hidden_stems[key]
             stem_kanji = "甲乙丙丁戊己庚辛壬癸"[hs.hongen.value]
-            assert f"{stem_kanji}({hs.hongen.value})" in result
+            assert stem_kanji in result
 
     def test_hidden_stems_none_shown_as_dash(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
