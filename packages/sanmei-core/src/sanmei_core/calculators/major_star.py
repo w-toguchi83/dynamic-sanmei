@@ -22,7 +22,7 @@ def calculate_major_star_chart(
     return MajorStarChart(
         north=school.determine_major_star(day_stem, pillars.year.stem),
         east=school.determine_major_star(day_stem, pillars.month.stem),
-        center=school.determine_major_star(day_stem, hidden_stems["day"].main),
-        west=school.determine_major_star(day_stem, hidden_stems["month"].main),
-        south=school.determine_major_star(day_stem, hidden_stems["year"].main),
+        center=school.determine_major_star(day_stem, hidden_stems["day"].hongen),
+        west=school.determine_major_star(day_stem, hidden_stems["month"].hongen),
+        south=school.determine_major_star(day_stem, hidden_stems["year"].hongen),
     )

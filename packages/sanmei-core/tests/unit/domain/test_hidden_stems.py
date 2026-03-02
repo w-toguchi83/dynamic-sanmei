@@ -10,23 +10,23 @@ from sanmei_core.domain.kanshi import TenStem
 
 class TestHiddenStems:
     def test_all_three(self) -> None:
-        hs = HiddenStems(main=TenStem.KINOE, middle=TenStem.HINOE, minor=TenStem.TSUCHINOE)
-        assert hs.main == TenStem.KINOE
-        assert hs.middle == TenStem.HINOE
-        assert hs.minor == TenStem.TSUCHINOE
+        hs = HiddenStems(hongen=TenStem.KINOE, chuugen=TenStem.HINOE, shogen=TenStem.TSUCHINOE)
+        assert hs.hongen == TenStem.KINOE
+        assert hs.chuugen == TenStem.HINOE
+        assert hs.shogen == TenStem.TSUCHINOE
 
-    def test_main_only(self) -> None:
-        hs = HiddenStems(main=TenStem.MIZUNOTO, middle=None, minor=None)
-        assert hs.main == TenStem.MIZUNOTO
-        assert hs.middle is None
-        assert hs.minor is None
+    def test_hongen_only(self) -> None:
+        hs = HiddenStems(hongen=TenStem.MIZUNOTO, chuugen=None, shogen=None)
+        assert hs.hongen == TenStem.MIZUNOTO
+        assert hs.chuugen is None
+        assert hs.shogen is None
 
-    def test_main_and_middle(self) -> None:
-        hs = HiddenStems(main=TenStem.MIZUNOE, middle=TenStem.KINOE, minor=None)
-        assert hs.middle == TenStem.KINOE
-        assert hs.minor is None
+    def test_hongen_and_chuugen(self) -> None:
+        hs = HiddenStems(hongen=TenStem.MIZUNOE, chuugen=TenStem.KINOE, shogen=None)
+        assert hs.chuugen == TenStem.KINOE
+        assert hs.shogen is None
 
     def test_frozen(self) -> None:
-        hs = HiddenStems(main=TenStem.KINOE, middle=None, minor=None)
+        hs = HiddenStems(hongen=TenStem.KINOE, chuugen=None, shogen=None)
         with pytest.raises(ValidationError):
-            hs.main = TenStem.KINOTO  # type: ignore[misc]
+            hs.hongen = TenStem.KINOTO  # type: ignore[misc]

@@ -39,9 +39,9 @@ class TestMeishikiCalculator:
         meishiki = calc.calculate(dt)
 
         # 蔵干の主気を検証
-        assert meishiki.hidden_stems["year"].main is not None
-        assert meishiki.hidden_stems["month"].main is not None
-        assert meishiki.hidden_stems["day"].main is not None
+        assert meishiki.hidden_stems["year"].hongen is not None
+        assert meishiki.hidden_stems["month"].hongen is not None
+        assert meishiki.hidden_stems["day"].hongen is not None
 
         # 天中殺の type が有効であること
         assert isinstance(meishiki.tenchuusatsu.type, TenchuusatsuType)

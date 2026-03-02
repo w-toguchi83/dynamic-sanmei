@@ -19,7 +19,7 @@ class _StubSchool:
         return "stub"
 
     def get_hidden_stems(self, branch: TwelveBranch) -> HiddenStems:
-        return HiddenStems(main=TenStem.KINOE)
+        return HiddenStems(hongen=TenStem.KINOE)
 
     def determine_major_star(self, day_stem: TenStem, target_stem: TenStem) -> MajorStar:
         return MajorStar.KANSAKU
@@ -37,6 +37,6 @@ class _StubSchool:
 def test_stub_satisfies_protocol() -> None:
     school: SchoolProtocol = _StubSchool()
     assert school.name == "stub"
-    assert school.get_hidden_stems(TwelveBranch.NE).main == TenStem.KINOE
+    assert school.get_hidden_stems(TwelveBranch.NE).hongen == TenStem.KINOE
     assert school.determine_major_star(TenStem.KINOE, TenStem.KINOE) == MajorStar.KANSAKU
     assert school.get_teiou_branch(TenStem.KINOE) == TwelveBranch.U

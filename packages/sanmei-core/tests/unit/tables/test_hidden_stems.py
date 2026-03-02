@@ -1,4 +1,4 @@
-"""蔵干テーブルのテスト."""
+"""蔵干テーブルのテスト（算命学二十八元）."""
 
 from __future__ import annotations
 
@@ -14,30 +14,30 @@ class TestStandardHiddenStems:
             assert branch in STANDARD_HIDDEN_STEMS
 
     @pytest.mark.parametrize(
-        ("branch", "main", "middle", "minor"),
+        ("branch", "hongen", "chuugen", "shogen"),
         [
             (TwelveBranch.NE, TenStem.MIZUNOTO, None, None),
             (TwelveBranch.USHI, TenStem.TSUCHINOTO, TenStem.KANOTO, TenStem.MIZUNOTO),
             (TwelveBranch.TORA, TenStem.KINOE, TenStem.HINOE, TenStem.TSUCHINOE),
             (TwelveBranch.U, TenStem.KINOTO, None, None),
-            (TwelveBranch.TATSU, TenStem.TSUCHINOE, TenStem.KINOTO, TenStem.MIZUNOTO),
+            (TwelveBranch.TATSU, TenStem.TSUCHINOE, TenStem.MIZUNOTO, TenStem.KINOTO),
             (TwelveBranch.MI, TenStem.HINOE, TenStem.KANOE, TenStem.TSUCHINOE),
-            (TwelveBranch.UMA, TenStem.HINOTO, TenStem.TSUCHINOTO, None),
-            (TwelveBranch.HITSUJI, TenStem.TSUCHINOTO, TenStem.HINOTO, TenStem.KINOTO),
+            (TwelveBranch.UMA, TenStem.HINOTO, None, TenStem.TSUCHINOTO),
+            (TwelveBranch.HITSUJI, TenStem.TSUCHINOTO, TenStem.KINOTO, TenStem.HINOTO),
             (TwelveBranch.SARU, TenStem.KANOE, TenStem.MIZUNOE, TenStem.TSUCHINOE),
             (TwelveBranch.TORI, TenStem.KANOTO, None, None),
-            (TwelveBranch.INU, TenStem.TSUCHINOE, TenStem.KANOTO, TenStem.HINOTO),
+            (TwelveBranch.INU, TenStem.TSUCHINOE, TenStem.HINOTO, TenStem.KANOTO),
             (TwelveBranch.I, TenStem.MIZUNOE, TenStem.KINOE, None),
         ],
     )
     def test_hidden_stems(
         self,
         branch: TwelveBranch,
-        main: TenStem,
-        middle: TenStem | None,
-        minor: TenStem | None,
+        hongen: TenStem,
+        chuugen: TenStem | None,
+        shogen: TenStem | None,
     ) -> None:
         hs = STANDARD_HIDDEN_STEMS[branch]
-        assert hs.main == main
-        assert hs.middle == middle
-        assert hs.minor == minor
+        assert hs.hongen == hongen
+        assert hs.chuugen == chuugen
+        assert hs.shogen == shogen

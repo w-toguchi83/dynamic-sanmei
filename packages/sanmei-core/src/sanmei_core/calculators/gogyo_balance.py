@@ -28,11 +28,11 @@ def _collect_hidden_stems(hidden_stems: dict[str, HiddenStems]) -> list[TenStem]
     """蔵干から全ての十干を収集."""
     result: list[TenStem] = []
     for hs in hidden_stems.values():
-        result.append(hs.main)
-        if hs.middle is not None:
-            result.append(hs.middle)
-        if hs.minor is not None:
-            result.append(hs.minor)
+        result.append(hs.hongen)
+        if hs.chuugen is not None:
+            result.append(hs.chuugen)
+        if hs.shogen is not None:
+            result.append(hs.shogen)
     return result
 
 

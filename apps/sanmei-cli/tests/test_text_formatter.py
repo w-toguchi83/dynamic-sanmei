@@ -52,7 +52,7 @@ class TestFormatMeishiki:
     def test_contains_hidden_stems_section(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
         assert "【蔵干】" in result
-        assert "本気" in result
+        assert "本元" in result
 
     def test_hidden_stems_shows_all_pillars(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
@@ -61,20 +61,20 @@ class TestFormatMeishiki:
         assert "月柱" in result
         assert "日柱" in result
 
-    def test_hidden_stems_main_always_present(self, meishiki):
+    def test_hidden_stems_hongen_always_present(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
-        # 本気は全柱に必ず存在するので漢字が表示される
+        # 本元は全柱に必ず存在するので漢字が表示される
         for key in ("year", "month", "day"):
             hs = meishiki.hidden_stems[key]
-            stem_kanji = "甲乙丙丁戊己庚辛壬癸"[hs.main.value]
+            stem_kanji = "甲乙丙丁戊己庚辛壬癸"[hs.hongen.value]
             assert stem_kanji in result
 
     def test_hidden_stems_none_shown_as_dash(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
-        # middle/minor が None の柱があればダッシュ表示
+        # chuugen/shogen が None の柱があればダッシュ表示
         has_none = any(
-            meishiki.hidden_stems[k].middle is None
-            or meishiki.hidden_stems[k].minor is None
+            meishiki.hidden_stems[k].chuugen is None
+            or meishiki.hidden_stems[k].shogen is None
             for k in ("year", "month", "day")
         )
         if has_none:

@@ -153,22 +153,22 @@ def _append_hidden_stems(lines: list[str], hs: dict[str, HiddenStems]) -> None:
     lines.append(f"{'':8s}{'年柱':10s}{'月柱':10s}{'日柱':10s}")
     year, month, day = hs["year"], hs["month"], hs["day"]
     lines.append(
-        f"{'本気':8s}"
-        f"{_stem(year.main.value):10s}"
-        f"{_stem(month.main.value):10s}"
-        f"{_stem(day.main.value):10s}"
+        f"{'初元':8s}"
+        f"{_stem_or_dash(year.shogen.value if year.shogen is not None else None):10s}"
+        f"{_stem_or_dash(month.shogen.value if month.shogen is not None else None):10s}"
+        f"{_stem_or_dash(day.shogen.value if day.shogen is not None else None):10s}"
     )
     lines.append(
-        f"{'中気':8s}"
-        f"{_stem_or_dash(year.middle.value if year.middle is not None else None):10s}"
-        f"{_stem_or_dash(month.middle.value if month.middle is not None else None):10s}"
-        f"{_stem_or_dash(day.middle.value if day.middle is not None else None):10s}"
+        f"{'中元':8s}"
+        f"{_stem_or_dash(year.chuugen.value if year.chuugen is not None else None):10s}"
+        f"{_stem_or_dash(month.chuugen.value if month.chuugen is not None else None):10s}"
+        f"{_stem_or_dash(day.chuugen.value if day.chuugen is not None else None):10s}"
     )
     lines.append(
-        f"{'余気':8s}"
-        f"{_stem_or_dash(year.minor.value if year.minor is not None else None):10s}"
-        f"{_stem_or_dash(month.minor.value if month.minor is not None else None):10s}"
-        f"{_stem_or_dash(day.minor.value if day.minor is not None else None):10s}"
+        f"{'本元':8s}"
+        f"{_stem(year.hongen.value):10s}"
+        f"{_stem(month.hongen.value):10s}"
+        f"{_stem(day.hongen.value):10s}"
     )
 
 

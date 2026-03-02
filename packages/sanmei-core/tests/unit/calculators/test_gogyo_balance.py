@@ -26,26 +26,26 @@ class TestCalculateGogyoBalance:
         """天干が全て木（甲甲甲）の場合、stem_count.wood == 3."""
         pillars = _make_pillars(TenStem.KINOE, TenStem.KINOE, TenStem.KINOE)
         hidden = {
-            "year": HiddenStems(main=TenStem.MIZUNOTO),
-            "month": HiddenStems(main=TenStem.MIZUNOTO),
-            "day": HiddenStems(main=TenStem.MIZUNOTO),
+            "year": HiddenStems(hongen=TenStem.MIZUNOTO),
+            "month": HiddenStems(hongen=TenStem.MIZUNOTO),
+            "day": HiddenStems(hongen=TenStem.MIZUNOTO),
         }
         balance = calculate_gogyo_balance(pillars, hidden)
         assert balance.stem_count.wood == 3
         assert balance.stem_count.fire == 0
 
     def test_branch_count_includes_hidden_stems(self) -> None:
-        """蔵干の本気・中気・余気が全てカウントされる."""
+        """蔵干の本元・中元・初元が全てカウントされる."""
         pillars = _make_pillars(TenStem.KINOE, TenStem.KINOE, TenStem.KINOE)
         # 寅の蔵干: 甲(木), 丙(火), 戊(土)
         hidden = {
             "year": HiddenStems(
-                main=TenStem.KINOE,
-                middle=TenStem.HINOE,
-                minor=TenStem.TSUCHINOE,
+                hongen=TenStem.KINOE,
+                chuugen=TenStem.HINOE,
+                shogen=TenStem.TSUCHINOE,
             ),
-            "month": HiddenStems(main=TenStem.KINOE),
-            "day": HiddenStems(main=TenStem.MIZUNOTO),
+            "month": HiddenStems(hongen=TenStem.KINOE),
+            "day": HiddenStems(hongen=TenStem.MIZUNOTO),
         }
         balance = calculate_gogyo_balance(pillars, hidden)
         assert balance.branch_count.wood == 2  # 甲 + 甲
@@ -57,9 +57,9 @@ class TestCalculateGogyoBalance:
         """total_count は stem_count + branch_count."""
         pillars = _make_pillars(TenStem.KINOE, TenStem.HINOE, TenStem.KANOE)
         hidden = {
-            "year": HiddenStems(main=TenStem.MIZUNOTO),
-            "month": HiddenStems(main=TenStem.MIZUNOTO),
-            "day": HiddenStems(main=TenStem.MIZUNOTO),
+            "year": HiddenStems(hongen=TenStem.MIZUNOTO),
+            "month": HiddenStems(hongen=TenStem.MIZUNOTO),
+            "day": HiddenStems(hongen=TenStem.MIZUNOTO),
         }
         balance = calculate_gogyo_balance(pillars, hidden)
         assert balance.total_count.wood == balance.stem_count.wood + balance.branch_count.wood
@@ -70,9 +70,9 @@ class TestCalculateGogyoBalance:
         """dominant は最も多い五行."""
         pillars = _make_pillars(TenStem.KINOE, TenStem.KINOTO, TenStem.KINOE)
         hidden = {
-            "year": HiddenStems(main=TenStem.KINOE),
-            "month": HiddenStems(main=TenStem.KINOE),
-            "day": HiddenStems(main=TenStem.KINOE),
+            "year": HiddenStems(hongen=TenStem.KINOE),
+            "month": HiddenStems(hongen=TenStem.KINOE),
+            "day": HiddenStems(hongen=TenStem.KINOE),
         }
         balance = calculate_gogyo_balance(pillars, hidden)
         assert balance.dominant == GoGyo.WOOD
@@ -81,9 +81,9 @@ class TestCalculateGogyoBalance:
         """lacking は不在の五行を列挙."""
         pillars = _make_pillars(TenStem.KINOE, TenStem.KINOTO, TenStem.KINOE)
         hidden = {
-            "year": HiddenStems(main=TenStem.KINOE),
-            "month": HiddenStems(main=TenStem.KINOE),
-            "day": HiddenStems(main=TenStem.KINOE),
+            "year": HiddenStems(hongen=TenStem.KINOE),
+            "month": HiddenStems(hongen=TenStem.KINOE),
+            "day": HiddenStems(hongen=TenStem.KINOE),
         }
         balance = calculate_gogyo_balance(pillars, hidden)
         lacking = set(balance.lacking)
@@ -96,9 +96,9 @@ class TestCalculateGogyoBalance:
         """day_stem_gogyo は日干の五行."""
         pillars = _make_pillars(TenStem.KINOE, TenStem.HINOE, TenStem.MIZUNOE)
         hidden = {
-            "year": HiddenStems(main=TenStem.KINOE),
-            "month": HiddenStems(main=TenStem.KINOE),
-            "day": HiddenStems(main=TenStem.KINOE),
+            "year": HiddenStems(hongen=TenStem.KINOE),
+            "month": HiddenStems(hongen=TenStem.KINOE),
+            "day": HiddenStems(hongen=TenStem.KINOE),
         }
         balance = calculate_gogyo_balance(pillars, hidden)
         assert balance.day_stem_gogyo == GoGyo.WATER

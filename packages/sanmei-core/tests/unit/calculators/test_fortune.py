@@ -110,9 +110,9 @@ def _make_meishiki(
             day=Kanshi(stem=day_stem, branch=TwelveBranch.NE, index=0),
         ),
         hidden_stems={
-            "year": HiddenStems(main=TenStem.MIZUNOTO),
-            "month": HiddenStems(main=TenStem.MIZUNOTO),
-            "day": HiddenStems(main=TenStem.MIZUNOTO),
+            "year": HiddenStems(hongen=TenStem.MIZUNOTO),
+            "month": HiddenStems(hongen=TenStem.MIZUNOTO),
+            "day": HiddenStems(hongen=TenStem.MIZUNOTO),
         },
         major_stars=MajorStarChart(
             north=MajorStar.KANSAKU,

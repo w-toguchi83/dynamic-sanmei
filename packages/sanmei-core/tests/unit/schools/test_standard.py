@@ -18,14 +18,14 @@ class TestHiddenStems:
     def test_ne_main_is_mizunoto(self) -> None:
         school = StandardSchool()
         hs = school.get_hidden_stems(TwelveBranch.NE)
-        assert hs.main == TenStem.MIZUNOTO
+        assert hs.hongen == TenStem.MIZUNOTO
 
     def test_tora_all_three(self) -> None:
         school = StandardSchool()
         hs = school.get_hidden_stems(TwelveBranch.TORA)
-        assert hs.main == TenStem.KINOE
-        assert hs.middle == TenStem.HINOE
-        assert hs.minor == TenStem.TSUCHINOE
+        assert hs.hongen == TenStem.KINOE
+        assert hs.chuugen == TenStem.HINOE
+        assert hs.shogen == TenStem.TSUCHINOE
 
 
 class TestDetermineMajorStar:
