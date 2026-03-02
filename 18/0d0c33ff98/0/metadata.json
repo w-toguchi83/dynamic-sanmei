@@ -1,0 +1,37 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "180d0c33ff98",
+  "session_id": "45633fd0-4198-4f94-a827-f08a28c474a4",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-02T10:05:10.112754Z",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "packages/sanmei-core/src/sanmei_core/schools/standard.py",
+    "packages/sanmei-core/tests/unit/calculators/test_major_star.py",
+    "packages/sanmei-core/tests/unit/calculators/test_subsidiary_star.py",
+    "packages/sanmei-core/tests/unit/schools/test_standard.py",
+    "docs/domain/04_Chapter4_Ten_Major_Stars.md",
+    "docs/domain/05_Chapter5_Twelve_Subsidiary_Stars.md",
+    "packages/sanmei-core/src/sanmei_core/calculators/major_star.py",
+    "packages/sanmei-core/src/sanmei_core/calculators/subsidiary_star.py"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "0bbab620e64b",
+  "token_usage": {
+    "input_tokens": 2800,
+    "cache_creation_tokens": 184784,
+    "cache_read_tokens": 4064316,
+    "output_tokens": 74968,
+    "api_call_count": 37
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-02T10:05:09.819131Z",
+    "agent_lines": 0,
+    "human_added": 159,
+    "human_modified": 103,
+    "human_removed": 0,
+    "total_committed": 159,
+    "agent_percentage": 0
+  }
+}
