@@ -1,5 +1,7 @@
 """動的オントロジー API リクエスト/レスポンス Pydantic モデル."""
 
+from __future__ import annotations
+
 from datetime import datetime
 from typing import Annotated, Any
 from uuid import UUID
@@ -273,7 +275,11 @@ class FilterConditionRequest(BaseModel):
     field: str | None = Field(default=None, description="Property field name to filter on")
     op: str | None = Field(
         default=None,
-        description="Filter operator: eq, ne, gt, gte, lt, lte, in, not_in, contains, starts_with, ends_with, is_null, is_not_null, regex, full_text",
+        description=(
+            "Filter operator: eq, ne, gt, gte, lt, lte, in, not_in, "
+            "contains, starts_with, ends_with, is_null, is_not_null, "
+            "regex, full_text"
+        ),
     )
     value: str | int | float | bool | list[str] | list[int] | list[float] | None = Field(
         default=None, description="Value to compare against"

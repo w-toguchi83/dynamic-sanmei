@@ -17,7 +17,7 @@ from dynamic_ontology.adapters.api.models import (
 )
 from dynamic_ontology.domain.models.entity_type import EntityType, PropertyDefinition, PropertyType
 from dynamic_ontology.domain.models.relationship import RelationshipType
-from dynamic_ontology.domain.models.schema_version import CompatibilityLevel, SchemaVersion, TypeKind
+from dynamic_ontology.domain.models.schema_version import CompatibilityLevel, SchemaDiff, SchemaVersion, TypeKind
 from dynamic_ontology.domain.ports.schema_version_repository import SchemaVersionRepository
 from dynamic_ontology.domain.services.schema_versioning import compute_diff, generate_change_summary
 

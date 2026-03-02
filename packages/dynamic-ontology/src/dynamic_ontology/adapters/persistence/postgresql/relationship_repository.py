@@ -58,8 +58,12 @@ class PostgresRelationshipRepository:
         now = datetime.now(UTC)
 
         query = text("""
-            INSERT INTO do_relationships (id, namespace_id, type_id, from_entity_id, to_entity_id, version, properties, created_at, updated_at, changed_by)
-            VALUES (:id, :namespace_id, :type_id, :from_entity_id, :to_entity_id, :version, :properties, :created_at, :updated_at, :changed_by)
+            INSERT INTO do_relationships
+                (id, namespace_id, type_id, from_entity_id, to_entity_id,
+                 version, properties, created_at, updated_at, changed_by)
+            VALUES
+                (:id, :namespace_id, :type_id, :from_entity_id, :to_entity_id,
+                 :version, :properties, :created_at, :updated_at, :changed_by)
             RETURNING id, type_id, from_entity_id, to_entity_id, version, properties, created_at, updated_at, changed_by
         """)
 
@@ -113,8 +117,12 @@ class PostgresRelationshipRepository:
         for index, relationship in enumerate(relationships):
             try:
                 query = text("""
-                    INSERT INTO do_relationships (id, namespace_id, type_id, from_entity_id, to_entity_id, version, properties, created_at, updated_at, changed_by)
-                    VALUES (:id, :namespace_id, :type_id, :from_entity_id, :to_entity_id, :version, :properties, :created_at, :updated_at, :changed_by)
+                    INSERT INTO do_relationships
+                        (id, namespace_id, type_id, from_entity_id, to_entity_id, version, properties,
+                         created_at, updated_at, changed_by)
+                    VALUES
+                        (:id, :namespace_id, :type_id, :from_entity_id, :to_entity_id, :version, :properties,
+                         :created_at, :updated_at, :changed_by)
                     RETURNING id
                 """)
 
@@ -517,7 +525,8 @@ class PostgresRelationshipRepository:
 
         if cursor is not None:
             data_query = text(f"""
-                SELECT id, type_id, from_entity_id, to_entity_id, version, properties, created_at, updated_at, changed_by
+                SELECT id, type_id, from_entity_id, to_entity_id, version, properties,
+                       created_at, updated_at, changed_by
                 FROM do_relationships
                 WHERE {data_where}
                 ORDER BY created_at DESC, id DESC
@@ -526,7 +535,8 @@ class PostgresRelationshipRepository:
             data_params["limit"] = limit
         else:
             data_query = text(f"""
-                SELECT id, type_id, from_entity_id, to_entity_id, version, properties, created_at, updated_at, changed_by
+                SELECT id, type_id, from_entity_id, to_entity_id, version, properties,
+                       created_at, updated_at, changed_by
                 FROM do_relationships
                 WHERE {data_where}
                 ORDER BY created_at DESC, id DESC
@@ -579,7 +589,8 @@ class PostgresRelationshipRepository:
 
         if cursor is not None:
             data_query = text(f"""
-                SELECT id, type_id, from_entity_id, to_entity_id, version, properties, created_at, updated_at, changed_by
+                SELECT id, type_id, from_entity_id, to_entity_id, version, properties,
+                       created_at, updated_at, changed_by
                 FROM do_relationships
                 WHERE {data_where}
                 ORDER BY created_at DESC, id DESC
@@ -588,7 +599,8 @@ class PostgresRelationshipRepository:
             data_params["limit"] = limit
         else:
             data_query = text(f"""
-                SELECT id, type_id, from_entity_id, to_entity_id, version, properties, created_at, updated_at, changed_by
+                SELECT id, type_id, from_entity_id, to_entity_id, version, properties,
+                       created_at, updated_at, changed_by
                 FROM do_relationships
                 WHERE {data_where}
                 ORDER BY created_at DESC, id DESC
@@ -800,9 +812,11 @@ class PostgresRelationshipRepository:
         """Record a history entry for a relationship."""
         query = text("""
             INSERT INTO do_relationship_history
-                (relationship_id, namespace_id, type_id, from_entity_id, to_entity_id, version, properties, valid_from, valid_to, operation, changed_by)
+                (relationship_id, namespace_id, type_id, from_entity_id, to_entity_id,
+                 version, properties, valid_from, valid_to, operation, changed_by)
             VALUES
-                (:relationship_id, :namespace_id, :type_id, :from_entity_id, :to_entity_id, :version, :properties, :valid_from, NULL, :operation, :changed_by)
+                (:relationship_id, :namespace_id, :type_id, :from_entity_id, :to_entity_id,
+                 :version, :properties, :valid_from, NULL, :operation, :changed_by)
         """)
 
         await self._session.execute(

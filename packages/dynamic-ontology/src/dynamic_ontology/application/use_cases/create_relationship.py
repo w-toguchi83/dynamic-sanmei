@@ -101,7 +101,10 @@ class CreateRelationshipUseCase:
                 [
                     {
                         "field": "from_entity_id",
-                        "message": f"Source entity type {from_entity.type_id} is not allowed for relationship type {rel_type.name}",
+                        "message": (
+                            f"Source entity type {from_entity.type_id} is not allowed"
+                            f" for relationship type {rel_type.name}"
+                        ),
                     }
                 ]
             )
@@ -111,7 +114,10 @@ class CreateRelationshipUseCase:
                 [
                     {
                         "field": "to_entity_id",
-                        "message": f"Target entity type {to_entity.type_id} is not allowed for relationship type {rel_type.name}",
+                        "message": (
+                            f"Target entity type {to_entity.type_id} is not allowed"
+                            f" for relationship type {rel_type.name}"
+                        ),
                     }
                 ]
             )

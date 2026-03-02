@@ -53,9 +53,17 @@ class PostgresEntityTypeRepository:
         schema_definition = self._to_schema_definition(entity_type)
 
         query = text("""
-            INSERT INTO do_entity_types (id, namespace_id, name, description, schema_definition, display_property, created_at, updated_at)
-            VALUES (:id, :namespace_id, :name, :description, :schema_definition, :display_property, :created_at, :updated_at)
-            RETURNING id, name, description, schema_definition, display_property, created_at, updated_at
+            INSERT INTO do_entity_types (
+                id, namespace_id, name, description,
+                schema_definition, display_property, created_at, updated_at
+            )
+            VALUES (
+                :id, :namespace_id, :name, :description,
+                :schema_definition, :display_property, :created_at, :updated_at
+            )
+            RETURNING
+                id, name, description, schema_definition,
+                display_property, created_at, updated_at
         """)
 
         try:

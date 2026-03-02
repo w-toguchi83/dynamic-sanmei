@@ -59,13 +59,18 @@ class PostgresEntityRepository:
         now = datetime.now(UTC)
 
         query = text("""
-            INSERT INTO do_entities (id, namespace_id, type_id, version, properties, search_vector, created_at, updated_at, changed_by)
+            INSERT INTO do_entities (
+                id, namespace_id, type_id, version, properties,
+                search_vector, created_at, updated_at, changed_by
+            )
             VALUES (
                 :id, :namespace_id, :type_id, :version, :properties,
                 to_tsvector('simple', COALESCE(:search_text, '')),
                 :created_at, :updated_at, :changed_by
             )
-            RETURNING id, type_id, version, properties, created_at, updated_at, changed_by
+            RETURNING
+                id, type_id, version, properties,
+                created_at, updated_at, changed_by
         """)
 
         properties_json = json.dumps(entity.properties)
@@ -133,7 +138,10 @@ class PostgresEntityRepository:
         for index, entity in enumerate(entities):
             try:
                 query = text("""
-                    INSERT INTO do_entities (id, namespace_id, type_id, version, properties, search_vector, created_at, updated_at, changed_by)
+                    INSERT INTO do_entities (
+                        id, namespace_id, type_id, version, properties,
+                        search_vector, created_at, updated_at, changed_by
+                    )
                     VALUES (
                         :id, :namespace_id, :type_id, :version, :properties,
                         to_tsvector('simple', COALESCE(:search_text, '')),

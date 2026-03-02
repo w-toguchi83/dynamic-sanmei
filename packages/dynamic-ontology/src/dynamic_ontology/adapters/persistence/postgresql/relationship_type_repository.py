@@ -120,7 +120,9 @@ class PostgresRelationshipTypeRepository:
             The relationship type if found, None otherwise.
         """
         query = text(f"""
-            SELECT id, name, description, schema_definition, directional, allowed_source_types, allowed_target_types, allow_duplicates, created_at, updated_at
+            SELECT id, name, description, schema_definition, directional,
+                   allowed_source_types, allowed_target_types, allow_duplicates,
+                   created_at, updated_at
             FROM do_relationship_types
             WHERE id = :id {self._namespace_and}
         """)
@@ -143,7 +145,9 @@ class PostgresRelationshipTypeRepository:
             The relationship type if found, None otherwise.
         """
         query = text(f"""
-            SELECT id, name, description, schema_definition, directional, allowed_source_types, allowed_target_types, allow_duplicates, created_at, updated_at
+            SELECT id, name, description, schema_definition, directional,
+                   allowed_source_types, allowed_target_types, allow_duplicates,
+                   created_at, updated_at
             FROM do_relationship_types
             WHERE name = :name {self._namespace_and}
         """)
@@ -163,7 +167,9 @@ class PostgresRelationshipTypeRepository:
             List of all relationship types ordered by name.
         """
         query = text(f"""
-            SELECT id, name, description, schema_definition, directional, allowed_source_types, allowed_target_types, allow_duplicates, created_at, updated_at
+            SELECT id, name, description, schema_definition, directional,
+                   allowed_source_types, allowed_target_types, allow_duplicates,
+                   created_at, updated_at
             FROM do_relationship_types
             {self._namespace_where}
             ORDER BY name
@@ -197,7 +203,9 @@ class PostgresRelationshipTypeRepository:
                 allow_duplicates = :allow_duplicates,
                 updated_at = :updated_at
             WHERE id = :id AND namespace_id = :namespace_id
-            RETURNING id, name, description, schema_definition, directional, allowed_source_types, allowed_target_types, allow_duplicates, created_at, updated_at
+            RETURNING id, name, description, schema_definition, directional,
+                      allowed_source_types, allowed_target_types, allow_duplicates,
+                      created_at, updated_at
         """)
 
         try:
