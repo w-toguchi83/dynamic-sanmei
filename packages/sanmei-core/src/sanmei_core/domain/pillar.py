@@ -1,4 +1,4 @@
-"""三柱（年柱・月柱・日柱）のドメインモデル."""
+"""年月日干支のドメインモデル."""
 
 from pydantic import BaseModel
 
@@ -6,7 +6,7 @@ from sanmei_core.domain.kanshi import Kanshi
 
 
 class ThreePillars(BaseModel, frozen=True):
-    """三柱."""
+    """年・月・日の干支."""
 
     year: Kanshi
     month: Kanshi

@@ -36,23 +36,27 @@ def format_meishiki(meishiki: Meishiki, dt: datetime) -> str:
     )
     lines.append("")
 
-    # 三柱
+    # 干支
     p = meishiki.pillars
-    lines.append("【三柱】")
-    lines.append(f"{'':8s}{'年柱':10s}{'月柱':10s}{'日柱':10s}")
+    lines.append("【干支】")
+    lines.append(f"{'':8s}{'日':10s}{'月':10s}{'年':10s}")
     lines.append(
-        f"{'天干':8s}{_stem(p.year.stem.value):10s}{_stem(p.month.stem.value):10s}{_stem(p.day.stem.value):10s}"
+        f"{'天干':8s}{_stem(p.day.stem.value):10s}{_stem(p.month.stem.value):10s}{_stem(p.year.stem.value):10s}"
     )
     lines.append(
         f"{'地支':8s}"
-        f"{_branch(p.year.branch.value):10s}"
-        f"{_branch(p.month.branch.value):10s}"
         f"{_branch(p.day.branch.value):10s}"
+        f"{_branch(p.month.branch.value):10s}"
+        f"{_branch(p.year.branch.value):10s}"
     )
     lines.append("")
 
     # 蔵干
-    _append_hidden_stems(lines, meishiki.hidden_stems)
+    _append_hidden_stems(
+        lines,
+        meishiki.hidden_stems,
+        branches=(p.day.branch.value, p.month.branch.value, p.year.branch.value),
+    )
     lines.append("")
 
     # 使命星
@@ -70,7 +74,7 @@ def format_meishiki(meishiki: Meishiki, dt: datetime) -> str:
     # 十二大従星
     ss = meishiki.subsidiary_stars
     lines.append("【十二大従星】")
-    lines.append(f"年: {ss.year.value}    月: {ss.month.value}    日: {ss.day.value}")
+    lines.append(f"日: {ss.day.value}    月: {ss.month.value}    年: {ss.year.value}")
     lines.append("")
 
     # 天中殺
@@ -148,31 +152,53 @@ def format_isouhou(result: IsouhouResult) -> str:
     return "\n".join(lines)
 
 
-def _stem_or_dash(stem: int | None) -> str:
-    return _STEM_KANJI[stem] if stem is not None else "-"
+def _stem_debug(stem: int | None) -> str:
+    """蔵干のデバッグ表示（漢字+enum値）."""
+    if stem is None:
+        return "-"
+    return f"{_STEM_KANJI[stem]}({stem})"
 
 
-def _append_hidden_stems(lines: list[str], hs: dict[str, HiddenStems]) -> None:
+def _branch_debug(branch_val: int) -> str:
+    return f"{_BRANCH_KANJI[branch_val]}({branch_val})"
+
+
+def _append_hidden_stems(
+    lines: list[str],
+    hs: dict[str, HiddenStems],
+    branches: tuple[int, int, int],
+) -> None:
+    """蔵干セクション（日/月/年順、デバッグ数値付き）.
+
+    branches: (day_branch, month_branch, year_branch) の enum 値タプル。
+    """
     lines.append("【蔵干】")
-    lines.append(f"{'':8s}{'年柱':10s}{'月柱':10s}{'日柱':10s}")
-    year, month, day = hs["year"], hs["month"], hs["day"]
+    lines.append(f"{'':8s}{'日':10s}{'月':10s}{'年':10s}")
+    day, month, year = hs["day"], hs["month"], hs["year"]
+    day_b, month_b, year_b = branches
+    lines.append(
+        f"{'地支':8s}"
+        f"{_branch_debug(day_b):10s}"
+        f"{_branch_debug(month_b):10s}"
+        f"{_branch_debug(year_b):10s}"
+    )
     lines.append(
         f"{'初元':8s}"
-        f"{_stem_or_dash(year.shogen.value if year.shogen is not None else None):10s}"
-        f"{_stem_or_dash(month.shogen.value if month.shogen is not None else None):10s}"
-        f"{_stem_or_dash(day.shogen.value if day.shogen is not None else None):10s}"
+        f"{_stem_debug(day.shogen.value if day.shogen is not None else None):10s}"
+        f"{_stem_debug(month.shogen.value if month.shogen is not None else None):10s}"
+        f"{_stem_debug(year.shogen.value if year.shogen is not None else None):10s}"
     )
     lines.append(
         f"{'中元':8s}"
-        f"{_stem_or_dash(year.chuugen.value if year.chuugen is not None else None):10s}"
-        f"{_stem_or_dash(month.chuugen.value if month.chuugen is not None else None):10s}"
-        f"{_stem_or_dash(day.chuugen.value if day.chuugen is not None else None):10s}"
+        f"{_stem_debug(day.chuugen.value if day.chuugen is not None else None):10s}"
+        f"{_stem_debug(month.chuugen.value if month.chuugen is not None else None):10s}"
+        f"{_stem_debug(year.chuugen.value if year.chuugen is not None else None):10s}"
     )
     lines.append(
         f"{'本元':8s}"
-        f"{_stem(year.hongen.value):10s}"
-        f"{_stem(month.hongen.value):10s}"
-        f"{_stem(day.hongen.value):10s}"
+        f"{_stem_debug(day.hongen.value):10s}"
+        f"{_stem_debug(month.hongen.value):10s}"
+        f"{_stem_debug(year.hongen.value):10s}"
     )
 
 

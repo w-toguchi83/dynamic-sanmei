@@ -22,14 +22,21 @@ class TestFormatMeishiki:
         result = format_meishiki(meishiki, BIRTH_DT)
         assert "2000年1月15日 14:30" in result
 
-    def test_contains_pillars_section(self, meishiki):
+    def test_contains_kanshi_section(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
-        assert "【三柱】" in result
+        assert "【干支】" in result
         assert "天干" in result
         assert "地支" in result
-        assert "年柱" in result
-        assert "月柱" in result
-        assert "日柱" in result
+
+    def test_kanshi_day_month_year_order(self, meishiki):
+        """干支セクションの列順が日→月→年であること."""
+        result = format_meishiki(meishiki, BIRTH_DT)
+        # ヘッダー行で日が月より左にある
+        kanshi_section = result[result.index("【干支】") :]
+        header_line = kanshi_section.split("\n")[1]
+        assert (
+            header_line.index("日") < header_line.index("月") < header_line.index("年")
+        )
 
     def test_contains_major_stars(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
@@ -40,9 +47,18 @@ class TestFormatMeishiki:
     def test_contains_subsidiary_stars(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
         assert "【十二大従星】" in result
-        assert "年:" in result
-        assert "月:" in result
         assert "日:" in result
+        assert "月:" in result
+        assert "年:" in result
+
+    def test_subsidiary_stars_day_month_year_order(self, meishiki):
+        """十二大従星の表示順が日→月→年であること."""
+        result = format_meishiki(meishiki, BIRTH_DT)
+        section = result[result.index("【十二大従星】") :]
+        stars_line = section.split("\n")[1]
+        assert (
+            stars_line.index("日:") < stars_line.index("月:") < stars_line.index("年:")
+        )
 
     def test_contains_tenchuusatsu(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
@@ -54,20 +70,31 @@ class TestFormatMeishiki:
         assert "【蔵干】" in result
         assert "本元" in result
 
-    def test_hidden_stems_shows_all_pillars(self, meishiki):
+    def test_hidden_stems_shows_day_month_year_header(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
-        # 蔵干セクションに年柱・月柱・日柱のヘッダーがある
-        assert "年柱" in result
-        assert "月柱" in result
-        assert "日柱" in result
+        section = result[result.index("【蔵干】") :]
+        header_line = section.split("\n")[1]
+        assert (
+            header_line.index("日") < header_line.index("月") < header_line.index("年")
+        )
+
+    def test_hidden_stems_shows_branch_debug(self, meishiki):
+        """蔵干セクションに地支のデバッグ情報（漢字+enum値）がある."""
+        result = format_meishiki(meishiki, BIRTH_DT)
+        section = result[result.index("【蔵干】") :]
+        assert "地支" in section
+        # enum値が括弧付きで表示される
+        for key in ("day", "month", "year"):
+            branch_val = getattr(meishiki.pillars, key).branch.value
+            assert f"({branch_val})" in section
 
     def test_hidden_stems_hongen_always_present(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
-        # 本元は全柱に必ず存在するので漢字が表示される
+        # 本元は全柱に必ず存在し、漢字(enum値)の形式で表示される
         for key in ("year", "month", "day"):
             hs = meishiki.hidden_stems[key]
             stem_kanji = "甲乙丙丁戊己庚辛壬癸"[hs.hongen.value]
-            assert stem_kanji in result
+            assert f"{stem_kanji}({hs.hongen.value})" in result
 
     def test_hidden_stems_none_shown_as_dash(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
