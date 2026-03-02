@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "5187c457db9f",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".claude/pdca/cycle-20260302-zoukan-display.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/51/87c457db9f/0/metadata.json",
+      "transcript": "/51/87c457db9f/0/full.jsonl",
+      "context": "/51/87c457db9f/0/context.md",
+      "content_hash": "/51/87c457db9f/0/content_hash.txt",
+      "prompt": "/51/87c457db9f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 28,
+    "cache_creation_tokens": 56640,
+    "cache_read_tokens": 1265925,
+    "output_tokens": 8438,
+    "api_call_count": 24
+  }
+}
