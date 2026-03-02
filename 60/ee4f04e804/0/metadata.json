@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "60ee4f04e804",
+  "session_id": "ceb4df37-d7d0-4b7c-8a76-c88abd18d333",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-02T09:22:55.374839Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".claude/pdca/cycle-20260302-zoukan-sanmeigaku.md"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "7732e2ca2c67",
+  "token_usage": {
+    "input_tokens": 1855,
+    "cache_creation_tokens": 115195,
+    "cache_read_tokens": 6510180,
+    "output_tokens": 43034,
+    "api_call_count": 68
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-02T09:22:55.185335Z",
+    "agent_lines": 164,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 164,
+    "agent_percentage": 100
+  }
+}
