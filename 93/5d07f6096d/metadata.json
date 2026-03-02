@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "935d07f6096d",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "Justfile",
+    "packages/dynamic-ontology/pyproject.toml",
+    "packages/dynamic-ontology/src/dynamic_ontology/adapters/api/models.py",
+    "packages/dynamic-ontology/src/dynamic_ontology/adapters/api/schema_helpers.py",
+    "packages/dynamic-ontology/src/dynamic_ontology/adapters/persistence/postgresql/entity_repository.py",
+    "packages/dynamic-ontology/src/dynamic_ontology/adapters/persistence/postgresql/entity_type_repository.py",
+    "packages/dynamic-ontology/src/dynamic_ontology/adapters/persistence/postgresql/relationship_repository.py",
+    "packages/dynamic-ontology/src/dynamic_ontology/adapters/persistence/postgresql/relationship_type_repository.py",
+    "packages/dynamic-ontology/src/dynamic_ontology/application/use_cases/create_relationship.py",
+    "pyproject.toml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/93/5d07f6096d/0/metadata.json",
+      "transcript": "/93/5d07f6096d/0/full.jsonl",
+      "context": "/93/5d07f6096d/0/context.md",
+      "content_hash": "/93/5d07f6096d/0/content_hash.txt",
+      "prompt": "/93/5d07f6096d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 55,
+    "cache_creation_tokens": 54564,
+    "cache_read_tokens": 4858526,
+    "output_tokens": 18548,
+    "api_call_count": 51
+  }
+}
