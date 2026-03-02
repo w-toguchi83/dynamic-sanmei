@@ -6,7 +6,20 @@
   "checkpoints_count": 2,
   "files_touched": [
     "apps/sanmei-cli/src/sanmei_cli/formatters/text.py",
-    "apps/sanmei-cli/tests/test_text_formatter.py"
+    "apps/sanmei-cli/tests/test_text_formatter.py",
+    "docs/domain/02_Chapter2_Basics_of_Kanshi.md",
+    "packages/sanmei-core/src/sanmei_core/calculators/gogyo_balance.py",
+    "packages/sanmei-core/src/sanmei_core/calculators/major_star.py",
+    "packages/sanmei-core/src/sanmei_core/domain/hidden_stems.py",
+    "packages/sanmei-core/src/sanmei_core/tables/hidden_stems.py",
+    "packages/sanmei-core/tests/unit/calculators/test_fortune.py",
+    "packages/sanmei-core/tests/unit/calculators/test_fortune_analyzer.py",
+    "packages/sanmei-core/tests/unit/calculators/test_gogyo_balance.py",
+    "packages/sanmei-core/tests/unit/calculators/test_meishiki_calculator.py",
+    "packages/sanmei-core/tests/unit/domain/test_hidden_stems.py",
+    "packages/sanmei-core/tests/unit/schools/test_standard.py",
+    "packages/sanmei-core/tests/unit/tables/test_hidden_stems.py",
+    "packages/sanmei-core/tests/unit/test_school_protocol.py"
   ],
   "sessions": [
     {
@@ -15,13 +28,20 @@
       "context": "/85/6ca1cd80a0/0/context.md",
       "content_hash": "/85/6ca1cd80a0/0/content_hash.txt",
       "prompt": "/85/6ca1cd80a0/0/prompt.txt"
+    },
+    {
+      "metadata": "/85/6ca1cd80a0/1/metadata.json",
+      "transcript": "/85/6ca1cd80a0/1/full.jsonl",
+      "context": "/85/6ca1cd80a0/1/context.md",
+      "content_hash": "/85/6ca1cd80a0/1/content_hash.txt",
+      "prompt": "/85/6ca1cd80a0/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 91,
-    "cache_creation_tokens": 117638,
-    "cache_read_tokens": 7125847,
-    "output_tokens": 29774,
-    "api_call_count": 83
+    "input_tokens": 1945,
+    "cache_creation_tokens": 232426,
+    "cache_read_tokens": 13498316,
+    "output_tokens": 72634,
+    "api_call_count": 150
   }
 }
