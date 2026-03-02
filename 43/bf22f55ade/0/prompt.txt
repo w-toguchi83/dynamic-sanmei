@@ -1,0 +1,821 @@
+Base directory for this skill: /Users/toguchi/.claude/skills/task-pdca
+
+# Task PDCA
+
+PDCAサイクルでタスクを実装・完成させるプロセススキル。
+
+**コア原則:** Plan → Do → Check → Adjust のループで品質を担保し、振り返りで再発防止、Feedback でナレッジを永続化する。
+
+## サブコマンド
+
+| コマンド | 説明 |
+|----------|------|
+| `/task-pdca` | 新規PDCAサイクルを開始（タスク情報を入力） |
+| `/task-pdca continue` | 中断したサイクルを再開 |
+| `/task-pdca clean` | 完了済みサイクルの状態ファイルを削除 |
+
+## いつ使うか
+
+```dot
+digraph when_to_use {
+    "タスク実装の依頼?" [shape=diamond];
+    "中断からの再開?" [shape=diamond];
+    "完了済みの清掃?" [shape=diamond];
+    "/task-pdca で新規開始" [shape=box];
+    "/task-pdca continue" [shape=box];
+    "/task-pdca clean" [shape=box];
+    "別のスキルを検討" [shape=box];
+
+    "タスク実装の依頼?" -> "中断からの再開?" [label="no"];
+    "タスク実装の依頼?" -> "/task-pdca で新規開始" [label="yes"];
+    "中断からの再開?" -> "完了済みの清掃?" [label="no"];
+    "中断からの再開?" -> "/task-pdca continue" [label="yes"];
+    "完了済みの清掃?" -> "/task-pdca clean" [label="yes"];
+    "完了済みの清掃?" -> "別のスキルを検討" [label="no"];
+}
+```
+
+## 全体フロー
+
+```dot
+digraph pdca_flow {
+    rankdir=TB;
+
+    "タスク入力を受け取る" [shape=doublecircle];
+    "依存関係を分析" [shape=box];
+    "独立タスクあり?" [shape=diamond];
+    "並列でサブエージェントに委任" [shape=box];
+    "逐次実行" [shape=box];
+
+    subgraph cluster_pdca {
+        label="PDCAサイクル（タスクごと）";
+
+        "Plan: 計画作成" [shape=box];
+        "Do: 実装" [shape=box];
+        "Check: 検証" [shape=box];
+        "Check 合格?" [shape=diamond];
+        "Adjust: 計画修正" [shape=box];
+        "コミット" [shape=box];
+        "振り返り: 再発防止策" [shape=box];
+    }
+
+    "Feedback: ナレッジ保存 + 最終報告" [shape=box];
+    "完了" [shape=doublecircle];
+
+    "タスク入力を受け取る" -> "依存関係を分析";
+    "依存関係を分析" -> "独立タスクあり?";
+    "独立タスクあり?" -> "並列でサブエージェントに委任" [label="yes"];
+    "独立タスクあり?" -> "逐次実行" [label="no"];
+    "並列でサブエージェントに委任" -> "Plan: 計画作成";
+    "逐次実行" -> "Plan: 計画作成";
+
+    "Plan: 計画作成" -> "Do: 実装";
+    "Do: 実装" -> "Check: 検証";
+    "Check: 検証" -> "Check 合格?" ;
+    "Check 合格?" -> "Adjust: Plan修正 + 原因分析" [label="no"];
+    "Adjust: Plan修正 + 原因分析" -> "Do: 実装" [label="修正箇所を再実行"];
+    "Check 合格?" -> "コミット" [label="yes"];
+    "コミット" -> "振り返り: 再発防止策";
+    "振り返り: 再発防止策" -> "Feedback: ナレッジ保存 + 最終報告";
+    "Feedback: ナレッジ保存 + 最終報告" -> "完了";
+}
+```
+
+## 各フェーズの詳細
+
+### 1. Plan（計画）
+
+**目的:** 何をどう実装するか、完了条件（DoD）を明確にする。
+
+**手順:**
+1. タスクの要件を分析（不明点があれば人間に質問）
+2. 完了条件（Definition of Done）を定義
+3. 実装ステップを分解（粒度: 各ステップ15分以内）
+4. テスト方針を決定
+5. 状態ファイルに Plan を記録
+
+**Plan の記録形式（状態ファイル内）:**
+```
+## Plan
+- DoD: [完了条件のリスト]
+- Steps:
+  1. [ステップ1]
+  2. [ステップ2]
+  ...
+- Test Strategy: [テスト方針]
+```
+
+**スキル連携:** 要件が複雑な場合は `superpowers:brainstorming` で設計を深掘りし、`superpowers:writing-plans` で詳細計画を作成。
+
+### 2. Do（実行）
+
+**目的:** Plan に沿って実装する。
+
+**手順:**
+1. 状態ファイルの phase を `do` に更新
+2. Plan のステップを順に実行
+3. テストを書き、実装する（**REQUIRED:** `superpowers:test-driven-development` に従う）
+4. 各ステップの完了時に状態ファイルを更新
+
+**サブエージェント委任時のプロンプト構造:**
+```
+タスク: [タスク名]
+
+## タスク説明
+[タスクの全文 - ファイルを読ませず直接渡す]
+
+## Plan
+[Plan フェーズで作成した計画]
+
+## 完了条件（DoD）
+[チェックリスト形式]
+
+## コンテキスト
+[アーキテクチャ、依存関係、既存パターン]
+
+## 制約
+- Plan のステップに従うこと
+- テストファースト（TDD）で実装
+- 完了条件をすべて満たすこと
+- 不明点があれば質問すること
+```
+
+### 3. Check（検証）
+
+**目的:** Do の成果が Plan の完了条件を満たすか厳格に検証する。
+
+**鉄則: 検証なしに「完了」と言わない。**
+
+**手順:**
+1. テスト実行 → 全テスト合格を確認（出力を確認）
+2. リント/型チェック → エラー0を確認（出力を確認）
+3. DoD チェックリスト → 各項目を 1 つずつ検証
+4. 検証結果を状態ファイルに記録
+
+**Check の記録形式:**
+```
+## Check (Iteration N)
+- Tests: PASS/FAIL [詳細]
+- Lint: PASS/FAIL [詳細]
+- DoD:
+  - [x] 条件1: PASS
+  - [ ] 条件2: FAIL - [理由]
+- Result: PASS/FAIL
+```
+
+**スキル連携:** `superpowers:verification-before-completion` の鉄則に従う。証拠なしに成功を主張しない。
+
+### 4. Adjust（修正）
+
+**目的:** Check で不合格だった場合、Plan 自体を見直す。
+
+**重要: コードだけ直すのではなく、Plan を修正してから Do に戻る。**
+
+```dot
+digraph adjust {
+    "Check 失敗" [shape=ellipse];
+    "失敗原因を分析" [shape=box];
+    "Plan の問題?" [shape=diamond];
+    "Plan のステップ/DoD を修正" [shape=box];
+    "実装のバグ?" [shape=diamond];
+    "バグ修正ステップを Plan に追加" [shape=box];
+    "修正した Plan の Do ステップを実行" [shape=box];
+
+    "Check 失敗" -> "失敗原因を分析";
+    "失敗原因を分析" -> "Plan の問題?";
+    "Plan の問題?" -> "Plan のステップ/DoD を修正" [label="yes"];
+    "Plan の問題?" -> "実装のバグ?" [label="no"];
+    "実装のバグ?" -> "バグ修正ステップを Plan に追加" [label="yes"];
+    "実装のバグ?" -> "環境/テスト問題 → 人間に相談" [label="no"];
+    "Plan のステップ/DoD を修正" -> "修正した Plan の Do ステップを実行";
+    "バグ修正ステップを Plan に追加" -> "修正した Plan の Do ステップを実行";
+}
+```
+
+**Adjust のフロー:** Adjust は常に Plan を修正した上で、修正部分の Do → Check を再実行する。コードだけ直して Check をスキップするのは禁止。
+
+**Adjust の記録形式:**
+```
+## Adjust (Iteration N)
+- Failure: [Check で失敗した内容]
+- Root Cause: [根本原因]
+- Plan Changes: [Plan への修正内容]
+```
+
+**安全弁:** 3回以上 Adjust ループした場合、人間に相談する。無限ループを避ける。
+
+### 5. 振り返り（Retrospective）
+
+**目的:** 成功・失敗を分析し、再発防止策を立てる。
+
+**Check 合格後、コミット後に必ず実行。**
+
+**スコープ:**
+- **タスクごとの振り返り:** 各タスクの PDCA 完了後に実施。状態ファイルの各タスクセクションに記録。
+- **サイクル全体の振り返り:** 全タスク完了後、Feedback フェーズの前に実施。タスク横断の学びを統合。
+
+**手順:**
+1. **何がうまくいったか** — 成功パターンを特定
+2. **何が失敗したか** — 各 Adjust イテレーションの原因を分析
+3. **再発防止策** — 同じ失敗を繰り返さないための具体的アクション
+4. 振り返り結果を状態ファイルに記録
+
+**振り返りの記録形式:**
+```
+## Retrospective
+### 成功
+- [成功パターン]
+
+### 失敗と再発防止
+| 失敗 | 根本原因 | 再発防止策 |
+|------|----------|------------|
+| [何が起きた] | [なぜ] | [今後どうする] |
+
+### 学び
+- [セッションをまたいで有用な知見]
+```
+
+**これを省略しない。** 振り返りのない PDCA は単なる作業ループ。
+
+### 6. Feedback（報告・ナレッジ保存）
+
+**目的:** ナレッジを永続化し、人間に最終報告する。
+
+**手順:**
+1. **ナレッジ保存:** 振り返りの「学び」と「再発防止策」をメモリファイルに保存
+   - 保存先: 自動メモリディレクトリ内の `pdca-learnings.md`（Claude Code が使用するプロジェクトメモリディレクトリ。通常 `~/.claude/projects/` 配下にプロジェクトパスから生成される）
+   - 既存の学びがあれば追記（重複しない）
+   - 日付とサイクル名をヘッダーとして記録
+2. **状態ファイルを `Status: completed` に更新**
+3. **PDCA 状態ファイルをコミット:** `.claude/pdca/` 配下の状態ファイルを stage してコミットする
+   - コミットメッセージ: `chore: add PDCA cycle record for [サイクル説明]`
+   - 実装コードのコミットとは別にする（PDCA 記録は作業メタデータ）
+   - **これを省略しない。** 状態ファイルはチームのナレッジ資産であり、コミット漏れは学びの消失を意味する
+4. **最終報告:** 人間に以下を簡潔に表示
+
+**最終報告フォーマット:**
+```
+## PDCA 完了報告
+
+### 実装したタスク
+- [タスク1]: [概要] ✅
+- [タスク2]: [概要] ✅
+
+### PDCA サイクル統計
+- イテレーション回数: N
+- Adjust 回数: M
+
+### 主な学び
+- [学び1]
+- [学び2]
+
+### 再発防止策
+- [対策1]
+- [対策2]
+```
+
+## 状態管理
+
+### 状態ファイルの場所
+
+```
+.claude/pdca/
+  cycle-{YYYYMMDD-HHMMSS}.md    # サイクルごとの状態ファイル
+```
+
+プロジェクトルートの `.claude/pdca/` ディレクトリに保存。
+
+### 状態ファイルのフォーマット
+
+```markdown
+# PDCA Cycle: [説明]
+
+- Status: in_progress | completed
+- Created: [ISO日時]
+- Updated: [ISO日時]
+
+## Task: [タスク名]
+- ID: task-1
+- Status: plan | do | check | adjust | retrospective | completed
+- Dependencies: [none | task-2, task-3]
+- Iteration: 1
+
+### Plan
+[Plan 内容]
+
+### Do Log
+#### Iteration 1
+[Do の記録]
+
+### Check Log
+#### Iteration 1
+[Check の記録]
+
+### Adjust Log
+#### Iteration 1
+[Adjust の記録（該当する場合）]
+
+### Retrospective
+[振り返り内容]
+
+---
+
+## Task: [タスク2名]
+...
+```
+
+### フェーズ遷移ルール
+
+状態ファイルのタスク Status は以下のタイミングで更新する:
+
+| 遷移 | タイミング |
+|------|-----------|
+| `plan` → `do` | Plan を状態ファイルに記録した直後 |
+| `do` → `check` | Do の実装が完了した直後 |
+| `check` → `adjust` | Check が FAIL だった直後 |
+| `adjust` → `do` | Adjust で Plan を修正した直後（再実行前） |
+| `check` → `retrospective` | Check が PASS でコミット完了後 |
+| `retrospective` → `completed` | 振り返りを記録した後 |
+
+**遷移のたびに `Updated` タイムスタンプも更新する。**
+
+### continue（再開）
+
+`/task-pdca continue` 実行時:
+1. `.claude/pdca/` から `Status: in_progress` のサイクルファイルを探す
+2. 各タスクの現在フェーズを読み取る
+3. 中断地点から再開（例: do フェーズの途中なら do から）
+4. 複数のサイクルがある場合、最新のものを選択（または人間に確認）
+
+### clean（清掃）
+
+`/task-pdca clean` 実行時:
+1. `.claude/pdca/` から `Status: completed` のサイクルファイルを検索
+2. 一覧を表示し、人間に確認を取る
+3. 確認後、該当ファイルを削除
+
+## 並列実行
+
+```dot
+digraph parallel {
+    "タスク一覧" [shape=box];
+    "依存関係グラフを構築" [shape=box];
+    "独立タスクを特定" [shape=box];
+    "2つ以上の独立タスク?" [shape=diamond];
+    "Agent ツールで並列ディスパッチ" [shape=box];
+    "逐次実行" [shape=box];
+    "全サブエージェント完了待ち" [shape=box];
+    "結果を統合・Check" [shape=box];
+
+    "タスク一覧" -> "依存関係グラフを構築";
+    "依存関係グラフを構築" -> "独立タスクを特定";
+    "独立タスクを特定" -> "2つ以上の独立タスク?";
+    "2つ以上の独立タスク?" -> "Agent ツールで並列ディスパッチ" [label="yes"];
+    "2つ以上の独立タスク?" -> "逐次実行" [label="no"];
+    "Agent ツールで並列ディスパッチ" -> "全サブエージェント完了待ち";
+    "全サブエージェント完了待ち" -> "結果を統合・Check";
+}
+```
+
+**並列実行時のルール:**
+- 各サブエージェントは独立した worktree で作業（`isolation: "worktree"` を使用）
+- サブエージェントには Plan 全文 + DoD + コンテキストを渡す（ファイルを読ませない）
+- 同じファイルを編集する可能性がある場合は並列にしない
+- 各サブエージェントが独自に Do → Check → Adjust ループを実行し、合格したらコミット
+- **状態ファイルはメインエージェントのみが更新する。** サブエージェントは結果を報告し、メインが状態ファイルに反映する
+- メインエージェントは全サブエージェント完了後に以下を実施:
+  1. 各 worktree の変更をメインブランチにマージ
+  2. マージ後の統合テスト実行（`just check` 等）
+  3. 統合テスト合格を確認して状態ファイルを更新
+
+**サブエージェントへのプロンプト:**
+```
+あなたは PDCA サイクルの Do フェーズを実行するサブエージェントです。
+
+## タスク
+[タスク全文]
+
+## Plan
+[計画全文]
+
+## 完了条件（DoD）
+[チェックリスト]
+
+## 実行手順
+1. Plan のステップに従って実装（TDD で）
+2. 全テスト合格を確認
+3. リント/型チェック合格を確認
+4. DoD の各項目を検証
+5. 問題があれば Plan を修正して再実行（最大3回）
+6. コミットする
+7. 結果を報告:
+   - 実装内容
+   - テスト結果（出力を含む）
+   - DoD チェックリスト結果
+   - 問題があった場合の Adjust 記録
+```
+
+## スキル連携
+
+| フェーズ | 連携スキル | 用途 |
+|----------|------------|------|
+| Plan | `superpowers:brainstorming` | 要件が複雑な場合の設計深掘り |
+| Plan | `superpowers:writing-plans` | 詳細実装計画の作成 |
+| Do | `superpowers:test-driven-development` | TDD で実装 |
+| Do | `superpowers:dispatching-parallel-agents` | 独立タスクの並列実行 |
+| Check | `superpowers:verification-before-completion` | 厳格な検証 |
+| Adjust | `superpowers:systematic-debugging` | 失敗原因の調査 |
+| コミット | `superpowers:finishing-a-development-branch` | ブランチ完了時 |
+
+## レッドフラグ — 止まれ
+
+- Check せずに「完了」と言おうとしている
+- テスト出力を確認せずに「テスト合格」と主張
+- Adjust で Plan を見直さずコードだけ修正
+- 振り返りを「特になし」で済ませようとしている
+- 3回以上 Adjust ループしているのに人間に相談していない
+- 独立タスクを逐次処理している（並列可能なのに）
+- 状態ファイルを更新していない
+- ナレッジ保存をスキップしようとしている
+- PDCA 状態ファイルをコミットせずにセッションを終了しようとしている
+
+## よくある間違い
+
+| 間違い | 正しい対応 |
+|--------|------------|
+| Check なしで完了宣言 | 必ずテスト・リント・DoD を実行して確認 |
+| Adjust でコードだけ修正 | Plan 自体を見直す。なぜ計画が不十分だったか考える |
+| 振り返りを省略 | 必須。失敗がなくても「何がうまくいったか」を記録 |
+| ナレッジ保存忘れ | Feedback フェーズで必ずメモリファイルに保存 |
+| PDCA 状態ファイルのコミット漏れ | Feedback フェーズで `.claude/pdca/` を必ず stage & commit する |
+| 状態ファイル未更新 | 各フェーズ遷移時に必ず更新。continue の命綱 |
+| 並列可能なのに逐次処理 | 依存関係がなければ Agent ツールで並列実行 |
+
+
+ARGUMENTS: sanmei-cli の meishiki 出力の表示修正をしてください。
+- 干支、蔵干のヘッダーにある 日、月、年がデータ行とずれているので修正してほしい
+```
+=== 命式 ===
+生年月日: 1988年11月1日 00:00 (JST)
+
+【干支】
+        日         月         年
+天干      庚         壬         戊
+地支      申         戌         辰
+
+【蔵干】
+        日         月         年
+地支      申(8)      戌(10)     辰(4)
+初元      戊(4)      辛(7)      乙(1)
+中元      壬(8)      丁(3)      癸(9)
+本元      庚(6)      戊(4)      戊(4)
+
+```
+- 蔵干のデバッグ情報がわかりづらいので、数字の表示はなし、とする。
+- 計算によって、蔵干の初元、中元、本元のいずれかが選択されるはずだが、どれが選択されるのか表示で知りたい。鑑定対象の西暦の生年月日から算命歴に変換し、節入り日などから値を算出しますよね。これを「蔵干特定値」とし、その値を知りたい。できますか？
+
+---
+
+書籍の記述を共有します。これで実装内容が明確になるかどうか教えてください。
+```
+# 第一章　命式の求め方
+
+## 1　命式図を作成する
+
+### 命式図とは？
+命式図とは、現実に現われる現象を解く時に使います。これを陰占法と言います。その人の誕生日を十干と十二支で表したものです。これから占っていくすべての基本になるのが、この「命式図」です。
+
+「命式図」は、占う人の生年月日から割り出していきます。実際の生年月日と戸籍上の生年月日が違う人は、実際に生まれた生年月日で作成してください。巻末の「算命学暦」で、占う人の生まれた年から「年干支・月干支・日干支」を導き出します。
+
+まず、「算命学暦」と下の「歳干表」で、【例題】太郎さんの「命式図」を作成します。
+
+### 【歳干表】
+
+| 十二支 | 初元 | 中元 | 本元 |
+|---|---|---|---|
+| 子 |  | すべて | 癸 |
+| 丑 | 1日〜9日 癸 | 10日〜12日 辛 | 13日〜己 |
+| 寅 | 1日〜7日 戊 | 8日〜14日 丙 | 15日〜甲 |
+| 卯 |  | すべて | 乙 |
+| 辰 | 1日〜9日 乙 | 10日〜12日 癸 | 13日〜戊 |
+| 巳 | 1日〜5日 戊 | 6日〜14日 庚 | 15日〜丙 |
+| 午 | 1日〜19日まで | 己 | 20日〜丁 |
+| 未 | 1日〜9日 丁 | 10日〜12日 乙 | 13日〜己 |
+| 申 | 1日〜10日 戊 | 11日〜13日 壬 | 14日〜庚 |
+| 酉 |  | すべて | 辛 |
+| 戌 | 1日〜9日 辛 | 10日〜12日 丁 | 13日〜戊 |
+| 亥 | 1日〜12日まで | 甲 | 13日〜壬 |
+
+---
+
+## 2　歳干の求め方
+
+### 歳干とは？
+歳干とは、十二支のなかに含まれている十干のことです。ここでは、歳干の求め方を解説します。
+
+23ページの「歳干表」を見てください。十二支のなかに含まれている十干を、初元・中元・本元に分けて書いています。節入り日から誕生日までの日数によって、初元・中元・本元が決まります。
+
+太郎さんの歳干は、次のようになります。
+
+- 年支「辰」の歳干（25日）で「本元＝戊」
+- 月支「戌」の歳干（25日）で「本元＝戊」
+- 日支「申」の歳干（25日）で「本元＝庚」
+
+この歳干の「干」は宿命星を出す時に使いますから、干に○印をつけておいてください。
+
+（図：歳干の計算の方法／辰（年））
+- 10月の節入り：8日
+- 誕生日：11月1日
+- 節入り日から誕生日までの日数：25日（節入り日と誕生日を加える）
+- 算命学の10月（戌月）：10月の節入り〜11月の節入りの前日まで
+
+---
+
+## 【歳干の計算式】（例：太郎さん）
+
+太郎さんの誕生日は1988年11月1日です。誕生日は11月1日ですから、市販の暦では11月生まれになりますが、算命学では節入り日が月の始まりの1日になりますから、太郎さんは10月生まれの人になります。
+
+10月の節入りは「8日」です。10月の末日は31日です。したがって「計算式」は次のようになります。
+
+- 10月末日（31日）− 節入り（8日）＝ 23日  
+- 23日 ＋ 節入り日（1日）＋ 誕生日（1日）＝ 25日になります。
+
+したがって、歳干は「年支＝辰、月支＝戌、日支＝申」の3つのすべてが、13日以上になるので「本元」になります。
+
+---
+
+## 【月の割り出し方】
+
+算命学では、毎月の出し方が一般の暦とは違います。
+
+【例題】太郎さんの誕生月で説明していきます。
+
+1988年11月1日といえば、算命学では10月生まれになります。算命学での10月は、10月の節入り（8日）〜11月の節入り前日（6日）までを言います。したがって、太郎さんは11月1日生まれですから、算命学では10月生まれになります。
+
+一般の暦のように、1日から始まることはありませんから気を付けてください。
+```
+
+---
+
+蔵干のフォーマットの「地支」の行は不要です。
+
+---
+
+This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+Analysis:
+Let me chronologically analyze the conversation:
+
+1. **User's initial request**: The user invoked `/task-pdca` with a task to fix the sanmei-cli meishiki output display with 3 requirements:
+   - Fix column alignment (日、月、年 headers misaligned with data rows)
+   - Remove debug numbers from 蔵干 display
+   - Add "蔵干特定値" - a calculated value showing which hidden stem (初元/中元/本元) is selected based on birth date
+
+2. **Exploration phase**: I launched agents to explore:
+   - CLI text formatter (`apps/sanmei-cli/src/sanmei_cli/formatters/text.py`)
+   - Hidden stems domain model, tables, calculators
+   - Calendar/solar term infrastructure
+   - Found that the selection logic was NOT implemented but infrastructure (SetsuiriProvider, solar terms) existed
+
+3. **User clarification on 蔵干分野テーブル**: I asked about the day split table. User rejected the question format and wanted to clarify.
+
+4. **User provided book excerpt**: The user shared detailed book text about "歳干" (which they later corrected to "蔵干") including:
+   - The complete 歳干表 (day boundary table) for all 12 branches
+   - The calculation method: (birthday - setsuiri_date).days + 1
+   - Example: 1988-11-01, 10月節入り=8日, resulting in 25日 → 本元 for all three pillars
+   - Applies to ALL THREE pillars (年支、月支、日支)
+
+5. **User correction**: "「歳干」は誤字で「蔵干」が正しいです" - The book's "歳干" is a typo, should be "蔵干"
+
+6. **User request for domain docs update**: "docs/domain で更新が必要なものは更新をお願いします"
+
+7. **User feedback on format**: "蔵干のフォーマットの「地支」の行は不要です" - Remove the 地支 row from the 蔵干 section
+
+8. **PDCA Plan created** with 3 tasks:
+   - task-1: CLI display fixes (alignment + debug numbers + remove 地支 row)
+   - task-2: 蔵干特定 core logic (domain model, table, calculator, integration)
+   - task-3: CLI display for 蔵干特定 + domain docs update
+
+9. **Parallel execution** of task-1 and task-2 via worktree agents:
+   - task-1 completed successfully (commit 160ae1b)
+   - task-2 had issues: files created but not committed, and critically used OLD field names (main/middle/minor instead of hongen/chuugen/shogen)
+
+10. **Merging**: task-1 merged via fast-forward. task-2 required manual application with fixes.
+
+11. **Critical bug found in task-2**: The agent used old HiddenStems field names (`hidden_stems.minor`, `hidden_stems.middle`, `hidden_stems.main`) instead of current names (`hidden_stems.shogen`, `hidden_stems.chuugen`, `hidden_stems.hongen`). Additionally, test values for 辰・未・戌 were wrong because the agent used pre-swap values.
+
+12. **Manual fix and application**: I created corrected files directly on main:
+   - New files: domain/zoukan_tokutei.py, tables/zoukan_tokutei.py, calculators/zoukan_tokutei.py
+   - Modified: pillar_calculator.py, meishiki_calculator.py, meishiki.py, __init__.py
+   - Created corrected tests
+   - Started fixing existing test helpers (test_fortune.py done, test_fortune_analyzer.py pending)
+
+**Current state**: 
+- task-1 complete and merged
+- task-2: All new source files written correctly. __init__.py updated. One test helper (test_fortune.py) updated. Still need to:
+  - Update test_fortune_analyzer.py helper
+  - Add imports for new types in both test files
+  - Add meishiki_calculator integration tests (book example)
+  - Add pillar_calculator tests for get_setsuiri_for_date
+  - Run tests and fix issues
+  - Complete task-3 (CLI display + domain docs)
+
+Let me check what exactly was the last edit made - it was adding the dummy ZoukanTokutei to test_fortune.py's _make_meishiki. But the imports for ActiveHiddenStem, HiddenStemType, ZoukanTokutei haven't been added to that file yet, and test_fortune_analyzer.py hasn't been updated at all.
+
+Summary:
+1. Primary Request and Intent:
+   The user invoked `/task-pdca` to fix the sanmei-cli `meishiki` command output with three requirements:
+   - **Fix column alignment**: Headers (日/月/年) in 干支 and 蔵干 sections are misaligned with data rows due to CJK character width handling in Python format strings
+   - **Remove debug numbers**: The `(N)` enum values shown in 蔵干 display are not needed
+   - **Add 蔵干特定値**: Calculate and display which hidden stem (初元/中元/本元) is selected for each pillar, based on days elapsed since 節入り (setsu entry date). The user provided a complete book reference with the day boundary table and calculation method.
+   
+   Additional requests during the conversation:
+   - "docs/domain で更新が必要なものは更新をお願いします" (update domain docs as needed)
+   - "蔵干のフォーマットの「地支」の行は不要です" (remove the 地支 row from 蔵干 section)
+   - "「歳干」は誤字で「蔵干」が正しいです" (the book's term "歳干" is a typo; correct term is "蔵干")
+
+2. Key Technical Concepts:
+   - **蔵干特定 (Zoukan Tokutei)**: The process of determining which hidden stem (初元/中元/本元) is "active" based on days since 節入り
+   - **Day count calculation**: `(birthday_date - setsuiri_date).days + 1` (both endpoints inclusive)
+   - **Same day count for all three pillars**: Year, month, and day branches all use the same day count
+   - **CJK character alignment**: Full-width characters (kanji) take 2 display columns but Python's `{:8s}` counts by character length, causing misalignment
+   - **算命学 vs 四柱推命 field naming**: HiddenStems fields are `hongen/chuugen/shogen` (算命学), NOT `main/middle/minor` (old naming). The 辰・未・戌 branches had chuugen/shogen swapped during the rename to match 算命学 conventions.
+   - **PDCA cycle**: Structured task execution with Plan → Do → Check → Adjust phases
+   - **Worktree-based parallel execution**: Independent tasks dispatched to separate git worktrees
+
+3. Files and Code Sections:
+
+   - **`apps/sanmei-cli/src/sanmei_cli/formatters/text.py`** (MODIFIED by task-1 agent, merged)
+     - Added `_cjk_ljust()` helper for CJK-aware column alignment
+     - Replaced all `f"{'label':8s}"` patterns with `_cjk_ljust('label', 8)`
+     - Removed `_stem_debug()` and `_branch_debug()` functions
+     - Added `_stem_or_dash()` helper (returns kanji or "-" for None)
+     - Removed 地支 row from `_append_hidden_stems()`
+     - Removed `branches` parameter from `_append_hidden_stems()`
+
+   - **`apps/sanmei-cli/tests/test_text_formatter.py`** (MODIFIED by task-1 agent, merged)
+     - Deleted `test_hidden_stems_shows_branch_debug`
+     - Added `test_hidden_stems_no_branch_row` and `test_hidden_stems_no_debug_numbers`
+     - Updated `test_hidden_stems_hongen_always_present` to check kanji only (no debug numbers)
+
+   - **`packages/sanmei-core/src/sanmei_core/domain/zoukan_tokutei.py`** (NEW, created on main)
+     - Important: Domain model for 蔵干特定
+     ```python
+     class HiddenStemType(StrEnum):
+         SHOGEN = "初元"
+         CHUUGEN = "中元"
+         HONGEN = "本元"
+
+     class ActiveHiddenStem(BaseModel, frozen=True):
+         stem: TenStem
+         element: HiddenStemType
+
+     class ZoukanTokutei(BaseModel, frozen=True):
+         days_from_setsuiri: int
+         year: ActiveHiddenStem
+         month: ActiveHiddenStem
+         day: ActiveHiddenStem
+     ```
+
+   - **`packages/sanmei-core/src/sanmei_core/tables/zoukan_tokutei.py`** (NEW, created on main)
+     - Important: Day boundary table from the book
+     ```python
+     class ZoukanBoundary(NamedTuple):
+         shogen_end: int | None
+         chuugen_end: int | None
+
+     ZOUKAN_BOUNDARIES: dict[TwelveBranch, ZoukanBoundary] = {
+         TwelveBranch.NE: ZoukanBoundary(None, None),       # 子: always 本元
+         TwelveBranch.USHI: ZoukanBoundary(9, 12),           # 丑: 1-9初元, 10-12中元, 13+本元
+         TwelveBranch.TORA: ZoukanBoundary(7, 14),           # 寅: 1-7初元, 8-14中元, 15+本元
+         TwelveBranch.U: ZoukanBoundary(None, None),         # 卯: always 本元
+         TwelveBranch.TATSU: ZoukanBoundary(9, 12),          # 辰: 1-9初元, 10-12中元, 13+本元
+         TwelveBranch.MI: ZoukanBoundary(5, 14),             # 巳: 1-5初元, 6-14中元, 15+本元
+         TwelveBranch.UMA: ZoukanBoundary(19, None),         # 午: 1-19初元, 20+本元
+         TwelveBranch.HITSUJI: ZoukanBoundary(9, 12),        # 未: 1-9初元, 10-12中元, 13+本元
+         TwelveBranch.SARU: ZoukanBoundary(10, 13),          # 申: 1-10初元, 11-13中元, 14+本元
+         TwelveBranch.TORI: ZoukanBoundary(None, None),      # 酉: always 本元
+         TwelveBranch.INU: ZoukanBoundary(9, 12),            # 戌: 1-9初元, 10-12中元, 13+本元
+         TwelveBranch.I: ZoukanBoundary(None, 12),           # 亥: 1-12中元, 13+本元
+     }
+     ```
+
+   - **`packages/sanmei-core/src/sanmei_core/calculators/zoukan_tokutei.py`** (NEW, created on main)
+     - Important: Core calculation logic, corrected to use proper field names
+     ```python
+     def determine_active_hidden_stem(
+         branch: TwelveBranch,
+         hidden_stems: HiddenStems,
+         days_from_setsuiri: int,
+     ) -> ActiveHiddenStem:
+         boundary = ZOUKAN_BOUNDARIES[branch]
+         if boundary.shogen_end is not None and days_from_setsuiri <= boundary.shogen_end:
+             assert hidden_stems.shogen is not None
+             return ActiveHiddenStem(stem=hidden_stems.shogen, element=HiddenStemType.SHOGEN)
+         if boundary.chuugen_end is not None and days_from_setsuiri <= boundary.chuugen_end:
+             assert hidden_stems.chuugen is not None
+             return ActiveHiddenStem(stem=hidden_stems.chuugen, element=HiddenStemType.CHUUGEN)
+         return ActiveHiddenStem(stem=hidden_stems.hongen, element=HiddenStemType.HONGEN)
+     ```
+
+   - **`packages/sanmei-core/src/sanmei_core/calculators/pillar_calculator.py`** (MODIFIED on main)
+     - Added `SetsuiriDate` import
+     - Added `get_setsuiri_for_date(self, dt: datetime) -> SetsuiriDate` method to `SanmeiCalendar`
+
+   - **`packages/sanmei-core/src/sanmei_core/calculators/meishiki_calculator.py`** (MODIFIED on main)
+     - Added imports for `determine_active_hidden_stem` and `ZoukanTokutei`
+     - In `calculate()`: computes setsuiri date, days_from_setsuiri, and constructs ZoukanTokutei
+     - Passes `zoukan_tokutei` to Meishiki constructor
+
+   - **`packages/sanmei-core/src/sanmei_core/domain/meishiki.py`** (MODIFIED on main)
+     - Added `ZoukanTokutei` import
+     - Added `zoukan_tokutei: ZoukanTokutei` field to `Meishiki` (between hidden_stems and major_stars)
+
+   - **`packages/sanmei-core/src/sanmei_core/__init__.py`** (MODIFIED on main)
+     - Added exports: `ActiveHiddenStem`, `HiddenStemType`, `ZoukanTokutei`, `determine_active_hidden_stem`
+
+   - **`packages/sanmei-core/tests/unit/tables/test_zoukan_tokutei.py`** (NEW, created on main)
+     - Tests all 12 branch boundary values match the book
+
+   - **`packages/sanmei-core/tests/unit/calculators/test_zoukan_tokutei.py`** (NEW, created on main)
+     - Comprehensive boundary value tests for all 12 branches with CORRECTED values for 辰・未・戌
+
+   - **`packages/sanmei-core/tests/unit/calculators/test_fortune.py`** (PARTIALLY MODIFIED)
+     - Added dummy `ZoukanTokutei` to `_make_meishiki` helper
+     - **STILL NEEDS**: Import statements for `ActiveHiddenStem`, `HiddenStemType`, `ZoukanTokutei`
+
+   - **`packages/sanmei-core/tests/unit/calculators/test_fortune_analyzer.py`** (NOT YET MODIFIED)
+     - **NEEDS**: Same ZoukanTokutei addition to its `_make_meishiki` helper + imports
+
+   - **`packages/sanmei-core/tests/unit/calculators/test_meishiki_calculator.py`** (NOT YET MODIFIED)
+     - **NEEDS**: Integration test for book example (1988-11-01 → 25日 → 全本元)
+     - **NEEDS**: Test for zoukan_tokutei field existence
+
+   - **`.claude/pdca/cycle-20260302-saikan-display.md`** (PDCA state file, created and updated)
+
+4. Errors and Fixes:
+   - **Task-2 agent used old field names**: The worktree agent referenced `hidden_stems.minor`, `hidden_stems.middle`, `hidden_stems.main` instead of `hidden_stems.shogen`, `hidden_stems.chuugen`, `hidden_stems.hongen`. The worktree was based on old commits where field names hadn't been renamed yet.
+     - Fix: Rewrote the calculator file directly on main with correct field names
+   - **Task-2 agent had wrong test values for 辰・未・戌**: Because the old table had chuugen/shogen in different positions before the 算命学 swap.
+     - Fix: Created corrected test file with proper values (e.g., 辰: shogen=乙, chuugen=癸 not reversed)
+   - **Task-2 agent had unnecessary `_resolve_shogen_stem()` workaround**: For 午, the agent thought shogen was None and created a fallback to use chuugen. In the current table, 午 has shogen=己 (correctly populated).
+     - Fix: Removed the workaround entirely; simple field access works correctly
+   - **Task-2 agent didn't commit changes**: Files were left uncommitted in the worktree.
+     - Fix: Applied changes manually to main branch
+   - **User corrected terminology**: "歳干" → "蔵干". Updated all naming in code and PDCA state file.
+
+5. Problem Solving:
+   - **Column alignment solved**: `_cjk_ljust()` helper calculates display width (2 for CJK chars, 1 for ASCII) and pads accordingly
+   - **蔵干特定 architecture**: Used existing SetsuiriProvider infrastructure + new `SanmeiCalendar.get_setsuiri_for_date()` method to get the setsuiri date, then simple arithmetic for day count
+   - **Field name mismatch identified and fixed**: Critical catch that the worktree agent was working with pre-rename code
+
+6. All User Messages:
+   - (Initial) `/task-pdca` with CLI display fix requirements including column alignment, debug number removal, and 蔵干特定値 feature request with sample output
+   - "書籍の記述を共有します。これで実装内容が明確になるかどうか教えてください。" + full book excerpt with 歳干表, calculation method, and worked example
+   - "「歳干」は誤字で「蔵干」が正しいです。"
+   - "docs/domain で更新が必要なものは更新をお願いします。"
+   - "蔵干のフォーマットの「地支」の行は不要です。"
+
+7. Pending Tasks:
+   - **Complete test_fortune.py fix**: Add missing imports for `ActiveHiddenStem`, `HiddenStemType`, `ZoukanTokutei`
+   - **Fix test_fortune_analyzer.py**: Add dummy `ZoukanTokutei` to `_make_meishiki` helper + imports
+   - **Add integration tests to test_meishiki_calculator.py**: Book example (1988-11-01) and zoukan_tokutei field existence
+   - **Add tests to test_pillar_calculator.py**: `get_setsuiri_for_date()` tests
+   - **Run `just check`** to verify all tests pass
+   - **Task-3: CLI display for 蔵干特定** in text.py:
+     - Add `ZoukanTokutei` parameter to `_append_hidden_stems()`
+     - Display 蔵干特定値 (day count) in section header: `【蔵干】(蔵干特定値: 25日)`
+     - Add 蔵干特定 row: `蔵干特定  庚(本元)   戊(本元)   戊(本元)`
+   - **Update domain docs**: Add 蔵干特定 explanation to `docs/domain/02_Chapter2_Basics_of_Kanshi.md` section 2.4
+   - **PDCA Check phase**: Run `just check`, verify DoD
+   - **PDCA Retrospective & Feedback**: Record learnings, commit PDCA state file
+   - **Commit all changes**
+
+8. Current Work:
+   I was in the middle of applying task-2 changes manually to the main branch after discovering the worktree agent used incorrect field names. Specifically, I had just added a dummy `ZoukanTokutei` to `test_fortune.py`'s `_make_meishiki` helper:
+   ```python
+   zoukan_tokutei=ZoukanTokutei(
+       days_from_setsuiri=15,
+       year=ActiveHiddenStem(stem=TenStem.MIZUNOTO, element=HiddenStemType.HONGEN),
+       month=ActiveHiddenStem(stem=TenStem.MIZUNOTO, element=HiddenStemType.HONGEN),
+       day=ActiveHiddenStem(stem=TenStem.MIZUNOTO, element=HiddenStemType.HONGEN),
+   ),
+   ```
+   But I had NOT yet:
+   - Added the necessary imports (`ActiveHiddenStem`, `HiddenStemType`, `ZoukanTokutei`) to test_fortune.py
+   - Made the same changes to test_fortune_analyzer.py
+   - Added integration tests to test_meishiki_calculator.py
+   - Run any tests to verify the changes compile and pass
+
+9. Optional Next Step:
+   Continue fixing the remaining test files to make task-2 compile and pass. Specifically:
+   1. Add imports for `ActiveHiddenStem`, `HiddenStemType`, `ZoukanTokutei` to `test_fortune.py`
+   2. Apply the same `_make_meishiki` fix + imports to `test_fortune_analyzer.py`
+   3. Add integration tests to `test_meishiki_calculator.py` (book example: 1988-11-01 → 25日)
+   4. Run `just check` to verify everything passes
+   5. Then proceed to task-3 (CLI display + domain docs)
+
+   This is directly in line with the PDCA Do phase for task-2 which was being applied when the summary was requested.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/toguchi/.claude/projects/-Users-toguchi-PARA-Projects-Private-dynamic-sanmei/cf78346f-e69b-48e0-a5a5-dff9c19162ac.jsonl
+Please continue the conversation from where we left off without asking the user any further questions. Continue with the last task that you were asked to work on.
