@@ -1,0 +1,459 @@
+質問 sanmei-core で命式の算出をしていますが、蔵干の算出と表示は可能ですか？
+
+---
+
+Base directory for this skill: /Users/toguchi/.claude/skills/task-pdca
+
+# Task PDCA
+
+PDCAサイクルでタスクを実装・完成させるプロセススキル。
+
+**コア原則:** Plan → Do → Check → Adjust のループで品質を担保し、振り返りで再発防止、Feedback でナレッジを永続化する。
+
+## サブコマンド
+
+| コマンド | 説明 |
+|----------|------|
+| `/task-pdca` | 新規PDCAサイクルを開始（タスク情報を入力） |
+| `/task-pdca continue` | 中断したサイクルを再開 |
+| `/task-pdca clean` | 完了済みサイクルの状態ファイルを削除 |
+
+## いつ使うか
+
+```dot
+digraph when_to_use {
+    "タスク実装の依頼?" [shape=diamond];
+    "中断からの再開?" [shape=diamond];
+    "完了済みの清掃?" [shape=diamond];
+    "/task-pdca で新規開始" [shape=box];
+    "/task-pdca continue" [shape=box];
+    "/task-pdca clean" [shape=box];
+    "別のスキルを検討" [shape=box];
+
+    "タスク実装の依頼?" -> "中断からの再開?" [label="no"];
+    "タスク実装の依頼?" -> "/task-pdca で新規開始" [label="yes"];
+    "中断からの再開?" -> "完了済みの清掃?" [label="no"];
+    "中断からの再開?" -> "/task-pdca continue" [label="yes"];
+    "完了済みの清掃?" -> "/task-pdca clean" [label="yes"];
+    "完了済みの清掃?" -> "別のスキルを検討" [label="no"];
+}
+```
+
+## 全体フロー
+
+```dot
+digraph pdca_flow {
+    rankdir=TB;
+
+    "タスク入力を受け取る" [shape=doublecircle];
+    "依存関係を分析" [shape=box];
+    "独立タスクあり?" [shape=diamond];
+    "並列でサブエージェントに委任" [shape=box];
+    "逐次実行" [shape=box];
+
+    subgraph cluster_pdca {
+        label="PDCAサイクル（タスクごと）";
+
+        "Plan: 計画作成" [shape=box];
+        "Do: 実装" [shape=box];
+        "Check: 検証" [shape=box];
+        "Check 合格?" [shape=diamond];
+        "Adjust: 計画修正" [shape=box];
+        "コミット" [shape=box];
+        "振り返り: 再発防止策" [shape=box];
+    }
+
+    "Feedback: ナレッジ保存 + 最終報告" [shape=box];
+    "完了" [shape=doublecircle];
+
+    "タスク入力を受け取る" -> "依存関係を分析";
+    "依存関係を分析" -> "独立タスクあり?";
+    "独立タスクあり?" -> "並列でサブエージェントに委任" [label="yes"];
+    "独立タスクあり?" -> "逐次実行" [label="no"];
+    "並列でサブエージェントに委任" -> "Plan: 計画作成";
+    "逐次実行" -> "Plan: 計画作成";
+
+    "Plan: 計画作成" -> "Do: 実装";
+    "Do: 実装" -> "Check: 検証";
+    "Check: 検証" -> "Check 合格?" ;
+    "Check 合格?" -> "Adjust: Plan修正 + 原因分析" [label="no"];
+    "Adjust: Plan修正 + 原因分析" -> "Do: 実装" [label="修正箇所を再実行"];
+    "Check 合格?" -> "コミット" [label="yes"];
+    "コミット" -> "振り返り: 再発防止策";
+    "振り返り: 再発防止策" -> "Feedback: ナレッジ保存 + 最終報告";
+    "Feedback: ナレッジ保存 + 最終報告" -> "完了";
+}
+```
+
+## 各フェーズの詳細
+
+### 1. Plan（計画）
+
+**目的:** 何をどう実装するか、完了条件（DoD）を明確にする。
+
+**手順:**
+1. タスクの要件を分析（不明点があれば人間に質問）
+2. 完了条件（Definition of Done）を定義
+3. 実装ステップを分解（粒度: 各ステップ15分以内）
+4. テスト方針を決定
+5. 状態ファイルに Plan を記録
+
+**Plan の記録形式（状態ファイル内）:**
+```
+## Plan
+- DoD: [完了条件のリスト]
+- Steps:
+  1. [ステップ1]
+  2. [ステップ2]
+  ...
+- Test Strategy: [テスト方針]
+```
+
+**スキル連携:** 要件が複雑な場合は `superpowers:brainstorming` で設計を深掘りし、`superpowers:writing-plans` で詳細計画を作成。
+
+### 2. Do（実行）
+
+**目的:** Plan に沿って実装する。
+
+**手順:**
+1. 状態ファイルの phase を `do` に更新
+2. Plan のステップを順に実行
+3. テストを書き、実装する（**REQUIRED:** `superpowers:test-driven-development` に従う）
+4. 各ステップの完了時に状態ファイルを更新
+
+**サブエージェント委任時のプロンプト構造:**
+```
+タスク: [タスク名]
+
+## タスク説明
+[タスクの全文 - ファイルを読ませず直接渡す]
+
+## Plan
+[Plan フェーズで作成した計画]
+
+## 完了条件（DoD）
+[チェックリスト形式]
+
+## コンテキスト
+[アーキテクチャ、依存関係、既存パターン]
+
+## 制約
+- Plan のステップに従うこと
+- テストファースト（TDD）で実装
+- 完了条件をすべて満たすこと
+- 不明点があれば質問すること
+```
+
+### 3. Check（検証）
+
+**目的:** Do の成果が Plan の完了条件を満たすか厳格に検証する。
+
+**鉄則: 検証なしに「完了」と言わない。**
+
+**手順:**
+1. テスト実行 → 全テスト合格を確認（出力を確認）
+2. リント/型チェック → エラー0を確認（出力を確認）
+3. DoD チェックリスト → 各項目を 1 つずつ検証
+4. 検証結果を状態ファイルに記録
+
+**Check の記録形式:**
+```
+## Check (Iteration N)
+- Tests: PASS/FAIL [詳細]
+- Lint: PASS/FAIL [詳細]
+- DoD:
+  - [x] 条件1: PASS
+  - [ ] 条件2: FAIL - [理由]
+- Result: PASS/FAIL
+```
+
+**スキル連携:** `superpowers:verification-before-completion` の鉄則に従う。証拠なしに成功を主張しない。
+
+### 4. Adjust（修正）
+
+**目的:** Check で不合格だった場合、Plan 自体を見直す。
+
+**重要: コードだけ直すのではなく、Plan を修正してから Do に戻る。**
+
+```dot
+digraph adjust {
+    "Check 失敗" [shape=ellipse];
+    "失敗原因を分析" [shape=box];
+    "Plan の問題?" [shape=diamond];
+    "Plan のステップ/DoD を修正" [shape=box];
+    "実装のバグ?" [shape=diamond];
+    "バグ修正ステップを Plan に追加" [shape=box];
+    "修正した Plan の Do ステップを実行" [shape=box];
+
+    "Check 失敗" -> "失敗原因を分析";
+    "失敗原因を分析" -> "Plan の問題?";
+    "Plan の問題?" -> "Plan のステップ/DoD を修正" [label="yes"];
+    "Plan の問題?" -> "実装のバグ?" [label="no"];
+    "実装のバグ?" -> "バグ修正ステップを Plan に追加" [label="yes"];
+    "実装のバグ?" -> "環境/テスト問題 → 人間に相談" [label="no"];
+    "Plan のステップ/DoD を修正" -> "修正した Plan の Do ステップを実行";
+    "バグ修正ステップを Plan に追加" -> "修正した Plan の Do ステップを実行";
+}
+```
+
+**Adjust のフロー:** Adjust は常に Plan を修正した上で、修正部分の Do → Check を再実行する。コードだけ直して Check をスキップするのは禁止。
+
+**Adjust の記録形式:**
+```
+## Adjust (Iteration N)
+- Failure: [Check で失敗した内容]
+- Root Cause: [根本原因]
+- Plan Changes: [Plan への修正内容]
+```
+
+**安全弁:** 3回以上 Adjust ループした場合、人間に相談する。無限ループを避ける。
+
+### 5. 振り返り（Retrospective）
+
+**目的:** 成功・失敗を分析し、再発防止策を立てる。
+
+**Check 合格後、コミット後に必ず実行。**
+
+**スコープ:**
+- **タスクごとの振り返り:** 各タスクの PDCA 完了後に実施。状態ファイルの各タスクセクションに記録。
+- **サイクル全体の振り返り:** 全タスク完了後、Feedback フェーズの前に実施。タスク横断の学びを統合。
+
+**手順:**
+1. **何がうまくいったか** — 成功パターンを特定
+2. **何が失敗したか** — 各 Adjust イテレーションの原因を分析
+3. **再発防止策** — 同じ失敗を繰り返さないための具体的アクション
+4. 振り返り結果を状態ファイルに記録
+
+**振り返りの記録形式:**
+```
+## Retrospective
+### 成功
+- [成功パターン]
+
+### 失敗と再発防止
+| 失敗 | 根本原因 | 再発防止策 |
+|------|----------|------------|
+| [何が起きた] | [なぜ] | [今後どうする] |
+
+### 学び
+- [セッションをまたいで有用な知見]
+```
+
+**これを省略しない。** 振り返りのない PDCA は単なる作業ループ。
+
+### 6. Feedback（報告・ナレッジ保存）
+
+**目的:** ナレッジを永続化し、人間に最終報告する。
+
+**手順:**
+1. **ナレッジ保存:** 振り返りの「学び」と「再発防止策」をメモリファイルに保存
+   - 保存先: 自動メモリディレクトリ内の `pdca-learnings.md`（Claude Code が使用するプロジェクトメモリディレクトリ。通常 `~/.claude/projects/` 配下にプロジェクトパスから生成される）
+   - 既存の学びがあれば追記（重複しない）
+   - 日付とサイクル名をヘッダーとして記録
+2. **状態ファイルを `Status: completed` に更新**
+3. **PDCA 状態ファイルをコミット:** `.claude/pdca/` 配下の状態ファイルを stage してコミットする
+   - コミットメッセージ: `chore: add PDCA cycle record for [サイクル説明]`
+   - 実装コードのコミットとは別にする（PDCA 記録は作業メタデータ）
+   - **これを省略しない。** 状態ファイルはチームのナレッジ資産であり、コミット漏れは学びの消失を意味する
+4. **最終報告:** 人間に以下を簡潔に表示
+
+**最終報告フォーマット:**
+```
+## PDCA 完了報告
+
+### 実装したタスク
+- [タスク1]: [概要] ✅
+- [タスク2]: [概要] ✅
+
+### PDCA サイクル統計
+- イテレーション回数: N
+- Adjust 回数: M
+
+### 主な学び
+- [学び1]
+- [学び2]
+
+### 再発防止策
+- [対策1]
+- [対策2]
+```
+
+## 状態管理
+
+### 状態ファイルの場所
+
+```
+.claude/pdca/
+  cycle-{YYYYMMDD-HHMMSS}.md    # サイクルごとの状態ファイル
+```
+
+プロジェクトルートの `.claude/pdca/` ディレクトリに保存。
+
+### 状態ファイルのフォーマット
+
+```markdown
+# PDCA Cycle: [説明]
+
+- Status: in_progress | completed
+- Created: [ISO日時]
+- Updated: [ISO日時]
+
+## Task: [タスク名]
+- ID: task-1
+- Status: plan | do | check | adjust | retrospective | completed
+- Dependencies: [none | task-2, task-3]
+- Iteration: 1
+
+### Plan
+[Plan 内容]
+
+### Do Log
+#### Iteration 1
+[Do の記録]
+
+### Check Log
+#### Iteration 1
+[Check の記録]
+
+### Adjust Log
+#### Iteration 1
+[Adjust の記録（該当する場合）]
+
+### Retrospective
+[振り返り内容]
+
+---
+
+## Task: [タスク2名]
+...
+```
+
+### フェーズ遷移ルール
+
+状態ファイルのタスク Status は以下のタイミングで更新する:
+
+| 遷移 | タイミング |
+|------|-----------|
+| `plan` → `do` | Plan を状態ファイルに記録した直後 |
+| `do` → `check` | Do の実装が完了した直後 |
+| `check` → `adjust` | Check が FAIL だった直後 |
+| `adjust` → `do` | Adjust で Plan を修正した直後（再実行前） |
+| `check` → `retrospective` | Check が PASS でコミット完了後 |
+| `retrospective` → `completed` | 振り返りを記録した後 |
+
+**遷移のたびに `Updated` タイムスタンプも更新する。**
+
+### continue（再開）
+
+`/task-pdca continue` 実行時:
+1. `.claude/pdca/` から `Status: in_progress` のサイクルファイルを探す
+2. 各タスクの現在フェーズを読み取る
+3. 中断地点から再開（例: do フェーズの途中なら do から）
+4. 複数のサイクルがある場合、最新のものを選択（または人間に確認）
+
+### clean（清掃）
+
+`/task-pdca clean` 実行時:
+1. `.claude/pdca/` から `Status: completed` のサイクルファイルを検索
+2. 一覧を表示し、人間に確認を取る
+3. 確認後、該当ファイルを削除
+
+## 並列実行
+
+```dot
+digraph parallel {
+    "タスク一覧" [shape=box];
+    "依存関係グラフを構築" [shape=box];
+    "独立タスクを特定" [shape=box];
+    "2つ以上の独立タスク?" [shape=diamond];
+    "Agent ツールで並列ディスパッチ" [shape=box];
+    "逐次実行" [shape=box];
+    "全サブエージェント完了待ち" [shape=box];
+    "結果を統合・Check" [shape=box];
+
+    "タスク一覧" -> "依存関係グラフを構築";
+    "依存関係グラフを構築" -> "独立タスクを特定";
+    "独立タスクを特定" -> "2つ以上の独立タスク?";
+    "2つ以上の独立タスク?" -> "Agent ツールで並列ディスパッチ" [label="yes"];
+    "2つ以上の独立タスク?" -> "逐次実行" [label="no"];
+    "Agent ツールで並列ディスパッチ" -> "全サブエージェント完了待ち";
+    "全サブエージェント完了待ち" -> "結果を統合・Check";
+}
+```
+
+**並列実行時のルール:**
+- 各サブエージェントは独立した worktree で作業（`isolation: "worktree"` を使用）
+- サブエージェントには Plan 全文 + DoD + コンテキストを渡す（ファイルを読ませない）
+- 同じファイルを編集する可能性がある場合は並列にしない
+- 各サブエージェントが独自に Do → Check → Adjust ループを実行し、合格したらコミット
+- **状態ファイルはメインエージェントのみが更新する。** サブエージェントは結果を報告し、メインが状態ファイルに反映する
+- メインエージェントは全サブエージェント完了後に以下を実施:
+  1. 各 worktree の変更をメインブランチにマージ
+  2. マージ後の統合テスト実行（`just check` 等）
+  3. 統合テスト合格を確認して状態ファイルを更新
+
+**サブエージェントへのプロンプト:**
+```
+あなたは PDCA サイクルの Do フェーズを実行するサブエージェントです。
+
+## タスク
+[タスク全文]
+
+## Plan
+[計画全文]
+
+## 完了条件（DoD）
+[チェックリスト]
+
+## 実行手順
+1. Plan のステップに従って実装（TDD で）
+2. 全テスト合格を確認
+3. リント/型チェック合格を確認
+4. DoD の各項目を検証
+5. 問題があれば Plan を修正して再実行（最大3回）
+6. コミットする
+7. 結果を報告:
+   - 実装内容
+   - テスト結果（出力を含む）
+   - DoD チェックリスト結果
+   - 問題があった場合の Adjust 記録
+```
+
+## スキル連携
+
+| フェーズ | 連携スキル | 用途 |
+|----------|------------|------|
+| Plan | `superpowers:brainstorming` | 要件が複雑な場合の設計深掘り |
+| Plan | `superpowers:writing-plans` | 詳細実装計画の作成 |
+| Do | `superpowers:test-driven-development` | TDD で実装 |
+| Do | `superpowers:dispatching-parallel-agents` | 独立タスクの並列実行 |
+| Check | `superpowers:verification-before-completion` | 厳格な検証 |
+| Adjust | `superpowers:systematic-debugging` | 失敗原因の調査 |
+| コミット | `superpowers:finishing-a-development-branch` | ブランチ完了時 |
+
+## レッドフラグ — 止まれ
+
+- Check せずに「完了」と言おうとしている
+- テスト出力を確認せずに「テスト合格」と主張
+- Adjust で Plan を見直さずコードだけ修正
+- 振り返りを「特になし」で済ませようとしている
+- 3回以上 Adjust ループしているのに人間に相談していない
+- 独立タスクを逐次処理している（並列可能なのに）
+- 状態ファイルを更新していない
+- ナレッジ保存をスキップしようとしている
+- PDCA 状態ファイルをコミットせずにセッションを終了しようとしている
+
+## よくある間違い
+
+| 間違い | 正しい対応 |
+|--------|------------|
+| Check なしで完了宣言 | 必ずテスト・リント・DoD を実行して確認 |
+| Adjust でコードだけ修正 | Plan 自体を見直す。なぜ計画が不十分だったか考える |
+| 振り返りを省略 | 必須。失敗がなくても「何がうまくいったか」を記録 |
+| ナレッジ保存忘れ | Feedback フェーズで必ずメモリファイルに保存 |
+| PDCA 状態ファイルのコミット漏れ | Feedback フェーズで `.claude/pdca/` を必ず stage & commit する |
+| 状態ファイル未更新 | 各フェーズ遷移時に必ず更新。continue の命綱 |
+| 並列可能なのに逐次処理 | 依存関係がなければ Agent ツールで並列実行 |
+
+
+ARGUMENTS: テキスト出力 では蔵干のセクションが未実装です。apps/sanmei-cli/src/sanmei_cli/formatters/text.py の format_meishiki に「蔵干」セクションを追加すれば表示可能です。表示するように修正してください。

@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "149e75ebd994",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/sanmei-cli/src/sanmei_cli/formatters/text.py",
+    "apps/sanmei-cli/tests/test_text_formatter.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/14/9e75ebd994/0/metadata.json",
+      "transcript": "/14/9e75ebd994/0/full.jsonl",
+      "context": "/14/9e75ebd994/0/context.md",
+      "content_hash": "/14/9e75ebd994/0/content_hash.txt",
+      "prompt": "/14/9e75ebd994/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 27,
+    "cache_creation_tokens": 56298,
+    "cache_read_tokens": 1198841,
+    "output_tokens": 8287,
+    "api_call_count": 23
+  }
+}
