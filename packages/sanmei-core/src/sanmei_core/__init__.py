@@ -17,6 +17,7 @@ from sanmei_core.calculators.pillar_calculator import SanmeiCalendar
 from sanmei_core.calculators.shimeisei import calculate_shimeisei
 from sanmei_core.calculators.shukumei_chuusatsu import calculate_shukumei_chuusatsu
 from sanmei_core.calculators.solar_longitude import MeeusSetsuiriProvider
+from sanmei_core.calculators.zoukan_tokutei import determine_active_hidden_stem
 from sanmei_core.domain.calendar import SetsuiriDate, SolarTerm
 from sanmei_core.domain.errors import (
     DateOutOfRangeError,
@@ -49,12 +50,14 @@ from sanmei_core.domain.shukumei_chuusatsu import (
 )
 from sanmei_core.domain.star import MajorStar, SubsidiaryStar
 from sanmei_core.domain.tenchuusatsu import Tenchuusatsu, TenchuusatsuType
+from sanmei_core.domain.zoukan_tokutei import ActiveHiddenStem, HiddenStemType, ZoukanTokutei
 from sanmei_core.protocols.school import SchoolProtocol
 from sanmei_core.protocols.setsuiri import SetsuiriProvider
 from sanmei_core.schools.registry import SchoolRegistry
 from sanmei_core.schools.standard import StandardSchool
 
 __all__ = [
+    "ActiveHiddenStem",
     "BranchInteraction",
     "BranchInteractionType",
     "DateOutOfRangeError",
@@ -63,6 +66,7 @@ __all__ = [
     "GoGyo",
     "GoGyoBalance",
     "GoGyoCount",
+    "HiddenStemType",
     "HiddenStems",
     "InYou",
     "IsouhouResult",
@@ -95,6 +99,7 @@ __all__ = [
     "TenchuusatsuType",
     "ThreePillars",
     "TwelveBranch",
+    "ZoukanTokutei",
     "analyze_branch_interactions",
     "analyze_fortune_interaction",
     "analyze_isouhou",
@@ -104,5 +109,6 @@ __all__ = [
     "calculate_shimeisei",
     "calculate_shukumei_chuusatsu",
     "calculate_taiun",
+    "determine_active_hidden_stem",
     "determine_direction",
 ]

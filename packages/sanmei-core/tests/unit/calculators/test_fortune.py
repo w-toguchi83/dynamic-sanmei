@@ -24,6 +24,11 @@ from sanmei_core.domain.meishiki import (
 from sanmei_core.domain.pillar import ThreePillars
 from sanmei_core.domain.star import MajorStar, SubsidiaryStar
 from sanmei_core.domain.tenchuusatsu import Tenchuusatsu, TenchuusatsuType
+from sanmei_core.domain.zoukan_tokutei import (
+    ActiveHiddenStem,
+    HiddenStemType,
+    ZoukanTokutei,
+)
 
 
 class MockSetsuiriProvider:
@@ -114,6 +119,12 @@ def _make_meishiki(
             "month": HiddenStems(hongen=TenStem.MIZUNOTO),
             "day": HiddenStems(hongen=TenStem.MIZUNOTO),
         },
+        zoukan_tokutei=ZoukanTokutei(
+            days_from_setsuiri=15,
+            year=ActiveHiddenStem(stem=TenStem.MIZUNOTO, element=HiddenStemType.HONGEN),
+            month=ActiveHiddenStem(stem=TenStem.MIZUNOTO, element=HiddenStemType.HONGEN),
+            day=ActiveHiddenStem(stem=TenStem.MIZUNOTO, element=HiddenStemType.HONGEN),
+        ),
         major_stars=MajorStarChart(
             north=MajorStar.KANSAKU,
             east=MajorStar.KANSAKU,

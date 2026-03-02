@@ -119,6 +119,22 @@ class TestFormatMeishiki:
         if has_none:
             assert "-" in result
 
+    def test_zoukan_tokutei_days_shown(self, meishiki):
+        """蔵干セクションヘッダーに節入り日からの日数が表示される."""
+        result = format_meishiki(meishiki, BIRTH_DT)
+        days = meishiki.zoukan_tokutei.days_from_setsuiri
+        assert f"節入り日から{days}日目" in result
+
+    def test_zoukan_tokutei_row_shown(self, meishiki):
+        """蔵干特定行が表示される."""
+        result = format_meishiki(meishiki, BIRTH_DT)
+        assert "蔵干特定" in result
+        zt = meishiki.zoukan_tokutei
+        # 各柱の選択された蔵干と区分が表示される
+        assert zt.day.element.value in result
+        assert zt.month.element.value in result
+        assert zt.year.element.value in result
+
     def test_contains_shimeisei(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
         assert "【使命星】" in result

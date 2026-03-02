@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from sanmei_core.domain.fortune import Nenun
     from sanmei_core.domain.hidden_stems import HiddenStems
     from sanmei_core.domain.kanshi import TenStem
+    from sanmei_core.domain.zoukan_tokutei import ZoukanTokutei
 
 _STEM_KANJI = "甲乙丙丁戊己庚辛壬癸"
 _BRANCH_KANJI = "子丑寅卯辰巳午未申酉戌亥"
@@ -71,7 +72,7 @@ def format_meishiki(meishiki: Meishiki, dt: datetime) -> str:
     lines.append("")
 
     # 蔵干
-    _append_hidden_stems(lines, meishiki.hidden_stems)
+    _append_hidden_stems(lines, meishiki.hidden_stems, meishiki.zoukan_tokutei)
     lines.append("")
 
     # 使命星
@@ -170,31 +171,42 @@ def format_isouhou(result: IsouhouResult) -> str:
 def _append_hidden_stems(
     lines: list[str],
     hs: dict[str, HiddenStems],
+    zoukan_tokutei: ZoukanTokutei,
 ) -> None:
-    """蔵干セクション（日/月/年順）."""
-    lines.append("【蔵干】")
+    """蔵干セクション（日/月/年順）+ 蔵干特定値."""
+    label_w = 10
+    col_w = 10
+    lines.append(f"【蔵干】(節入り日から{zoukan_tokutei.days_from_setsuiri}日目)")
     lines.append(
-        f"{_cjk_ljust('', 8)}{_cjk_ljust('日', 10)}"
-        f"{_cjk_ljust('月', 10)}{_cjk_ljust('年', 10)}"
+        f"{_cjk_ljust('', label_w)}{_cjk_ljust('日', col_w)}"
+        f"{_cjk_ljust('月', col_w)}{_cjk_ljust('年', col_w)}"
     )
     day, month, year = hs["day"], hs["month"], hs["year"]
     lines.append(
-        f"{_cjk_ljust('初元', 8)}"
-        f"{_cjk_ljust(_stem_or_dash(day.shogen), 10)}"
-        f"{_cjk_ljust(_stem_or_dash(month.shogen), 10)}"
-        f"{_cjk_ljust(_stem_or_dash(year.shogen), 10)}"
+        f"{_cjk_ljust('初元', label_w)}"
+        f"{_cjk_ljust(_stem_or_dash(day.shogen), col_w)}"
+        f"{_cjk_ljust(_stem_or_dash(month.shogen), col_w)}"
+        f"{_cjk_ljust(_stem_or_dash(year.shogen), col_w)}"
     )
     lines.append(
-        f"{_cjk_ljust('中元', 8)}"
-        f"{_cjk_ljust(_stem_or_dash(day.chuugen), 10)}"
-        f"{_cjk_ljust(_stem_or_dash(month.chuugen), 10)}"
-        f"{_cjk_ljust(_stem_or_dash(year.chuugen), 10)}"
+        f"{_cjk_ljust('中元', label_w)}"
+        f"{_cjk_ljust(_stem_or_dash(day.chuugen), col_w)}"
+        f"{_cjk_ljust(_stem_or_dash(month.chuugen), col_w)}"
+        f"{_cjk_ljust(_stem_or_dash(year.chuugen), col_w)}"
     )
     lines.append(
-        f"{_cjk_ljust('本元', 8)}"
-        f"{_cjk_ljust(_stem(day.hongen.value), 10)}"
-        f"{_cjk_ljust(_stem(month.hongen.value), 10)}"
-        f"{_cjk_ljust(_stem(year.hongen.value), 10)}"
+        f"{_cjk_ljust('本元', label_w)}"
+        f"{_cjk_ljust(_stem(day.hongen.value), col_w)}"
+        f"{_cjk_ljust(_stem(month.hongen.value), col_w)}"
+        f"{_cjk_ljust(_stem(year.hongen.value), col_w)}"
+    )
+    # 蔵干特定: 選択された蔵干を表示
+    zt = zoukan_tokutei
+    lines.append(
+        f"{_cjk_ljust('蔵干特定', label_w)}"
+        f"{_cjk_ljust(f'{_STEM_KANJI[zt.day.stem.value]}({zt.day.element.value})', col_w)}"
+        f"{_cjk_ljust(f'{_STEM_KANJI[zt.month.stem.value]}({zt.month.element.value})', col_w)}"
+        f"{_cjk_ljust(f'{_STEM_KANJI[zt.year.stem.value]}({zt.year.element.value})', col_w)}"
     )
 
 

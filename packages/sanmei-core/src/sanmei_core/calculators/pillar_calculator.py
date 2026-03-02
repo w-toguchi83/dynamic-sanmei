@@ -8,6 +8,7 @@ from sanmei_core.calculators.day_pillar import day_pillar
 from sanmei_core.calculators.month_pillar import month_pillar
 from sanmei_core.calculators.year_pillar import year_pillar
 from sanmei_core.constants import JST
+from sanmei_core.domain.calendar import SetsuiriDate
 from sanmei_core.domain.errors import DateOutOfRangeError
 from sanmei_core.domain.kanshi import Kanshi
 from sanmei_core.domain.pillar import ThreePillars
@@ -55,6 +56,28 @@ class SanmeiCalendar:
         """日柱を算出."""
         self._validate_range(dt)
         return self._day_pillar(dt)
+
+    def get_setsuiri_for_date(self, dt: datetime) -> SetsuiriDate:
+        """指定日時が属する算命学月の節入り日を取得する."""
+        self._validate_range(dt)
+        local_dt = dt.astimezone(self._tz)
+        risshun = self._provider.get_risshun(local_dt.year)
+        risshun_local = risshun.datetime_utc.astimezone(self._tz)
+
+        if local_dt < risshun_local:
+            setsuiri_dates = self._provider.get_setsuiri_dates(local_dt.year - 1)
+        else:
+            setsuiri_dates = self._provider.get_setsuiri_dates(local_dt.year)
+
+        sorted_dates = sorted(setsuiri_dates, key=lambda s: s.datetime_utc)
+        for sd in reversed(sorted_dates):
+            setsuiri_local = sd.datetime_utc.astimezone(self._tz)
+            if local_dt >= setsuiri_local:
+                return sd
+
+        # 全節入り日より前 → 前年の最後の節入り日を取得
+        prev_dates = self._provider.get_setsuiri_dates(local_dt.year - 1)
+        return max(prev_dates, key=lambda s: s.datetime_utc)
 
     def _year_pillar(self, dt: datetime) -> Kanshi:
         local_dt = dt.astimezone(self._tz)

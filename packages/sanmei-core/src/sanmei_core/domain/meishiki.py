@@ -10,6 +10,7 @@ from sanmei_core.domain.pillar import ThreePillars
 from sanmei_core.domain.shukumei_chuusatsu import ShukumeiChuusatsu
 from sanmei_core.domain.star import MajorStar, SubsidiaryStar
 from sanmei_core.domain.tenchuusatsu import Tenchuusatsu
+from sanmei_core.domain.zoukan_tokutei import ZoukanTokutei
 
 
 class MajorStarChart(BaseModel, frozen=True):
@@ -35,6 +36,7 @@ class Meishiki(BaseModel, frozen=True):
 
     pillars: ThreePillars
     hidden_stems: dict[str, HiddenStems]
+    zoukan_tokutei: ZoukanTokutei
     major_stars: MajorStarChart
     subsidiary_stars: SubsidiaryStarChart
     shimeisei: MajorStar
