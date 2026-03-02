@@ -55,6 +55,10 @@ def format_meishiki(meishiki: Meishiki, dt: datetime) -> str:
     _append_hidden_stems(lines, meishiki.hidden_stems)
     lines.append("")
 
+    # 使命星
+    lines.append(f"【使命星】 {meishiki.shimeisei.value}")
+    lines.append("")
+
     # 十大主星
     ms = meishiki.major_stars
     lines.append("【十大主星】")

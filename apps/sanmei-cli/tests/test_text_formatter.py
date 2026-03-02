@@ -80,6 +80,18 @@ class TestFormatMeishiki:
         if has_none:
             assert "-" in result
 
+    def test_contains_shimeisei(self, meishiki):
+        result = format_meishiki(meishiki, BIRTH_DT)
+        assert "【使命星】" in result
+        assert meishiki.shimeisei.value in result
+
+    def test_shimeisei_after_hidden_stems(self, meishiki):
+        result = format_meishiki(meishiki, BIRTH_DT)
+        hidden_pos = result.index("【蔵干】")
+        shimeisei_pos = result.index("【使命星】")
+        major_pos = result.index("【十大主星】")
+        assert hidden_pos < shimeisei_pos < major_pos
+
     def test_contains_gogyo_balance(self, meishiki):
         result = format_meishiki(meishiki, BIRTH_DT)
         assert "【五行バランス】" in result

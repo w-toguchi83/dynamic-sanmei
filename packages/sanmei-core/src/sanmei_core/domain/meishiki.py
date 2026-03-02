@@ -37,6 +37,7 @@ class Meishiki(BaseModel, frozen=True):
     hidden_stems: dict[str, HiddenStems]
     major_stars: MajorStarChart
     subsidiary_stars: SubsidiaryStarChart
+    shimeisei: MajorStar
     tenchuusatsu: Tenchuusatsu
     shukumei_chuusatsu: tuple[ShukumeiChuusatsu, ...]
     gogyo_balance: GoGyoBalance

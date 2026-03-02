@@ -12,6 +12,7 @@ from sanmei_core.tables.isouhou import (
     SANGOU,
     SANKEI,
     STEM_GOU,
+    get_kangou_partner,
 )
 
 
@@ -122,6 +123,51 @@ class TestJikei:
         assert TwelveBranch.UMA in JIKEI
         assert TwelveBranch.TORI in JIKEI
         assert TwelveBranch.I in JIKEI
+
+
+class TestGetKangouPartner:
+    """干合相手の取得テスト."""
+
+    def test_kinoe_tsuchinoto(self) -> None:
+        assert get_kangou_partner(TenStem.KINOE) == TenStem.TSUCHINOTO  # 甲→己
+
+    def test_kinoto_kanoe(self) -> None:
+        assert get_kangou_partner(TenStem.KINOTO) == TenStem.KANOE  # 乙→庚
+
+    def test_hinoe_kanoto(self) -> None:
+        assert get_kangou_partner(TenStem.HINOE) == TenStem.KANOTO  # 丙→辛
+
+    def test_hinoto_mizunoe(self) -> None:
+        assert get_kangou_partner(TenStem.HINOTO) == TenStem.MIZUNOE  # 丁→壬
+
+    def test_tsuchinoe_mizunoto(self) -> None:
+        assert get_kangou_partner(TenStem.TSUCHINOE) == TenStem.MIZUNOTO  # 戊→癸
+
+    def test_tsuchinoto_kinoe(self) -> None:
+        assert get_kangou_partner(TenStem.TSUCHINOTO) == TenStem.KINOE  # 己→甲
+
+    def test_kanoe_kinoto(self) -> None:
+        assert get_kangou_partner(TenStem.KANOE) == TenStem.KINOTO  # 庚→乙
+
+    def test_kanoto_hinoe(self) -> None:
+        assert get_kangou_partner(TenStem.KANOTO) == TenStem.HINOE  # 辛→丙
+
+    def test_mizunoe_hinoto(self) -> None:
+        assert get_kangou_partner(TenStem.MIZUNOE) == TenStem.HINOTO  # 壬→丁
+
+    def test_mizunoto_tsuchinoe(self) -> None:
+        assert get_kangou_partner(TenStem.MIZUNOTO) == TenStem.TSUCHINOE  # 癸→戊
+
+    def test_all_stems_covered(self) -> None:
+        """全10干で例外なく干合相手が取得できる."""
+        for stem in TenStem:
+            partner = get_kangou_partner(stem)
+            assert isinstance(partner, TenStem)
+
+    def test_double_kangou_returns_self(self) -> None:
+        """干合相手の干合相手は自分自身."""
+        for stem in TenStem:
+            assert get_kangou_partner(get_kangou_partner(stem)) == stem
 
 
 class TestRikugai:

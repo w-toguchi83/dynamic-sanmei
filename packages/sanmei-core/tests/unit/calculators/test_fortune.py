@@ -126,6 +126,7 @@ def _make_meishiki(
             month=SubsidiaryStar.TENPOU,
             day=SubsidiaryStar.TENPOU,
         ),
+        shimeisei=MajorStar.KANSAKU,
         tenchuusatsu=Tenchuusatsu(
             type=TenchuusatsuType.INU_I,
             branches=(TwelveBranch.INU, TwelveBranch.I),

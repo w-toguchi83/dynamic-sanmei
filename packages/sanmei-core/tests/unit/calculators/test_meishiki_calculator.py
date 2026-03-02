@@ -8,6 +8,7 @@ import pytest
 from pydantic import ValidationError
 from sanmei_core.calculators.meishiki_calculator import MeishikiCalculator
 from sanmei_core.constants import JST
+from sanmei_core.domain.star import MajorStar
 from sanmei_core.domain.tenchuusatsu import TenchuusatsuType
 from sanmei_core.schools.standard import StandardSchool
 
@@ -63,6 +64,14 @@ class TestMeishikiCalculator:
         assert meishiki.gogyo_balance is not None
         assert meishiki.gogyo_balance.total_count.total > 0
         assert meishiki.gogyo_balance.day_stem_gogyo is not None
+
+    def test_meishiki_has_shimeisei(self) -> None:
+        """命式に使命星フィールドが含まれる."""
+        school = StandardSchool()
+        calc = MeishikiCalculator(school)
+        dt = datetime(2024, 6, 15, 12, 0, tzinfo=JST)
+        meishiki = calc.calculate(dt)
+        assert isinstance(meishiki.shimeisei, MajorStar)
 
     def test_meishiki_is_frozen(self) -> None:
         school = StandardSchool()

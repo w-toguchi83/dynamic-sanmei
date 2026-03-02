@@ -14,6 +14,7 @@ from sanmei_core.calculators.isouhou import (
 )
 from sanmei_core.calculators.meishiki_calculator import MeishikiCalculator
 from sanmei_core.calculators.pillar_calculator import SanmeiCalendar
+from sanmei_core.calculators.shimeisei import calculate_shimeisei
 from sanmei_core.calculators.shukumei_chuusatsu import calculate_shukumei_chuusatsu
 from sanmei_core.calculators.solar_longitude import MeeusSetsuiriProvider
 from sanmei_core.domain.calendar import SetsuiriDate, SolarTerm
@@ -100,6 +101,7 @@ __all__ = [
     "analyze_stem_interactions",
     "calculate_gogyo_balance",
     "calculate_nenun",
+    "calculate_shimeisei",
     "calculate_shukumei_chuusatsu",
     "calculate_taiun",
     "determine_direction",

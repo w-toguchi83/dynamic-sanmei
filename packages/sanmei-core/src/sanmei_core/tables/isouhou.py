@@ -17,6 +17,15 @@ STEM_GOU: dict[frozenset[TenStem], GoGyo] = {
     frozenset({TenStem.TSUCHINOE, TenStem.MIZUNOTO}): GoGyo.FIRE,
 }
 
+
+def get_kangou_partner(stem: TenStem) -> TenStem:
+    """干合相手を取得.
+
+    甲↔己, 乙↔庚, 丙↔辛, 丁↔壬, 戊↔癸
+    """
+    return TenStem((stem.value + 5) % 10)
+
+
 # --- 六合 ---
 RIKUGOU: dict[frozenset[TwelveBranch], GoGyo] = {
     frozenset({TwelveBranch.NE, TwelveBranch.USHI}): GoGyo.EARTH,
