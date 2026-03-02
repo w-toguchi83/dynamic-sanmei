@@ -13,6 +13,7 @@ if TYPE_CHECKING:
         TaiunChart,
     )
     from sanmei_core.domain.fortune import Nenun
+    from sanmei_core.domain.hidden_stems import HiddenStems
 
 _STEM_KANJI = "甲乙丙丁戊己庚辛壬癸"
 _BRANCH_KANJI = "子丑寅卯辰巳午未申酉戌亥"
@@ -48,6 +49,10 @@ def format_meishiki(meishiki: Meishiki, dt: datetime) -> str:
         f"{_branch(p.month.branch.value):10s}"
         f"{_branch(p.day.branch.value):10s}"
     )
+    lines.append("")
+
+    # 蔵干
+    _append_hidden_stems(lines, meishiki.hidden_stems)
     lines.append("")
 
     # 十大主星
@@ -137,6 +142,34 @@ def format_isouhou(result: IsouhouResult) -> str:
                 lines.append(f"{branches_str} {bi.type.value}")
 
     return "\n".join(lines)
+
+
+def _stem_or_dash(stem: int | None) -> str:
+    return _STEM_KANJI[stem] if stem is not None else "-"
+
+
+def _append_hidden_stems(lines: list[str], hs: dict[str, HiddenStems]) -> None:
+    lines.append("【蔵干】")
+    lines.append(f"{'':8s}{'年柱':10s}{'月柱':10s}{'日柱':10s}")
+    year, month, day = hs["year"], hs["month"], hs["day"]
+    lines.append(
+        f"{'本気':8s}"
+        f"{_stem(year.main.value):10s}"
+        f"{_stem(month.main.value):10s}"
+        f"{_stem(day.main.value):10s}"
+    )
+    lines.append(
+        f"{'中気':8s}"
+        f"{_stem_or_dash(year.middle.value if year.middle is not None else None):10s}"
+        f"{_stem_or_dash(month.middle.value if month.middle is not None else None):10s}"
+        f"{_stem_or_dash(day.middle.value if day.middle is not None else None):10s}"
+    )
+    lines.append(
+        f"{'余気':8s}"
+        f"{_stem_or_dash(year.minor.value if year.minor is not None else None):10s}"
+        f"{_stem_or_dash(month.minor.value if month.minor is not None else None):10s}"
+        f"{_stem_or_dash(day.minor.value if day.minor is not None else None):10s}"
+    )
 
 
 def _append_gogyo_balance(lines: list[str], gb: GoGyoBalance) -> None:
