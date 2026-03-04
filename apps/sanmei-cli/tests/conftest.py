@@ -38,6 +38,11 @@ def taiun_chart(meishiki, school):
 
 
 @pytest.fixture
+def month_kanshi_kanji(meishiki):
+    return meishiki.pillars.month.kanji
+
+
+@pytest.fixture
 def nenun_list(school):
     return calculate_nenun(
         BIRTH_DT,

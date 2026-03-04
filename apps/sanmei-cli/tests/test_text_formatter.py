@@ -159,27 +159,44 @@ class TestFormatMeishiki:
 
 
 class TestFormatTaiun:
-    def test_contains_header(self, taiun_chart):
-        result = format_taiun(taiun_chart)
+    def test_contains_header(self, taiun_chart, month_kanshi_kanji):
+        result = format_taiun(taiun_chart, month_kanshi_kanji)
         assert "=== 大運 ===" in result
 
-    def test_contains_direction(self, taiun_chart):
-        result = format_taiun(taiun_chart)
+    def test_contains_direction(self, taiun_chart, month_kanshi_kanji):
+        result = format_taiun(taiun_chart, month_kanshi_kanji)
         assert taiun_chart.direction in result
 
-    def test_contains_start_age(self, taiun_chart):
-        result = format_taiun(taiun_chart)
-        assert f"{taiun_chart.start_age}歳" in result
+    def test_contains_start_age(self, taiun_chart, month_kanshi_kanji):
+        result = format_taiun(taiun_chart, month_kanshi_kanji)
+        assert f"立運: {taiun_chart.start_age}歳" in result
 
-    def test_contains_period_kanshi(self, taiun_chart):
-        result = format_taiun(taiun_chart)
+    def test_contains_period_kanshi(self, taiun_chart, month_kanshi_kanji):
+        result = format_taiun(taiun_chart, month_kanshi_kanji)
         for period in taiun_chart.periods:
             assert period.kanshi.kanji in result
 
-    def test_contains_age_range(self, taiun_chart):
-        result = format_taiun(taiun_chart)
+    def test_contains_age_range(self, taiun_chart, month_kanshi_kanji):
+        result = format_taiun(taiun_chart, month_kanshi_kanji)
         first = taiun_chart.periods[0]
         assert f"{first.start_age}-{first.end_age}歳" in result
+
+    def test_period_label_format(self, taiun_chart, month_kanshi_kanji):
+        result = format_taiun(taiun_chart, month_kanshi_kanji)
+        assert "第1句" in result
+        assert "第2句" in result
+
+    def test_month_kanshi_row(self, taiun_chart, month_kanshi_kanji):
+        result = format_taiun(taiun_chart, month_kanshi_kanji)
+        assert "月干支" in result
+        assert month_kanshi_kanji in result
+
+    def test_month_kanshi_age_range(self, taiun_chart, month_kanshi_kanji):
+        result = format_taiun(taiun_chart, month_kanshi_kanji)
+        if taiun_chart.start_age >= 2:
+            assert f"0-{taiun_chart.start_age - 1}歳" in result
+        else:
+            assert "0歳" in result
 
 
 class TestFormatNenun:

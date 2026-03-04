@@ -111,16 +111,26 @@ def format_meishiki(meishiki: Meishiki, dt: datetime) -> str:
     return "\n".join(lines)
 
 
-def format_taiun(chart: TaiunChart) -> str:
+def format_taiun(chart: TaiunChart, month_kanshi_kanji: str) -> str:
     """大運をテキスト形式でフォーマット."""
     lines: list[str] = []
     lines.append("=== 大運 ===")
-    lines.append(f"方向: {chart.direction}  開始年齢: {chart.start_age}歳")
+    lines.append(f"方向: {chart.direction}  立運: {chart.start_age}歳")
     lines.append("")
-    lines.append(f" {'期間':<8s}{'干支':<8s}{'年齢'}")
+    lines.append(f" {_cjk_ljust('', 10)}{'干支':<8s}{'年齢'}")
+
+    # 月干支行（大運前の期間）
+    if chart.start_age >= 2:
+        age_str = f"0-{chart.start_age - 1}歳"
+    else:
+        age_str = "0歳"
+    lines.append(f" {_cjk_ljust('月干支', 10)}{month_kanshi_kanji:<8s}{age_str}")
+
     for i, period in enumerate(chart.periods, 1):
+        label = f"第{i}句"
         lines.append(
-            f" {i:<8d}{period.kanshi.kanji:<8s}{period.start_age}-{period.end_age}歳"
+            f" {_cjk_ljust(label, 10)}{period.kanshi.kanji:<8s}"
+            f"{period.start_age}-{period.end_age}歳"
         )
     return "\n".join(lines)
 

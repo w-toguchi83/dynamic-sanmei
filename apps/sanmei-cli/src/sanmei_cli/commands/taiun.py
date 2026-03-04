@@ -46,7 +46,7 @@ def taiun(
         if ctx.obj["json"]:
             click.echo(to_json(chart))
         else:
-            click.echo(format_taiun(chart))
+            click.echo(format_taiun(chart, meishiki.pillars.month.kanji))
     except SanmeiError as e:
         click.echo(f"エラー: {e}", err=True)
         ctx.exit(1)
