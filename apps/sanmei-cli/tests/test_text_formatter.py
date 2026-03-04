@@ -7,6 +7,7 @@ from sanmei_cli.formatters.text import (
     format_meishiki,
     format_nenun,
     format_taiun,
+    format_taiun_shiki,
 )
 
 JST = timezone(timedelta(hours=9))
@@ -243,3 +244,85 @@ class TestFormatIsouhou:
         empty = IsouhouResult(stem_interactions=(), branch_interactions=())
         result = format_isouhou(empty)
         assert "相互作用なし" in result
+
+
+class TestFormatTaiunShiki:
+    def test_contains_header(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        assert "=== 大運四季表 ===" in result
+
+    def test_contains_direction(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        assert shiki_chart.direction in result
+
+    def test_contains_start_age(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        assert f"立運: {shiki_chart.start_age}歳" in result
+
+    def test_column_headers(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        assert "季節" in result
+        assert "年齢" in result
+        assert "大運" in result
+        assert "干支" in result
+        assert "蔵干" in result
+        assert "十大主星" in result
+        assert "十二大従星" in result
+        assert "サイクル" in result
+
+    def test_column_order(self, shiki_chart):
+        """列順: 季節→年齢→大運→干支→蔵干→十大主星→十二大従星→サイクル."""
+        result = format_taiun_shiki(shiki_chart)
+        header_line = [
+            line for line in result.split("\n") if "季節" in line and "サイクル" in line
+        ][0]
+        assert header_line.index("季節") < header_line.index("年齢")
+        assert header_line.index("年齢") < header_line.index("大運")
+        assert header_line.index("大運") < header_line.index("干支")
+        assert header_line.index("干支") < header_line.index("蔵干")
+        assert header_line.index("蔵干") < header_line.index("十大主星")
+        assert header_line.index("十大主星") < header_line.index("十二大従星")
+        assert header_line.index("十二大従星") < header_line.index("サイクル")
+
+    def test_contains_month_kanshi_label(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        assert "月干支" in result
+
+    def test_contains_period_labels(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        assert "第1句" in result
+
+    def test_contains_season_values(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        for entry in shiki_chart.entries:
+            assert entry.season.value in result
+
+    def test_contains_kanshi_kanji(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        for entry in shiki_chart.entries:
+            assert entry.kanshi.kanji in result
+
+    def test_contains_major_star(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        for entry in shiki_chart.entries:
+            assert entry.major_star.value in result
+
+    def test_contains_subsidiary_star(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        for entry in shiki_chart.entries:
+            assert entry.subsidiary_star.value in result
+
+    def test_contains_life_cycle(self, shiki_chart):
+        result = format_taiun_shiki(shiki_chart)
+        for entry in shiki_chart.entries:
+            assert entry.life_cycle.value in result
+
+    def test_hidden_stems_dot_separated(self, shiki_chart):
+        """蔵干が「・」区切りで表示される."""
+        result = format_taiun_shiki(shiki_chart)
+        has_multi = any(
+            e.hidden_stems.chuugen is not None or e.hidden_stems.shogen is not None
+            for e in shiki_chart.entries
+        )
+        if has_multi:
+            assert "・" in result

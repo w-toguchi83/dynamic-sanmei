@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from sanmei_core.domain.fortune import Nenun
     from sanmei_core.domain.hidden_stems import HiddenStems
     from sanmei_core.domain.kanshi import TenStem
+    from sanmei_core.domain.taiun_shiki import TaiunShikiChart
     from sanmei_core.domain.zoukan_tokutei import ZoukanTokutei
 
 _STEM_KANJI = "甲乙丙丁戊己庚辛壬癸"
@@ -229,3 +230,57 @@ def _append_gogyo_balance(lines: list[str], gb: GoGyoBalance) -> None:
     lacking_str = ", ".join(g.kanji for g in gb.lacking) if gb.lacking else "なし"
     lines.append(f"主: {gb.dominant.kanji}  欠: {lacking_str}")
     lines.append(f"日主五行: {gb.day_stem_gogyo.kanji}")
+
+
+def format_taiun_shiki(chart: TaiunShikiChart) -> str:
+    """大運四季表をテキスト形式でフォーマット."""
+    lines: list[str] = []
+    lines.append("=== 大運四季表 ===")
+    lines.append(f"方向: {chart.direction}  立運: {chart.start_age}歳")
+    lines.append("")
+
+    # 列幅定義
+    w_season = 6  # 季節
+    w_age = 12  # 年齢
+    w_label = 10  # 大運
+    w_kanshi = 6  # 干支
+    w_zoukan = 12  # 蔵干
+    w_major = 10  # 十大主星
+    w_sub = 10  # 十二大従星
+
+    # ヘッダー
+    lines.append(
+        f"{_cjk_ljust('季節', w_season)}"
+        f"{_cjk_ljust('年齢', w_age)}"
+        f"{_cjk_ljust('大運', w_label)}"
+        f"{_cjk_ljust('干支', w_kanshi)}"
+        f"{_cjk_ljust('蔵干', w_zoukan)}"
+        f"{_cjk_ljust('十大主星', w_major)}"
+        f"{_cjk_ljust('十二大従星', w_sub)}"
+        f"サイクル"
+    )
+
+    for entry in chart.entries:
+        # 蔵干を「・」区切りで列挙（hongen, chuugen, shogenの順、Noneは省略）
+        stems = [_STEM_KANJI[entry.hidden_stems.hongen.value]]
+        if entry.hidden_stems.chuugen is not None:
+            stems.append(_STEM_KANJI[entry.hidden_stems.chuugen.value])
+        if entry.hidden_stems.shogen is not None:
+            stems.append(_STEM_KANJI[entry.hidden_stems.shogen.value])
+        zoukan_str = "・".join(stems)
+
+        # 年齢
+        age_str = f"{entry.start_age}-{entry.end_age}歳"
+
+        lines.append(
+            f"{_cjk_ljust(entry.season.value, w_season)}"
+            f"{_cjk_ljust(age_str, w_age)}"
+            f"{_cjk_ljust(entry.label, w_label)}"
+            f"{_cjk_ljust(entry.kanshi.kanji, w_kanshi)}"
+            f"{_cjk_ljust(zoukan_str, w_zoukan)}"
+            f"{_cjk_ljust(entry.major_star.value, w_major)}"
+            f"{_cjk_ljust(entry.subsidiary_star.value, w_sub)}"
+            f"{entry.life_cycle.value}"
+        )
+
+    return "\n".join(lines)

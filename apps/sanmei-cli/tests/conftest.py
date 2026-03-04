@@ -8,6 +8,7 @@ from sanmei_core import (
     analyze_isouhou,
     calculate_nenun,
     calculate_taiun,
+    calculate_taiun_shiki,
 )
 
 JST = timezone(timedelta(hours=9))
@@ -54,3 +55,8 @@ def nenun_list(school):
 @pytest.fixture
 def isouhou_result(meishiki):
     return analyze_isouhou(meishiki.pillars)
+
+
+@pytest.fixture
+def shiki_chart(meishiki, taiun_chart, school):
+    return calculate_taiun_shiki(meishiki, taiun_chart, school)
