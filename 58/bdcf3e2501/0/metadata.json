@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "58bdcf3e2501",
+  "session_id": "0e5c387f-937c-4dd3-be4f-75312d0688e1",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-04T09:38:48.488562Z",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "packages/sanmei-core/tests/unit/domain/test_taiun_shiki.py",
+    "packages/sanmei-core/src/sanmei_core/domain/taiun_shiki.py"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "32fe12001e17",
+  "token_usage": {
+    "input_tokens": 12,
+    "cache_creation_tokens": 72182,
+    "cache_read_tokens": 697750,
+    "output_tokens": 4887,
+    "api_call_count": 10
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-04T09:38:48.456277Z",
+    "agent_lines": 89,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 89,
+    "agent_percentage": 100
+  }
+}
