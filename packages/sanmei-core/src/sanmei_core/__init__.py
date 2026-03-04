@@ -17,6 +17,7 @@ from sanmei_core.calculators.pillar_calculator import SanmeiCalendar
 from sanmei_core.calculators.shimeisei import calculate_shimeisei
 from sanmei_core.calculators.shukumei_chuusatsu import calculate_shukumei_chuusatsu
 from sanmei_core.calculators.solar_longitude import MeeusSetsuiriProvider
+from sanmei_core.calculators.taiun_shiki import calculate_taiun_shiki
 from sanmei_core.calculators.zoukan_tokutei import determine_active_hidden_stem
 from sanmei_core.domain.calendar import SetsuiriDate, SolarTerm
 from sanmei_core.domain.errors import (
@@ -49,6 +50,12 @@ from sanmei_core.domain.shukumei_chuusatsu import (
     ShukumeiChuusatsuPosition,
 )
 from sanmei_core.domain.star import MajorStar, SubsidiaryStar
+from sanmei_core.domain.taiun_shiki import (
+    LifeCycle,
+    Season,
+    TaiunShikiChart,
+    TaiunShikiEntry,
+)
 from sanmei_core.domain.tenchuusatsu import Tenchuusatsu, TenchuusatsuType
 from sanmei_core.domain.zoukan_tokutei import ActiveHiddenStem, HiddenStemType, ZoukanTokutei
 from sanmei_core.protocols.school import SchoolProtocol
@@ -71,6 +78,7 @@ __all__ = [
     "InYou",
     "IsouhouResult",
     "Kanshi",
+    "LifeCycle",
     "MajorStar",
     "MajorStarChart",
     "MeeusSetsuiriProvider",
@@ -81,6 +89,7 @@ __all__ = [
     "SanmeiError",
     "SchoolProtocol",
     "SchoolRegistry",
+    "Season",
     "SetsuiriDate",
     "SetsuiriNotFoundError",
     "SetsuiriProvider",
@@ -94,6 +103,8 @@ __all__ = [
     "SubsidiaryStarChart",
     "Taiun",
     "TaiunChart",
+    "TaiunShikiChart",
+    "TaiunShikiEntry",
     "TenStem",
     "Tenchuusatsu",
     "TenchuusatsuType",
@@ -109,6 +120,7 @@ __all__ = [
     "calculate_shimeisei",
     "calculate_shukumei_chuusatsu",
     "calculate_taiun",
+    "calculate_taiun_shiki",
     "determine_active_hidden_stem",
     "determine_direction",
 ]
