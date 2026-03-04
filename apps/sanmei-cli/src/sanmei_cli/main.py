@@ -45,3 +45,4 @@ import sanmei_cli.commands.meishiki as _meishiki_cmd  # noqa: E402, F401
 import sanmei_cli.commands.taiun as _taiun_cmd  # noqa: E402, F401
 import sanmei_cli.commands.nenun as _nenun_cmd  # noqa: E402, F401
 import sanmei_cli.commands.isouhou as _isouhou_cmd  # noqa: E402, F401
+import sanmei_cli.commands.taiun_shiki as _taiun_shiki_cmd  # noqa: E402, F401
