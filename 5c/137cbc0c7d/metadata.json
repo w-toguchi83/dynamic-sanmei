@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "5c137cbc0c7d",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "docs/plans/2026-03-04-taiun-shiki-plan.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/5c/137cbc0c7d/0/metadata.json",
+      "transcript": "/5c/137cbc0c7d/0/full.jsonl",
+      "context": "/5c/137cbc0c7d/0/context.md",
+      "content_hash": "/5c/137cbc0c7d/0/content_hash.txt",
+      "prompt": "/5c/137cbc0c7d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 17,
+    "cache_creation_tokens": 45479,
+    "cache_read_tokens": 1292145,
+    "output_tokens": 16056,
+    "api_call_count": 15
+  }
+}
