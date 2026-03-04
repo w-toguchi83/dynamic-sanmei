@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "1e1bdcd961ac",
+  "session_id": "7725a09f-5004-43d5-a958-e161fdb271fe",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-04T09:31:49.582458Z",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "docs/plans/2026-03-04-taiun-shiki-design.md"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "86661879e9ef",
+  "checkpoint_transcript_start": 121,
+  "transcript_lines_at_start": 121,
+  "token_usage": {
+    "input_tokens": 1537,
+    "cache_creation_tokens": 29418,
+    "cache_read_tokens": 1220694,
+    "output_tokens": 14671,
+    "api_call_count": 21
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-04T09:31:49.491108Z",
+    "agent_lines": 194,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 194,
+    "agent_percentage": 100
+  }
+}
