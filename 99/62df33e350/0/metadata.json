@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "9962df33e350",
+  "session_id": "0e5c387f-937c-4dd3-be4f-75312d0688e1",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-04T09:52:30.579967Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".claude/pdca/cycle-20260304-taiun-shiki.md"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "32fe12001e17",
+  "token_usage": {
+    "input_tokens": 70,
+    "cache_creation_tokens": 127541,
+    "cache_read_tokens": 6936632,
+    "output_tokens": 29096,
+    "api_call_count": 66
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-04T09:52:30.388402Z",
+    "agent_lines": 236,
+    "human_added": 680,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 916,
+    "agent_percentage": 25.76419213973799
+  }
+}
