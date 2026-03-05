@@ -1,5 +1,6 @@
 """算命学コアロジック - 純粋計算ライブラリ."""
 
+from sanmei_core.calculators.compatibility import analyze_compatibility
 from sanmei_core.calculators.fortune import (
     calculate_nenun,
     calculate_taiun,
@@ -20,6 +21,14 @@ from sanmei_core.calculators.solar_longitude import MeeusSetsuiriProvider
 from sanmei_core.calculators.taiun_shiki import calculate_taiun_shiki
 from sanmei_core.calculators.zoukan_tokutei import determine_active_hidden_stem
 from sanmei_core.domain.calendar import SetsuiriDate, SolarTerm
+from sanmei_core.domain.compatibility import (
+    CompatibilityResult,
+    CrossIsouhou,
+    GoGyoComplement,
+    NikkanRelation,
+    NikkanRelationType,
+    TenchuusatsuCompatibility,
+)
 from sanmei_core.domain.errors import (
     DateOutOfRangeError,
     SanmeiError,
@@ -65,6 +74,8 @@ from sanmei_core.schools.standard import StandardSchool
 
 __all__ = [
     "ActiveHiddenStem",
+    "CompatibilityResult",
+    "CrossIsouhou",
     "BranchInteraction",
     "BranchInteractionType",
     "DateOutOfRangeError",
@@ -72,6 +83,7 @@ __all__ = [
     "Gender",
     "GoGyo",
     "GoGyoBalance",
+    "GoGyoComplement",
     "GoGyoCount",
     "HiddenStemType",
     "HiddenStems",
@@ -85,6 +97,8 @@ __all__ = [
     "Meishiki",
     "MeishikiCalculator",
     "Nenun",
+    "NikkanRelation",
+    "NikkanRelationType",
     "SanmeiCalendar",
     "SanmeiError",
     "SchoolProtocol",
@@ -107,11 +121,13 @@ __all__ = [
     "TaiunShikiEntry",
     "TenStem",
     "Tenchuusatsu",
+    "TenchuusatsuCompatibility",
     "TenchuusatsuType",
     "ThreePillars",
     "TwelveBranch",
     "ZoukanTokutei",
     "analyze_branch_interactions",
+    "analyze_compatibility",
     "analyze_fortune_interaction",
     "analyze_isouhou",
     "analyze_stem_interactions",
