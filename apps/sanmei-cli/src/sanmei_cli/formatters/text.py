@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from sanmei_core import (
+        CompatibilityResult,
         GoGyoBalance,
         IsouhouResult,
         Meishiki,
@@ -282,5 +283,111 @@ def format_taiun_shiki(chart: TaiunShikiChart) -> str:
             f"{_cjk_ljust(entry.subsidiary_star.value, w_sub)}"
             f"{entry.life_cycle.value}"
         )
+
+    return "\n".join(lines)
+
+
+def format_compatibility(
+    result: CompatibilityResult,
+    dt_a: datetime,
+    dt_b: datetime,
+) -> str:
+    """相性鑑定結果をテキスト形式でフォーマット."""
+    lines: list[str] = []
+    lines.append("=== 相性鑑定 ===")
+    lines.append(
+        f"人物A: {dt_a.year}年{dt_a.month}月{dt_a.day}日  "
+        f"人物B: {dt_b.year}年{dt_b.month}月{dt_b.day}日"
+    )
+    lines.append("")
+
+    # 日干関係
+    nr = result.nikkan_relation
+    s_a = _STEM_KANJI[nr.stem_a.value]
+    s_b = _STEM_KANJI[nr.stem_b.value]
+    lines.append("【日干の関係】")
+    lines.append(f"A: {s_a}({nr.gogyo_a.kanji})  B: {s_b}({nr.gogyo_b.kanji})")
+    if nr.kangou_gogyo is not None:
+        lines.append(f"関係: {nr.relation_type.value} → {nr.kangou_gogyo.kanji}")
+    else:
+        lines.append(f"関係: {nr.relation_type.value}")
+    lines.append("")
+
+    # 日柱の関係
+    dp = result.day_pillar_relation
+    lines.append("【日柱の関係】")
+    if dp.has_tenchi_tokugou:
+        lines.append(
+            f"天地徳合 (干合+六合) → "
+            f"干: {dp.tokugou_stem_gogyo.kanji if dp.tokugou_stem_gogyo else ''}"
+            f" 支: {dp.tokugou_branch_gogyo.kanji if dp.tokugou_branch_gogyo else ''}"
+        )
+    elif dp.has_tenkoku_chichuu:
+        lines.append("天剋地冲 (相剋+六冲)")
+    else:
+        lines.append("特殊関係なし")
+    lines.append("")
+
+    # 五行補完
+    gc = result.gogyo_complement
+    lines.append("【五行の補完】")
+    lack_a = ", ".join(g.kanji for g in gc.lacking_a) if gc.lacking_a else "なし"
+    lack_b = ", ".join(g.kanji for g in gc.lacking_b) if gc.lacking_b else "なし"
+    lines.append(f"Aの欠: {lack_a}")
+    lines.append(f"Bの欠: {lack_b}")
+    comp_b = (
+        ", ".join(g.kanji for g in gc.complemented_by_b)
+        if gc.complemented_by_b
+        else "なし"
+    )
+    comp_a = (
+        ", ".join(g.kanji for g in gc.complemented_by_a)
+        if gc.complemented_by_a
+        else "なし"
+    )
+    lines.append(f"BがAを補う: {comp_b}")
+    lines.append(f"AがBを補う: {comp_a}")
+    lines.append("")
+
+    # 天中殺の相性
+    tc = result.tenchuusatsu_compatibility
+    lines.append("【天中殺の相性】")
+    lines.append(f"A: {tc.type_a.value}  B: {tc.type_b.value}")
+    lines.append(f"関係: {tc.relation.value}")
+    if tc.a_branches_in_b:
+        br_str = ", ".join(_BRANCH_KANJI[b.value] for b in tc.a_branches_in_b)
+        lines.append(f"Aの天中殺支がBに: {br_str}")
+    if tc.b_branches_in_a:
+        br_str = ", ".join(_BRANCH_KANJI[b.value] for b in tc.b_branches_in_a)
+        lines.append(f"Bの天中殺支がAに: {br_str}")
+    if not tc.a_branches_in_b and not tc.b_branches_in_a:
+        lines.append("相互の天中殺支の影響なし")
+    lines.append("")
+
+    # クロスチャート位相法
+    ci = result.cross_isouhou
+    lines.append("【クロスチャート位相法】")
+    if not ci.stem_interactions and not ci.branch_interactions:
+        lines.append("相互作用なし")
+    else:
+        if ci.stem_interactions:
+            lines.append("")
+            lines.append("天干の合:")
+            for si in ci.stem_interactions:
+                sa = _STEM_KANJI[si.stems[0].value]
+                sb = _STEM_KANJI[si.stems[1].value]
+                lines.append(f"  {sa}-{sb} {si.type.value} → {si.result_gogyo.kanji}")
+
+        if ci.branch_interactions:
+            lines.append("")
+            lines.append("地支の関係:")
+            for bi in ci.branch_interactions:
+                branches_str = "-".join(_BRANCH_KANJI[b.value] for b in bi.branches)
+                if bi.result_gogyo is not None:
+                    lines.append(
+                        f"  {branches_str} {bi.type.value} → {bi.result_gogyo.kanji}"
+                    )
+                else:
+                    lines.append(f"  {branches_str} {bi.type.value}")
 
     return "\n".join(lines)

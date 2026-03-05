@@ -5,6 +5,7 @@ from sanmei_core import (
     Gender,
     MeishikiCalculator,
     SchoolRegistry,
+    analyze_compatibility,
     analyze_isouhou,
     calculate_nenun,
     calculate_taiun,
@@ -13,6 +14,7 @@ from sanmei_core import (
 
 JST = timezone(timedelta(hours=9))
 BIRTH_DT = datetime(2000, 1, 15, 14, 30, tzinfo=JST)
+BIRTH_DT_B = datetime(1990, 5, 20, 10, 0, tzinfo=JST)
 
 
 @pytest.fixture
@@ -60,3 +62,14 @@ def isouhou_result(meishiki):
 @pytest.fixture
 def shiki_chart(meishiki, taiun_chart, school):
     return calculate_taiun_shiki(meishiki, taiun_chart, school)
+
+
+@pytest.fixture
+def meishiki_b(school):
+    calc = MeishikiCalculator(school)
+    return calc.calculate(BIRTH_DT_B)
+
+
+@pytest.fixture
+def compatibility_result(meishiki, meishiki_b):
+    return analyze_compatibility(meishiki, meishiki_b)

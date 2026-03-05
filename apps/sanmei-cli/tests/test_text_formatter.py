@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from sanmei_core import IsouhouResult
 
 from sanmei_cli.formatters.text import (
+    format_compatibility,
     format_isouhou,
     format_meishiki,
     format_nenun,
@@ -12,6 +13,7 @@ from sanmei_cli.formatters.text import (
 
 JST = timezone(timedelta(hours=9))
 BIRTH_DT = datetime(2000, 1, 15, 14, 30, tzinfo=JST)
+BIRTH_DT_B = datetime(1990, 5, 20, 10, 0, tzinfo=JST)
 
 
 class TestFormatMeishiki:
@@ -326,3 +328,38 @@ class TestFormatTaiunShiki:
         )
         if has_multi:
             assert "・" in result
+
+
+class TestFormatCompatibility:
+    def test_contains_header(self, compatibility_result):
+        result = format_compatibility(compatibility_result, BIRTH_DT, BIRTH_DT_B)
+        assert "=== 相性鑑定 ===" in result
+
+    def test_contains_birthdates(self, compatibility_result):
+        result = format_compatibility(compatibility_result, BIRTH_DT, BIRTH_DT_B)
+        assert "2000年1月15日" in result
+        assert "1990年5月20日" in result
+
+    def test_contains_nikkan_section(self, compatibility_result):
+        result = format_compatibility(compatibility_result, BIRTH_DT, BIRTH_DT_B)
+        assert "【日干の関係】" in result
+        assert "関係:" in result
+
+    def test_contains_gogyo_section(self, compatibility_result):
+        result = format_compatibility(compatibility_result, BIRTH_DT, BIRTH_DT_B)
+        assert "【五行の補完】" in result
+        assert "Aの欠:" in result
+        assert "Bの欠:" in result
+
+    def test_contains_day_pillar_section(self, compatibility_result):
+        result = format_compatibility(compatibility_result, BIRTH_DT, BIRTH_DT_B)
+        assert "【日柱の関係】" in result
+
+    def test_contains_tenchuusatsu_section(self, compatibility_result):
+        result = format_compatibility(compatibility_result, BIRTH_DT, BIRTH_DT_B)
+        assert "【天中殺の相性】" in result
+        assert "関係:" in result
+
+    def test_contains_cross_isouhou_section(self, compatibility_result):
+        result = format_compatibility(compatibility_result, BIRTH_DT, BIRTH_DT_B)
+        assert "【クロスチャート位相法】" in result
