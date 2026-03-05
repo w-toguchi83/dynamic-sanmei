@@ -24,10 +24,12 @@ from sanmei_core.domain.calendar import SetsuiriDate, SolarTerm
 from sanmei_core.domain.compatibility import (
     CompatibilityResult,
     CrossIsouhou,
+    DayPillarRelation,
     GoGyoComplement,
     NikkanRelation,
     NikkanRelationType,
     TenchuusatsuCompatibility,
+    TenchuusatsuRelation,
 )
 from sanmei_core.domain.errors import (
     DateOutOfRangeError,
@@ -78,6 +80,7 @@ __all__ = [
     "CrossIsouhou",
     "BranchInteraction",
     "BranchInteractionType",
+    "DayPillarRelation",
     "DateOutOfRangeError",
     "FortuneInteraction",
     "Gender",
@@ -122,6 +125,7 @@ __all__ = [
     "TenStem",
     "Tenchuusatsu",
     "TenchuusatsuCompatibility",
+    "TenchuusatsuRelation",
     "TenchuusatsuType",
     "ThreePillars",
     "TwelveBranch",

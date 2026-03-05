@@ -21,10 +21,13 @@ class BranchInteractionType(Enum):
 
     RIKUGOU = "六合"
     SANGOU = "三合局"
+    HANKAI = "半会"
+    HOUSANI = "方三位"
     ROKUCHUU = "六冲"
     KEI = "刑"
     JIKEI = "自刑"
     RIKUGAI = "六害"
+    HA = "破"
 
 
 class StemInteraction(BaseModel, frozen=True):

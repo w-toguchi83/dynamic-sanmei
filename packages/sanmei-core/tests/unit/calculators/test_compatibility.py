@@ -7,14 +7,17 @@ from datetime import datetime, timedelta, timezone
 from sanmei_core import MeishikiCalculator, SchoolRegistry
 from sanmei_core.calculators.compatibility import (
     _analyze_cross_isouhou,
+    _analyze_day_pillar,
     _analyze_gogyo_complement,
     _analyze_nikkan,
     _analyze_tenchuusatsu_compat,
+    _classify_tenchuu_relation,
     analyze_compatibility,
 )
-from sanmei_core.domain.compatibility import NikkanRelationType
+from sanmei_core.domain.compatibility import NikkanRelationType, TenchuusatsuRelation
 from sanmei_core.domain.gogyo import GoGyo
 from sanmei_core.domain.kanshi import TenStem
+from sanmei_core.domain.tenchuusatsu import TenchuusatsuType
 
 JST = timezone(timedelta(hours=9))
 
@@ -102,6 +105,55 @@ class TestAnalyzeGogyoComplement:
             assert g in result.lacking_b
 
 
+class TestAnalyzeDayPillar:
+    def test_basic(self) -> None:
+        """日柱分析の基本テスト."""
+        meishiki_a = _make_meishiki(2000, 1, 15)
+        meishiki_b = _make_meishiki(1990, 5, 20)
+        result = _analyze_day_pillar(meishiki_a, meishiki_b)
+        assert isinstance(result.has_tenchi_tokugou, bool)
+        assert isinstance(result.has_tenkoku_chichuu, bool)
+
+    def test_same_person_no_special(self) -> None:
+        """同一人物→干合も六冲もなし（通常）."""
+        meishiki = _make_meishiki(2000, 1, 15)
+        result = _analyze_day_pillar(meishiki, meishiki)
+        # 同一日柱は比和なので天地徳合にはならない
+        assert result.has_tenchi_tokugou is False
+        # 同一支なので六冲にもならない
+        assert result.has_tenkoku_chichuu is False
+
+    def test_tokugou_gogyo_none_when_no_tokugou(self) -> None:
+        """天地徳合でなければgogyoはNone."""
+        meishiki_a = _make_meishiki(2000, 1, 15)
+        meishiki_b = _make_meishiki(1990, 5, 20)
+        result = _analyze_day_pillar(meishiki_a, meishiki_b)
+        if not result.has_tenchi_tokugou:
+            assert result.tokugou_stem_gogyo is None
+            assert result.tokugou_branch_gogyo is None
+
+
+class TestClassifyTenchuuRelation:
+    def test_same(self) -> None:
+        """同じ天中殺→同中殺."""
+        assert (
+            _classify_tenchuu_relation(TenchuusatsuType.NE_USHI, TenchuusatsuType.NE_USHI) == TenchuusatsuRelation.SAME
+        )
+
+    def test_opposing(self) -> None:
+        """対冲ペア→対冲天中殺."""
+        assert (
+            _classify_tenchuu_relation(TenchuusatsuType.NE_USHI, TenchuusatsuType.UMA_HITSUJI)
+            == TenchuusatsuRelation.OPPOSING
+        )
+
+    def test_other(self) -> None:
+        """それ以外→異中殺."""
+        assert (
+            _classify_tenchuu_relation(TenchuusatsuType.NE_USHI, TenchuusatsuType.TORA_U) == TenchuusatsuRelation.OTHER
+        )
+
+
 class TestAnalyzeTenchuusatsuCompat:
     def test_basic(self) -> None:
         """天中殺の相性チェック."""
@@ -110,9 +162,16 @@ class TestAnalyzeTenchuusatsuCompat:
         result = _analyze_tenchuusatsu_compat(meishiki_a, meishiki_b)
         assert result.type_a == meishiki_a.tenchuusatsu.type
         assert result.type_b == meishiki_b.tenchuusatsu.type
+        assert isinstance(result.relation, TenchuusatsuRelation)
         # 天中殺支が命式に含まれるかは地支次第
         assert isinstance(result.a_branches_in_b, tuple)
         assert isinstance(result.b_branches_in_a, tuple)
+
+    def test_same_person_same_relation(self) -> None:
+        """同一人物→同中殺."""
+        meishiki = _make_meishiki(2000, 1, 15)
+        result = _analyze_tenchuusatsu_compat(meishiki, meishiki)
+        assert result.relation == TenchuusatsuRelation.SAME
 
 
 class TestAnalyzeCrossIsouhou:
@@ -135,8 +194,10 @@ class TestAnalyzeCompatibility:
         assert result.nikkan_relation.stem_a == meishiki_a.pillars.day.stem
         assert result.nikkan_relation.stem_b == meishiki_b.pillars.day.stem
         assert result.nikkan_relation.relation_type in NikkanRelationType
+        assert result.day_pillar_relation is not None
         assert result.gogyo_complement is not None
         assert result.tenchuusatsu_compatibility is not None
+        assert result.tenchuusatsu_compatibility.relation in TenchuusatsuRelation
         assert result.cross_isouhou is not None
 
     def test_same_person(self) -> None:
@@ -155,6 +216,7 @@ class TestAnalyzeCompatibility:
         result = analyze_compatibility(meishiki_a, meishiki_b)
         data = result.model_dump(mode="json")
         assert "nikkan_relation" in data
+        assert "day_pillar_relation" in data
         assert "gogyo_complement" in data
         assert "tenchuusatsu_compatibility" in data
         assert "cross_isouhou" in data

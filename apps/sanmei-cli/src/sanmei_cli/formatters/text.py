@@ -313,6 +313,21 @@ def format_compatibility(
         lines.append(f"関係: {nr.relation_type.value}")
     lines.append("")
 
+    # 日柱の関係
+    dp = result.day_pillar_relation
+    lines.append("【日柱の関係】")
+    if dp.has_tenchi_tokugou:
+        lines.append(
+            f"天地徳合 (干合+六合) → "
+            f"干: {dp.tokugou_stem_gogyo.kanji if dp.tokugou_stem_gogyo else ''}"
+            f" 支: {dp.tokugou_branch_gogyo.kanji if dp.tokugou_branch_gogyo else ''}"
+        )
+    elif dp.has_tenkoku_chichuu:
+        lines.append("天剋地冲 (相剋+六冲)")
+    else:
+        lines.append("特殊関係なし")
+    lines.append("")
+
     # 五行補完
     gc = result.gogyo_complement
     lines.append("【五行の補完】")
@@ -338,6 +353,7 @@ def format_compatibility(
     tc = result.tenchuusatsu_compatibility
     lines.append("【天中殺の相性】")
     lines.append(f"A: {tc.type_a.value}  B: {tc.type_b.value}")
+    lines.append(f"関係: {tc.relation.value}")
     if tc.a_branches_in_b:
         br_str = ", ".join(_BRANCH_KANJI[b.value] for b in tc.a_branches_in_b)
         lines.append(f"Aの天中殺支がBに: {br_str}")

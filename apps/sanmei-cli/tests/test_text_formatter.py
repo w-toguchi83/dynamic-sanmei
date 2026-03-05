@@ -351,9 +351,14 @@ class TestFormatCompatibility:
         assert "Aの欠:" in result
         assert "Bの欠:" in result
 
+    def test_contains_day_pillar_section(self, compatibility_result):
+        result = format_compatibility(compatibility_result, BIRTH_DT, BIRTH_DT_B)
+        assert "【日柱の関係】" in result
+
     def test_contains_tenchuusatsu_section(self, compatibility_result):
         result = format_compatibility(compatibility_result, BIRTH_DT, BIRTH_DT_B)
         assert "【天中殺の相性】" in result
+        assert "関係:" in result
 
     def test_contains_cross_isouhou_section(self, compatibility_result):
         result = format_compatibility(compatibility_result, BIRTH_DT, BIRTH_DT_B)
